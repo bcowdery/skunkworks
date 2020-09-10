@@ -1,0 +1,23 @@
+version: "3"
+services:
+    shipyard_web:
+        build: 
+            context: ./shipyard/
+            dockerfile: Dockerfile-web
+        ports:
+            - "8000:80"
+        depends_on:
+            - sqldb
+        
+    shipyard_app:
+        build: 
+            context: ./shipyard/
+            dockerfile: Dockerfile-app
+        depends_on:
+            - sqldb
+        
+    sqldb:
+        image: "mcr.microsoft.com/mssql/server"
+        environment:
+            SA_PASSWORD: "r00tp@ssw0rD"
+            ACCEPT_EULA: "Y"

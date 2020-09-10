@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /shipyard
+
+# Copy and build
+COPY . ./
+RUN dotnet restore shipyard.sln
+RUN dotnet publish -c Release -o out 
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+WORKDIR /shipyard
+COPY --from=build /shipyard/out ./
+ENTRYPOINT ["dotnet", "Shipyard.WebApi.dll"]t
