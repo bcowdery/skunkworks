@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shipyard.Service
+namespace Shipyard.App
 {
     class Program
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Shipyard.WebApi
+namespace Shipyard.Web
 {
     public static class Splash
     {

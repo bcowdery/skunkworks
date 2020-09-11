@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shipyard\Shipyard.csproj"/>    
+    <ProjectReference Include="..\..\..\shared\src\Shipyard\Shipyard.csproj" />
   </ItemGroup>
 </Project>

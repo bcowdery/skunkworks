@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Shipyard.WebApi
+namespace Shipyard.Web
 {
     public class Program
     {

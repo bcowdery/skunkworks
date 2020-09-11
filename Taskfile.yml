@@ -1,0 +1,22 @@
+version: '2'
+
+vars:
+    SOLUTION_NAME: xplane_all
+
+tasks:
+    up:
+        desc: "Bring up the solution"
+        cmds:
+            - docker-compose -p {{.SOLUTION_NAME}} up -d --no-recreate
+
+    down: 
+        desc: "Bring down the solution"
+            cmds:
+                - docker-compose -p {{.SOLUTION_NAME}} stop
+                - docker-compose -p {{.SOLUTION_NAME}} rm -f
+            
+    restart:
+        desc: "Restart solution"
+        cmds:
+            - task: down
+            - task: up

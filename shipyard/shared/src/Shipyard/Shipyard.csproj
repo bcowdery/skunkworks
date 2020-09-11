@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>    
+    <ProjectReference Include="..\Shipyard.Contracts\Shipyard.Contracts.csproj" />    
+    <ProjectReference Include="..\Shipyard.Data\Shipyard.Data.csproj" />    
+  </ItemGroup>
+
+</Project>
