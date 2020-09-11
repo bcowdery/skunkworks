@@ -1,0 +1,34 @@
+version: '3'
+
+tasks:
+  build:
+    desc: "Build the shipyard stack"
+    cmds:
+        - task: build:app
+        - task: build:web
+
+  build:app:
+    desc: "Build shipyard-app"
+    cmds:
+        - docker build -t shipyard-app -f app/Dockerfile .
+
+  build:web:
+    desc: "Build shipyard-web"
+    cmds:
+        - docker build -t shipyard-web -f web/Dockerfile .
+
+  run:
+    desc: "Run the shipyard stack"
+    cmds:
+        - task: run:app
+        - task: run:web
+
+  run:app:
+    desc: "Build shipyard-app"
+    cmds:
+        - docker run -it --rm shipyard-app -f app/Dockerfile .
+
+  run:web:
+    desc: "Build shipyard-web"
+    cmds:
+        - docker run -it --rm shipyard-web -f web/Dockerfile .        

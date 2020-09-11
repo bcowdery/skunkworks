@@ -1,22 +1,25 @@
-version: '2'
+version: '3'
 
 vars:
-    SOLUTION_NAME: xplane_all
+  SOLUTION_NAME: xplane_all
+
+includes:
+    shipyard: ./shipyard
 
 tasks:
-    up:
-        desc: "Bring up the solution"
-        cmds:
-            - docker-compose -p {{.SOLUTION_NAME}} up -d --no-recreate
+  up:
+    desc: "Bring up the solution"
+    cmds:
+      - docker-compose -p {{.SOLUTION_NAME}} up -d --no-recreate
 
-    down: 
-        desc: "Bring down the solution"
-            cmds:
-                - docker-compose -p {{.SOLUTION_NAME}} stop
-                - docker-compose -p {{.SOLUTION_NAME}} rm -f
-            
-    restart:
-        desc: "Restart solution"
-        cmds:
-            - task: down
-            - task: up
+  down: 
+    desc: "Bring down the solution"
+    cmds:
+      - docker-compose -p {{.SOLUTION_NAME}} stop
+      - docker-compose -p {{.SOLUTION_NAME}} rm -f
+
+  restart:
+    desc: "Restart solution"
+    cmds:
+      - task: down
+      - task: up

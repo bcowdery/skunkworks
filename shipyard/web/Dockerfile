@@ -4,10 +4,12 @@
 # all dependencies are included in the build context
 #
 #   $ cd ./shipyard
-#   $ docker build -t shipyard-wb -f web\Dockerfile .
+#   $ docker build -t shipyard-web -f web\Dockerfile .
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
+#EXPOSE 5000
+#ENV ASPNETCORE_URLS=http://*:5000
 
 # Copy, build and publish dotnet core app
 COPY . ./
