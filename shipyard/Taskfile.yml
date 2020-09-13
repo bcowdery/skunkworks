@@ -1,34 +1,56 @@
 version: '3'
 
+vars:
+  SOLUTION_NAME: skunkworks    
+  
 tasks:
+  default:
+    deps: [build]
+
   build:
-    desc: "Build the shipyard stack"
+    desc: "Build all production shipyard images"
     cmds:
-        - task: build:app
-        - task: build:web
+      - task: build:app
+      - task: build:web
 
   build:app:
-    desc: "Build shipyard-app"
+    desc: "Build app production image shipyard-app:latest"
     cmds:
-        - docker build -t shipyard-app -f app/Dockerfile .
-
+      - docker build -t shipyard-app:latest -f src/Shipyard.App/Dockerfile .
+    
+  build:app-dev:
+    desc: "Build app development image shipyard-app:dev"
+    cmds:
+      - docker build -t shipyard-app:latest -f src/Shipyard.App/Dockerfile.Development .
+    sources:
+      - src/**/*.csproj                
+      
   build:web:
-    desc: "Build shipyard-web"
+    desc: "Build web production image shipyard-web:latest"
     cmds:
-        - docker build -t shipyard-web -f web/Dockerfile .
+      - docker build -t shipyard-web:latest -f src/Shipyard.Web/Dockerfile .    
+
+  build:web-dev:
+    desc: "Build web development image shipyard-web:dev"
+    cmds:
+      - docker build -t shipyard-web:latest -f src/Shipyard.Web/Dockerfile.Development .
+    sources:
+      - src/**/*.csproj
 
   run:
-    desc: "Run the shipyard stack"
+    desc: "Runs all shipyard development containers and watches for changes"
     cmds:
-        - task: run:app
-        - task: run:web
+      - task: run:app
+      - task: run:web
 
   run:app:
-    desc: "Build shipyard-app"
+    desc: "Run shipyard-app:dev image with mounted sources"    
+    deps: [ build:app-dev ]
     cmds:
-        - docker run -it --rm shipyard-app -f app/Dockerfile .
+      - docker run --rm -it -v "${pwd}/shipyard:/app/" shipyard-app:dev         
 
   run:web:
-    desc: "Build shipyard-web"
+    desc: "Run shipyard-web:dev image with mounted sources"    
+    deps: [ build:web-dev ]
     cmds:
-        - docker run -it --rm shipyard-web -f web/Dockerfile .        
+      - docker run --rm -it -v "${pwd}/shipyard:/app/" shipyard-web:dev      

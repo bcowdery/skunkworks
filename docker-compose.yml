@@ -2,25 +2,28 @@ version: "3"
 
 services:
   shipyard_web:
-    image: "shipyard-web:latest"
+    container_name: shipyard_web
+    image: shipyard-web:latest
     build: 
-      context: ./shipyard/
-      dockerfile: web/Dockerfile
+      context: ./shipyard
+      dockerfile: src/Shipyard.Web/Dockerfile
     ports:
-      - "8000:80"
-    depends_on:
-      - sqldb
+       - 9000:9000
+    # depends_on:
+    #   - mssql
 
-  shipyard_app:
-    image: "shipyard-app:latest"
-    build: 
-      context: ./shipyard/
-      dockerfile: app/Dockerfile    
-    depends_on:
-      - sqldb      
+  # shipyard_app:
+  #   build: 
+  #     context: ./shipyard
+  #     dockerfile: Dockerfile.app
+  #   depends_on:
+  #     - mssql      
         
-  sqldb:
-    image: "mcr.microsoft.com/mssql/server"
-    environment:
-      SA_PASSWORD: "r00tp@ssw0rD"
-      ACCEPT_EULA: "Y"
+  # mssql:
+  #   image: "mcr.microsoft.com/mssql/server:2017-latest-ubuntu"
+  #   ports:
+  #     - 1433:1433
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=r00tp@ssw0rD
+      

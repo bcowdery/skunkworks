@@ -16,8 +16,7 @@ namespace Shipyard.Web
                 |_|    |___/                                      
                     
 Copyright © {DateTime.Now:yyyy} Symend Inc, Calgary AB
-Shipyard WebAPI, Version {Assembly.GetEntryAssembly()?.GetName().Version}    
-
+Shipyard WebAPI, Version {Assembly.GetEntryAssembly()?.GetName().Version}
 ";
 
 

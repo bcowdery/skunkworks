@@ -4,8 +4,4 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\shared\src\Shipyard\Shipyard.csproj" />
-  </ItemGroup>
 </Project>

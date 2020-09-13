@@ -1,10 +1,12 @@
 version: '3'
 
-vars:
-  SOLUTION_NAME: xplane_all
-
 includes:
-    shipyard: ./shipyard
+  shipyard: ./shipyard
+
+vars:
+  SOLUTION_NAME: skunkworks
+  SOLUTION_DIR:
+    sh: pwd
 
 tasks:
   up:
@@ -19,7 +21,17 @@ tasks:
       - docker-compose -p {{.SOLUTION_NAME}} rm -f
 
   restart:
-    desc: "Restart solution"
+    desc: "Restart the solution"
     cmds:
       - task: down
       - task: up
+
+  status:
+    desc: "Display the status of all containers in the solution"
+    cmds:
+      - docker ps --format "table {{"{{"}}.ID{{"}}"}}\t{{"{{"}}.Names{{"}}"}}\t{{"{{"}}.Status{{"}}"}}\t{{"{{"}}.Image{{"}}"}}"
+
+  log:
+    desc: "Display logs for solution"
+    cmds: 
+      - docker-compose -p {{.SOLUTION_NAME}} logs -f --tail 100    

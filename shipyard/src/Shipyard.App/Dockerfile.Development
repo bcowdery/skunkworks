@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /app
+ENV DOTNET_USE_POLING_FILE_WATCHER=1
+
+# Restore nuget packages into the dev image so that we don't
+# duplicate effort and restore every time a new container is started
+COPY ./ .
+RUN [ "dotnet", "restore" ]
+
+# Build development image, this assumes that ./shipyard is mounted as /app
+ENTRYPOINT [ "dotnet", "watch", "--project", "src/Shipyard.App", "run", "--no-restore" ]
