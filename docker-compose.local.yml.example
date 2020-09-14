@@ -7,7 +7,7 @@ version: '3'
 #     build:
 #       dockerfile: src/Shipyard.Web/Dockerfile.Development
 #     volumes:
-#       - ./shipyard/:/app/      
+#       - ./sources/shipyard/:/app/      
 #     environment: 
 #       - ASPNETCORE_ENVIRONMENT=Development
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
@@ -18,7 +18,7 @@ version: '3'
 #     build: 
 #       dockerfile: src/Shipyard.App/Dockerfile.Development
 #     volumes:
-#       - ./shipyard:/app/            
+#       - ./sources/shipyard:/app/            
 #     environment: 
 #       - ASPNETCORE_ENVIRONMENT=Development
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/

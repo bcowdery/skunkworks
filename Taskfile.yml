@@ -1,9 +1,10 @@
 version: '3'
 
-includes:
-  shipyard: ./shipyard
-  #mssql: ./services/mssql
-  #nginx: ./services/nginx
+includes:  
+  sqlserver: ./services/sqlserver
+  shipyard: ./sources/shipyard
+
+silent: true
 
 vars:
   SOLUTION_NAME: skunkworks

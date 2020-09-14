@@ -8,28 +8,18 @@ vars:
 tasks:
 
   logs:
-    desc: "Show all logs"
-    cmds:
-      - task: logs:app
-      - task: logs:web
-  
-  logs:app:
-    desc: "Show shipyard-app logs"
+    desc: "Tail shipyard logs"
     cmds:
       - docker logs {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 -f --tail 100
-
-  logs:web:
-    desc: "Show shipyard-web logs"
-    cmds:
       - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
       
   sh:app:
-    desc: "Connect to shipyard-app shell"
+    desc: "Connect to the shipyard-app shell"
     cmds:
       - docker exec -it {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 bash
 
   sh:web:
-    desc: "Connect to shipyard-web shell"
+    desc: "Connect to the shipyard-web shell"
     cmds:
       - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
 

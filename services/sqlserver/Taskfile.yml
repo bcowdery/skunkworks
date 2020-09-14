@@ -1,0 +1,32 @@
+version: '3'
+
+vars:
+  SQLSERVER_NAME: mssql
+  SQLSERVER_DIR: '{{.SOLUTION_DIR}}/services/sqlserver'
+
+tasks:
+
+  info:
+    desc: "Show info for this service"
+    cmds:
+      - 'echo SQLSERVER_NAME: {{.SQLSERVER_NAME}}'
+      - 'echo SQLSERVER_DIR: {{toSlash .SQLSERVER_DIR}}'
+
+  log:
+    desc: "Show logs for service"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.SQLSERVER_NAME}}_1 -f --tail 100
+
+  logs:
+    deps: [log]
+
+  sh:
+    desc: "Start shell in service"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.SQLSERVER_NAME}}_1 bash
+
+  import:
+    desc: "Import BACPAC"
+    cmds: 
+      - docker-compose -p {{.SOLUTION_NAME}} run --name sqlpkg ls -la
+    deps: [env:setup]
