@@ -2,6 +2,8 @@ version: '3'
 
 includes:
   shipyard: ./shipyard
+  #mssql: ./services/mssql
+  #nginx: ./services/nginx
 
 vars:
   SOLUTION_NAME: skunkworks
@@ -9,6 +11,7 @@ vars:
     sh: pwd
 
 tasks:
+  
   up:
     desc: "Bring up the solution"
     cmds:
@@ -26,6 +29,11 @@ tasks:
       - task: down
       - task: up
 
+  prune:
+    desc: "Prune all dangling docker images"
+    cmds:
+      - docker images prune -a
+    
   status:
     desc: "Display the status of all containers in the solution"
     cmds:
@@ -35,3 +43,11 @@ tasks:
     desc: "Display logs for solution"
     cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} logs -f --tail 100    
+
+  logs:
+    dep: [log]
+
+
+  default:
+    cmds:
+      - task -l

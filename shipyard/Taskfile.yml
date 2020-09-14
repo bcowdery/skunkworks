@@ -2,55 +2,37 @@ version: '3'
 
 vars:
   SOLUTION_NAME: skunkworks    
+  WEBAPI_NAME: shipyard_web
+  APP_NAME: shipyard_app
   
 tasks:
-  default:
-    deps: [build]
 
-  build:
-    desc: "Build all production shipyard images"
+  logs:
+    desc: "Show all logs"
     cmds:
-      - task: build:app
-      - task: build:web
+      - task: logs:app
+      - task: logs:web
+  
+  logs:app:
+    desc: "Show shipyard-app logs"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 -f --tail 100
 
-  build:app:
-    desc: "Build app production image shipyard-app:latest"
+  logs:web:
+    desc: "Show shipyard-web logs"
     cmds:
-      - docker build -t shipyard-app:latest -f src/Shipyard.App/Dockerfile .
-    
-  build:app-dev:
-    desc: "Build app development image shipyard-app:dev"
-    cmds:
-      - docker build -t shipyard-app:latest -f src/Shipyard.App/Dockerfile.Development .
-    sources:
-      - src/**/*.csproj                
+      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
       
-  build:web:
-    desc: "Build web production image shipyard-web:latest"
+  sh:app:
+    desc: "Connect to shipyard-app shell"
     cmds:
-      - docker build -t shipyard-web:latest -f src/Shipyard.Web/Dockerfile .    
+      - docker exec -it {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 bash
 
-  build:web-dev:
-    desc: "Build web development image shipyard-web:dev"
+  sh:web:
+    desc: "Connect to shipyard-web shell"
     cmds:
-      - docker build -t shipyard-web:latest -f src/Shipyard.Web/Dockerfile.Development .
-    sources:
-      - src/**/*.csproj
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
 
-  run:
-    desc: "Runs all shipyard development containers and watches for changes"
-    cmds:
-      - task: run:app
-      - task: run:web
-
-  run:app:
-    desc: "Run shipyard-app:dev image with mounted sources"    
-    deps: [ build:app-dev ]
-    cmds:
-      - docker run --rm -it -v "${pwd}/shipyard:/app/" shipyard-app:dev         
-
-  run:web:
-    desc: "Run shipyard-web:dev image with mounted sources"    
-    deps: [ build:web-dev ]
-    cmds:
-      - docker run --rm -it -v "${pwd}/shipyard:/app/" shipyard-web:dev      
+  default:
+    cmd:
+      - task -l  

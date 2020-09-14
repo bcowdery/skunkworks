@@ -1,21 +1,23 @@
 version: "3"
 
 services:
-  shipyard_web:
-    container_name: shipyard_web
+
+  shipyard_web:    
     image: shipyard-web:latest
     build: 
-      context: ./shipyard
+      context: ./shipyard/
       dockerfile: src/Shipyard.Web/Dockerfile
     ports:
-       - 9000:9000
+      - '5000:5000'
+      - '5001:5001'
     # depends_on:
-    #   - mssql
+    #  - mssql
 
-  # shipyard_app:
-  #   build: 
-  #     context: ./shipyard
-  #     dockerfile: Dockerfile.app
+  shipyard_app:
+    image: shipyard-app:latest
+    build: 
+      context: ./shipyard
+      dockerfile: src/Shipyard.App/Dockerfile
   #   depends_on:
   #     - mssql      
         

@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+
+  shipyard_web:  
+    image: shipyard-web:dev
+    build: 
+      dockerfile: src/Shipyard.Web/Dockerfile.Development
+    volumes:
+      - ./shipyard/:/app/      
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  # shipyard_app:
+  #   image: shipyard-app:dev
+  #   build:
+  #     build: 
+  #       dockerfile: src/Shipyard.App/Dockerfile.Development
+  #     volumes:
+  #       - ./shipyard:/app/            
+  #     environment: 
+  #       - ASPNETCORE_ENVIRONMENT=Development
