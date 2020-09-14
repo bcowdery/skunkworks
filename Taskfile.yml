@@ -18,10 +18,8 @@ tasks:
   prepare:
     desc: "Creates the .env & docker-compose.local.yml config files for local development"
     cmds: 
-      - cp .env.example .env
       - cp docker-compose.local.yml.example docker-compose.local.yml    
     status:
-      - test -f .env
       - test -f docker-compose.local.yml
 
   up:
