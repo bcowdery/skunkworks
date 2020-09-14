@@ -39,14 +39,13 @@ namespace Shipyard.Web
                 options.Conventions.UseSlugifiedRoutes();
             });
             
-
             // Runtime options providers
             services.AddOptions();
             services.Configure<CorsSettings>(Configuration.GetSection("CorsSettings"));
             
             // Database configuration
             services.AddDbContext<ShipyardDbContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                .UseSqlServer(Configuration.GetConnectionString("Default"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
 
 

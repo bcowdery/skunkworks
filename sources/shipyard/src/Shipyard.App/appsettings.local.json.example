@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "Default": "Server=localhost;Database=skunkworks;Trusted_Connection=True;"
+  }
+}

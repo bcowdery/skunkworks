@@ -13,7 +13,7 @@ namespace Shipyard.Web
     {
         public static void Main(string[] args)
         {
-            Splash.Print(s => Console.Write(s));
+            Splash.Print(Console.Write);
             CreateHostBuilder(args).Build().Run();
         }
 
