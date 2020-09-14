@@ -1,23 +1,27 @@
 version: '3'
 
-includes:  
-  sqlserver: ./services/sqlserver
-  shipyard: ./sources/shipyard
+dotenv: ['.env']
 
-silent: true
+includes:  
+  mssql: ./services/sqlserver
+  shipyard: ./sources/shipyard
 
 vars:
   SOLUTION_NAME: skunkworks
   SOLUTION_DIR:
     sh: pwd
 
+silent: true
+
 tasks:
   
   prepare:
-    desc: "Creates the docker-compose.local.yml config file for local development"
+    desc: "Creates the .env & docker-compose.local.yml config files for local development"
     cmds: 
+      - cp .env.example .env
       - cp docker-compose.local.yml.example docker-compose.local.yml    
     status:
+      - test -f .env
       - test -f docker-compose.local.yml
 
   up:
@@ -68,6 +72,7 @@ tasks:
     cmds:
       - git fetch origin --prune
       - docker images prune -a
+      - docker container prune -all
   
 
   default:

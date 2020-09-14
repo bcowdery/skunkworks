@@ -6,6 +6,18 @@ vars:
   APP_NAME: shipyard_app
   
 tasks:
+      
+  clean:
+    desc: "Clean all local images"
+    cmds:
+      - cmd: docker image rm shipyard-web:dev
+        ignore_error: true
+      - cmd: docker image rm shipyard-app:dev
+        ignore_error: true
+      - cmd: docker image rm shipyard-web:latest
+        ignore_error: true
+      - cmd: docker image rm shipyard-app:latest
+        ignore_error: true
 
   logs:
     desc: "Tail shipyard logs"
@@ -23,6 +35,8 @@ tasks:
     cmds:
       - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
 
+
   default:
-    cmd:
-      - task -l  
+    cmds:
+      - task -l
+    

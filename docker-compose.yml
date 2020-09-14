@@ -11,7 +11,10 @@ services:
       - '5000:5000'
       - '5001:5001'
     depends_on:
-     - sqlserver
+      - mssql
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:5001;http://+:5000
 
   shipyard_app:
     image: shipyard-app
@@ -19,13 +22,13 @@ services:
       context: ./sources/shipyard
       dockerfile: src/Shipyard.App/Dockerfile
     depends_on:
-      - sqlserver
+      - mssql
         
-  sqlserver:
+  mssql:
     image: "mcr.microsoft.com/mssql/server:2017-latest-ubuntu"
     ports:
-      - 1433:1433
+      - '${MSSQL_PORT}:1433'
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=r00tp@ssw0rD
+      - SA_PASSWORD=${MSSQL_SA_PASSWORD}
       
