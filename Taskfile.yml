@@ -12,10 +12,18 @@ vars:
 
 tasks:
   
+  prepare:
+    desc: "Creates the docker-compose.local.yml config file for local development"
+    cmds: 
+      - cp docker-compose.local.yml.example docker-compose.local.yml    
+    status:
+      - test -f docker-compose.local.yml
+
   up:
     desc: "Bring up the solution"
+    deps: [ prepare ]
     cmds:
-      - docker-compose -p {{.SOLUTION_NAME}} up -d --no-recreate
+      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
 
   down: 
     desc: "Bring down the solution"
@@ -28,25 +36,38 @@ tasks:
     cmds:
       - task: down
       - task: up
-
-  prune:
-    desc: "Prune all dangling docker images"
-    cmds:
-      - docker images prune -a
-    
+  
   status:
     desc: "Display the status of all containers in the solution"
     cmds:
       - docker ps --format "table {{"{{"}}.ID{{"}}"}}\t{{"{{"}}.Names{{"}}"}}\t{{"{{"}}.Status{{"}}"}}\t{{"{{"}}.Image{{"}}"}}"
 
-  log:
+  logs:
     desc: "Display logs for solution"
     cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} logs -f --tail 100    
 
-  logs:
-    dep: [log]
+  build:
+    desc: "Builds all container images"
+    cmds:
+      - docker-compose -p {{.SOLUTION_NAME}} build --force-rm --parallel
+    
+  push:
+    desc: "Pushes container images to remote repositories"
+    cmds:
+      - docker-compose push
 
+  pull:
+    desc: "Pulls the most recent container images"
+    cmds:
+      - docker-compose pull
+    
+  prune:
+    desc: "Prune obsolete remote git branches and local container images"
+    cmds:
+      - git fetch origin --prune
+      - docker images prune -a
+  
 
   default:
     cmds:

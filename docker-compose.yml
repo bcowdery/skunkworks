@@ -1,9 +1,9 @@
-version: "3"
+version: '3'
 
 services:
 
   shipyard_web:    
-    image: shipyard-web:latest
+    image: shipyard-web
     build: 
       context: ./shipyard/
       dockerfile: src/Shipyard.Web/Dockerfile
@@ -14,7 +14,7 @@ services:
     #  - mssql
 
   shipyard_app:
-    image: shipyard-app:latest
+    image: shipyard-app
     build: 
       context: ./shipyard
       dockerfile: src/Shipyard.App/Dockerfile

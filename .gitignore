@@ -1,7 +1,10 @@
-### Symend ###
-*.orig
-
 # Created by https://www.gitignore.io/api/visualstudio,svn
+
+### Skunkworks ###
+docker-compose.local.yml
+
+### Taskfile ###
+.task/
 
 ### SVN ###
 .svn/
