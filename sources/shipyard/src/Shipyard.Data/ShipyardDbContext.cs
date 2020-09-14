@@ -7,7 +7,7 @@ namespace Shipyard.Data
 {
     public class ShipyardDbContext : DbContext
     {
-        public ShipyardDbContext(DbContextOptions options) 
+        public ShipyardDbContext(DbContextOptions<ShipyardDbContext> options) 
             : base(options)
         {
         }

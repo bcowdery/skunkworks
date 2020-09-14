@@ -60,6 +60,7 @@ dlldata.c
 project.lock.json
 project.fragment.lock.json
 artifacts/
+appsettings.local.json
 **/Properties/launchSettings.json
 
 *_i.c
@@ -378,21 +379,3 @@ _[Ss]cripts
 *.dot[Cc]over
 
 # End of https://www.gitignore.io/api/visualstudio,svn
-Symend.DataAccess/Symend.DataAccess - Copy.csproj
-Symend.App/Symend.App - Copy.csproj
-Symend.Test/Symend.Test - Copy.csproj
-Symend.Web/Symend.Web - Copy.csproj
-Symend.Web.Customer/Symend.Web.Customer - Copy.csproj
-Symend.Web.Tests/Symend.Web.Tests - Copy.csproj
-Symend.DataAccess/Migrations/201808211800470_Web769_CampaignPlan.cs
-Symend.DataAccess/Migrations/201808211800470_Web769_CampaignPlan.Designer.cs
-Symend.DataAccess/Migrations/201808211800470_Web769_CampaignPlan.resx
-Symend.DataAccess/Migrations/201808221535268_Web769_AddPlanCampaignIdToCampaign.cs
-Symend.DataAccess/Migrations/201808221535268_Web769_AddPlanCampaignIdToCampaign.Designer.cs
-Symend.DataAccess/Migrations/201808221535268_Web769_AddPlanCampaignIdToCampaign.resx
-Symend.Test/Plan/PlanCampaignFacadeTest - NurtureBranch.cs
-Symend.Web/Views/TemplateCanvas/_Form - Copy.cshtml
-Symend.Web/Views/TemplateCanvas/Edit - Copy.cshtml
-Symend.DataAccess/Migrations/201901281454099_I18nRenameTables - Copy.cs
-Symend.DataAccess/Migrations/201901240201185_UpdateTelusAndKoodoText - Copy.cs
-Symend.Core.App.LoadTestingWebsite/Web.config.bak
