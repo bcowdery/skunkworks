@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace Shipyard.Web
@@ -17,8 +17,8 @@ namespace Shipyard.Web
                     
 Copyright © {DateTime.Now:yyyy} Symend Inc, Calgary AB
 Shipyard WebAPI, Version {Assembly.GetEntryAssembly()?.GetName().Version}
-";
 
+";
 
         public static void Print(Action<string> printer) 
         {

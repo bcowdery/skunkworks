@@ -5,23 +5,23 @@ VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5058F5ED-6D46-43F3-9DF6-AEAA687852E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard", "src\Shipyard\Shipyard.csproj", "{28B69A41-CA97-47FF-8FCC-22E6CE4DF109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard", "src\Shipyard\Shipyard.csproj", "{28B69A41-CA97-47FF-8FCC-22E6CE4DF109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard.Data", "src\Shipyard.Data\Shipyard.Data.csproj", "{AB04F2E8-E19F-4036-BF7D-B86636D65CA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Data", "src\Shipyard.Data\Shipyard.Data.csproj", "{AB04F2E8-E19F-4036-BF7D-B86636D65CA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard.Contracts", "src\Shipyard.Contracts\Shipyard.Contracts.csproj", "{1E02BAB8-0FA9-4070-A822-39C72A39E2A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Contracts", "src\Shipyard.Contracts\Shipyard.Contracts.csproj", "{1E02BAB8-0FA9-4070-A822-39C72A39E2A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard.App", "src\Shipyard.App\Shipyard.App.csproj", "{4BE061CA-1CD3-43AA-A942-7E3ED58C7BAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.App", "src\Shipyard.App\Shipyard.App.csproj", "{4BE061CA-1CD3-43AA-A942-7E3ED58C7BAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard.Web", "src\Shipyard.Web\Shipyard.Web.csproj", "{88B05575-3BD2-4FA9-95D1-A349DA623E1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Web", "src\Shipyard.Web\Shipyard.Web.csproj", "{88B05575-3BD2-4FA9-95D1-A349DA623E1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BD3AF77-8F46-47A8-A92A-DD6556331A9A}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		Taskfile.yml = Taskfile.yml
+	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {37D71085-4A7E-4FAD-9CA0-9B68B70A5E24}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -92,11 +92,17 @@ Global
 		{88B05575-3BD2-4FA9-95D1-A349DA623E1D}.Release|x86.ActiveCfg = Release|Any CPU
 		{88B05575-3BD2-4FA9-95D1-A349DA623E1D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{28B69A41-CA97-47FF-8FCC-22E6CE4DF109} = {5058F5ED-6D46-43F3-9DF6-AEAA687852E1}
 		{AB04F2E8-E19F-4036-BF7D-B86636D65CA2} = {5058F5ED-6D46-43F3-9DF6-AEAA687852E1}
 		{1E02BAB8-0FA9-4070-A822-39C72A39E2A5} = {5058F5ED-6D46-43F3-9DF6-AEAA687852E1}
 		{4BE061CA-1CD3-43AA-A942-7E3ED58C7BAB} = {5058F5ED-6D46-43F3-9DF6-AEAA687852E1}
 		{88B05575-3BD2-4FA9-95D1-A349DA623E1D} = {5058F5ED-6D46-43F3-9DF6-AEAA687852E1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {37D71085-4A7E-4FAD-9CA0-9B68B70A5E24}
 	EndGlobalSection
 EndGlobal
