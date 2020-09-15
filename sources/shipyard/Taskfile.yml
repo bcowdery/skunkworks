@@ -5,7 +5,18 @@ vars:
   WEBAPI_NAME: shipyard_web
   APP_NAME: shipyard_app
   
-tasks:
+tasks:    
+
+  logs:
+    desc: "Tail shipyard logs"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
+      
+  migrate:
+    desc: "Run entity framework migrations"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 /tools/migration/Shipyard.Data.Migration
       
   clean:
     desc: "Clean all local images"
@@ -19,12 +30,6 @@ tasks:
       - cmd: docker image rm shipyard-app:latest
         ignore_error: true
 
-  logs:
-    desc: "Tail shipyard logs"
-    cmds:
-      - docker logs {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 -f --tail 100
-      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
-      
   sh:app:
     desc: "Connect to the shipyard-app shell"
     cmds:
