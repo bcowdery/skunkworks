@@ -1,16 +1,17 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Shipyard.App.Bootstrap;
 using Shipyard.Data;
 
-namespace Shipyard.App
+namespace Shipyard.Worker
 {
-    class Program
+    public class Program
     {
         public static async Task Main(string[] args)
         {
@@ -36,7 +37,7 @@ namespace Shipyard.App
                     var configuration = hostContext.Configuration;
 
                     services.AddLogging();
-                    services.AddHostedService<ShipyardService>();
+                    services.AddHostedService<WorkerBackgroundService>();
                     services.AddDbContext<ShipyardDbContext>(options =>
                         options.UseSqlServer(configuration.GetConnectionString("Default"), 
                             providerOptions => providerOptions.EnableRetryOnFailure()));
@@ -46,6 +47,6 @@ namespace Shipyard.App
                 {
                     config.AddConsole();
                 })
-                .UseConsoleLifetime();
+                .UseConsoleLifetime();                
     }
 }

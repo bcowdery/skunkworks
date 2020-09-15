@@ -72,6 +72,11 @@ tasks:
       - docker images prune -a
       - docker container prune -all
   
+  nuke:
+    desc: "Nuke all data files and reset the solution"
+    cmds:
+      - docker volume rm -f {{.SOLUTION_NAME}}_mssql_data
+
   default:
     cmds:
       - task -l

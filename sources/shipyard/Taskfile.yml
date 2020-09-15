@@ -1,39 +1,36 @@
 version: '3'
 
 vars:
-  SOLUTION_NAME: skunkworks    
-  WEBAPI_NAME: shipyard_web
+  SOLUTION_NAME: skunkworks      
   APP_NAME: shipyard_app
+  WORKER_NAME: shipyard_worker
   
 tasks:    
 
   logs:
     desc: "Tail shipyard logs"
     cmds:
-      - docker logs {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
       - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
       
   migrate:
     desc: "Run entity framework migrations"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 /tools/migration/Shipyard.Data.Migration
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 /tools/migration/Shipyard.Data.Migration
       
   clean:
     desc: "Clean all local images"
     cmds:
-      - cmd: docker image rm shipyard-web:dev
+      - cmd: docker image rmi shipyard-worker
         ignore_error: true
-      - cmd: docker image rm shipyard-app:dev
+      - cmd: docker image rmi shipyard-web
         ignore_error: true
-      - cmd: docker image rm shipyard-web:latest
-        ignore_error: true
-      - cmd: docker image rm shipyard-app:latest
-        ignore_error: true
+      
 
-  sh:app:
-    desc: "Connect to the shipyard-app shell"
+  sh:worker:
+    desc: "Connect to the shipyard-worker shell"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.APP_NAME}}_1 bash
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 bash
 
   sh:web:
     desc: "Connect to the shipyard-web shell"

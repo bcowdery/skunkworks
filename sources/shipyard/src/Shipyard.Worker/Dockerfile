@@ -4,7 +4,7 @@ WORKDIR /work
 # Copy, build and publish dotnet core app
 COPY . ./
 RUN dotnet restore
-RUN dotnet publish src/Shipyard.App -c Release -o app
+RUN dotnet publish src/Shipyard.Worker -c Release -o app
 RUN dotnet publish src/Shipyard.Data.Migration -c Release -o migration
 
 # Build runtime image
@@ -13,4 +13,4 @@ WORKDIR /tools
 COPY --from=build /work/migration ./migration
 WORKDIR /app
 COPY --from=build /work/app ./
-ENTRYPOINT [ "dotnet", "Shipyard.App.dll" ]
+ENTRYPOINT [ "dotnet", "Shipyard.Worker.dll" ]
