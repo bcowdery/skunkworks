@@ -1,6 +1,0 @@
-# .dockerignore
-
-# CSharp
-packages/
-bin/
-obj/

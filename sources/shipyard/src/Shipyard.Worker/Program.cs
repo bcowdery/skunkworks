@@ -32,20 +32,21 @@ namespace Shipyard.Worker
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
                     config.AddEnvironmentVariables();
                 })
+                .ConfigureLogging((hostContext, logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })                
                 .ConfigureServices((hostContext, services) =>
                 {
                     var configuration = hostContext.Configuration;
 
-                    services.AddLogging();
-                    services.AddHostedService<WorkerBackgroundService>();
                     services.AddDbContext<ShipyardDbContext>(options =>
                         options.UseSqlServer(configuration.GetConnectionString("Default"), 
                             providerOptions => providerOptions.EnableRetryOnFailure()));
+
+                    services.AddHostedService<WorkerBackgroundService>();
                     
-                })
-                .ConfigureLogging((hostContext, config) =>
-                {
-                    config.AddConsole();
                 })
                 .UseConsoleLifetime();                
     }

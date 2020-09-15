@@ -5,21 +5,19 @@ version: '3'
 #   shipyard_web:  
 #     image: shipyard-web:dev
 #     build:
-#       dockerfile: src/Shipyard.Web/Dockerfile.Development
+#       dockerfile: src/Shipyard.Web/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard/:/app/      
 #     environment: 
-#       - ASPNETCORE_ENVIRONMENT=Development
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 
-#   shipyard_app:
-#     image: shipyard-app:dev
+#   shipyard_worker:
+#     image: shipyard-worker:dev
 #     build: 
-#       dockerfile: src/Shipyard.App/Dockerfile.Development
+#       dockerfile: src/Shipyard.Worker/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard:/app/            
 #     environment: 
-#       - ASPNETCORE_ENVIRONMENT=Development
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/

@@ -28,6 +28,11 @@ namespace Shipyard.Web
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
                     config.AddEnvironmentVariables();
                 })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

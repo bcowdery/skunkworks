@@ -1,0 +1,27 @@
+# Development image
+#
+#   Builds an image for dotnet core aspnet development. This image runs dotnet core
+#   with a file watcher to hot-reload sources as they are modified. 
+#
+#  Usage:
+#   $ cd ./shipyard
+#   $ docker build -t shipyard-web:dev -f src/Shipyard.Web/Dockerfile.develop .
+#   $ docker run --rm -it -v "${pwd}:/app/" shipyard-web:dev         
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:80
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+# Bake restored packages into the dev image so 
+# that they don't need to be restored every time the container starts
+WORKDIR /src
+COPY ./src/ .
+RUN find -name 'bin' -o -name 'obj' -type d | xargs rm -rf
+RUN dotnet restore /src/Shipyard.Web
+
+# Development image assumes that ./shipyard is mounted as /app for hot reloading
+RUN echo "dotnet watch --project /src/Shipyard.Web -- run -c ${BUILD_CONFIGURATION} --no-restore --no-launch-profile" > entrypoint.sh
+ENTRYPOINT [ "/bin/sh", "entrypoint.sh" ]
