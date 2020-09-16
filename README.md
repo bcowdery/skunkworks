@@ -1,11 +1,12 @@
-Experimental Platform Development (X-Plane)
-===========================================
+Experimental Application Development Platform
+==============================================
 
 # Shipyard
 
 Shipyard is a service designed to handle all external messaging traffic using external email and SMS providers. 
 
 
-# Huston
+# Port Authority
 
-Huston (mission control) is a job and task management service.
+Job and task management service. 
+Intended for audit tracking and API driven orchestration of background tasks.
