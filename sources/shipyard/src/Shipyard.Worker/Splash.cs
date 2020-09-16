@@ -16,7 +16,7 @@ namespace Shipyard.Worker
                 |_|    |___/                 
 
 Copyright © {DateTime.Now:yyyy}
-Shipyard Worker, Version {Assembly.GetEntryAssembly()?.GetName().Version}    
+Shipyard Worker, Version {Assembly.GetEntryAssembly()?.GetName().Version}
 ";
 
         public static void Print(Action<string> printer) 

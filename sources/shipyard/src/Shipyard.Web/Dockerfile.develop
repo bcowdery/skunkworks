@@ -12,16 +12,19 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 ARG BUILD_CONFIGURATION=Debug
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://+:80
-ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true  
 EXPOSE 80
 
-# Bake restored packages into the dev image so 
-# that they don't need to be restored every time the container starts
-WORKDIR /src
-COPY ./src/ .
-RUN find -name 'bin' -o -name 'obj' -type d | xargs rm -rf
-RUN dotnet restore /src/Shipyard.Web
+# Restore packages to prime the package cache for the dev image
+WORKDIR /app
+COPY . .
+RUN dotnet restore src/Shipyard.Data.Migration
+RUN dotnet restore src/Shipyard.Web
 
-# Development image assumes that ./shipyard is mounted as /app for hot reloading
-RUN echo "dotnet watch --project /src/Shipyard.Web -- run -c ${BUILD_CONFIGURATION} --no-restore --no-launch-profile" > entrypoint.sh
+# Build development image, this assumes that ./shipyard/src is mounted as /app/src
+RUN echo "dotnet publish src/Shipyard.Data.Migration -c ${BUILD_CONFIGURATION} -o /tools/migration" >> entrypoint.sh
+
+RUN echo "dotnet build src/Shipyard.Web -c ${BUILD_CONFIGURATION}" >> entrypoint.sh
+RUN echo "dotnet watch --project src/Shipyard.Web -- run -c ${BUILD_CONFIGURATION} --no-launch-profile" >> entrypoint.sh
+
 ENTRYPOINT [ "/bin/sh", "entrypoint.sh" ]

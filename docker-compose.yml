@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   shipyard_web:    
     image: shipyard-web
     build: 
@@ -20,10 +19,18 @@ services:
       context: ./sources/shipyard
       dockerfile: src/Shipyard.Worker/Dockerfile
     depends_on:
+     # - shipyard_db_migrate
       - mssql
     environment: 
       - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
 
+  # shipyard_db_migrate:    
+  #   command: dockerize --tcp:1433 --wait 30s /app/Shipyard.Data.Migration
+  #   depends_on: 
+  #     - mssql
+  #   environment: 
+  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  
   mssql:
     image: mcr.microsoft.com/mssql/server
     ports:
@@ -33,7 +40,6 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${MSSQL_SA_PASSWORD}
-      
 
 # volumes:
 #   mssql_data:

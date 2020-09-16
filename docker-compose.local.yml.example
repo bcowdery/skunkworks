@@ -1,13 +1,12 @@
 version: '3'
 
 # services:
-
 #   shipyard_web:  
 #     image: shipyard-web:dev
 #     build:
 #       dockerfile: src/Shipyard.Web/Dockerfile.develop
 #     volumes:
-#       - ./sources/shipyard/:/app/      
+#       - ./sources/shipyard/src/:/app/src/      
 #     environment: 
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
@@ -17,7 +16,7 @@ version: '3'
 #     build: 
 #       dockerfile: src/Shipyard.Worker/Dockerfile.develop
 #     volumes:
-#       - ./sources/shipyard:/app/            
+#       - ./sources/shipyard/src/:/app/src/        
 #     environment: 
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
