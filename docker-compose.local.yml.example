@@ -7,7 +7,6 @@ version: '3'
 #       dockerfile: src/Shipyard.Web/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/      
-#     environment: 
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 
@@ -17,6 +16,5 @@ version: '3'
 #       dockerfile: src/Shipyard.Worker/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/        
-#     environment: 
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
