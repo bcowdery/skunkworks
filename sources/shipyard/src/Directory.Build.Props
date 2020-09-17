@@ -1,6 +1,15 @@
 <Project>
 
   <PropertyGroup>
+    <Product>Shipyard</Product>
+    <Copyright>Copyright © 2020</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <RepositoryUrl>https://github.com/bcowdery/skunkworks</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>$(Version)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)/obj/**/*</DefaultItemExcludes>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)/bin/**/*</DefaultItemExcludes>
   </PropertyGroup>
