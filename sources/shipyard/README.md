@@ -7,6 +7,20 @@ It provides message scheduling, delivery status tracking & reply handling.
 
 &nbsp;
 
+# Assemblies
+
+| Assembly                  | Description                                         |
+|---------------------------|-----------------------------------------------------|
+| `Shipyard`                | Main service assembly, contains all business logic. | 
+| `Shipyard.Contracts`      | Service bus messaging contracts                     | 
+| `Shipyard.Data`           | Data access layer                                   |
+| `Shipyard.Data.Migration` | Executable EF migration host for updating databases |
+| `Shipyard.Web`            | REST API                                            |
+| `Shipyard.Worker`         | Background service worker                           |
+
+&nbsp;
+
+
 # Tasks
 
 Available tasks for this project:
@@ -18,17 +32,12 @@ Available tasks for this project:
 | `shipyard:sh:web`    | Connect to the shipyard-web shell        |
 | `shipyard:sh:worker` | Connect to the shipyard-worker shell     |
 
-
 &nbsp;
 
-# API Docs
 
-> 🚀 Hey! This is just a rough design of the API and is subject to change.
+# Interfaces
 
-
-## Interfaces
-
-### `ISubtask`
+## `ISubtask`
 
 Job details are optional.
 - If job id provided, the send operation added as a sub-task.
@@ -38,17 +47,26 @@ If both a job ID and a sub task ID are provided, do nothing and simply queue up 
 
 The sending sub-task will be updated with the status of the operation upon completion or failure.
 
+```csharp
+public interface ISubtask
+{
+    public Guid? Id { get; set; }
+    public Guid? TaskId { get; set; }
+    public Guid? CorrelationId { get; set; }
+}
 ```
+```json
 {
     "job": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",     
-        "task_id":   
+        "task_id": null,
+        "correlation_id": null
     }    
 }
 ```
 
 
-### `IScheduled`
+## `IScheduled`
 
 Scheduling of messages for a later date. 
 
@@ -56,38 +74,48 @@ If provided, `schedule_date` serves as an absolute schedule time. If the date is
 
 The `time_zone` value is used for automatic scheduling. The system will find an appropriate slot within the send window for the day. If neither `schedule_date` or `time_zone` is provided, the configured default timezone is used instead.
 
+```csharp
+public interface IScheduled
+{
+    public DateTimeZone? TimeZone { get; set; }
+    public OffsetDateTime? ScheduleDate { get; set; }
+}
 ```
+```json
 {
     "schedule": {
         /* Automatic scheduling using the time zone */
-        "time_zone": "America/Edmonton"
+        "time_zone": "America/Edmonton",
     
         /* Explicit scheduling based on absolute time, allow UTC or +/- offsets */
-        "schedule_date": "2020-09-17T00:08:30:00.000Z",    
+        "schedule_date": "2020-09-17T00:08:30:00.000Z"
     }    
 }
 ```
 
+&nbsp;
 
-## Endpoints
+# API Docs
+
+> 🚀 Hey! This is just a rough design of the API and is subject to change.
 
 &nbsp;
 
 **POST `/v1/config`**
-```
+```json
 {    
     "providers": {
         "email": "sendgrid",
         "sms": "twilio"
     },
     "scheduling": {
-        "max_age": "5D" 
+        "max_age": "5D", 
         "min_send": 10000,
         "granularity": "15M",
         "window_start": "08:00:00",
         "window_end": "18:00:00",
         "default_time_zone": "America/Edmonton",
-    }    
+    },    
     "features": {
         "load_balancing": true,        
     }
@@ -101,7 +129,7 @@ returns `200 OK`
 
 Update configuration for a sendgrid provider
 
-```
+```json
 {
     "api_key": "SG.XXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXX",
     "bcc_address": null,
@@ -117,7 +145,7 @@ returns `200 OK`
 
 Update configuration for a twilio provider
 
-```
+```json
 {
     "sid": "AC9473e9de34a4413ab49caec8b91ace02",
     "sid_token": "a2e88d638c864278932634b0d326135d",
@@ -133,17 +161,17 @@ returns `200 OK`
 
 Send an email two one or more recipients (supports `IScheduled` and `ISubtask`)
 
-```
+```json
 {       
     "to": [ 
          { "name": "Foo", "address": "foo@test.com" }
     ],
     "cc": null,
-    "bcc": null
+    "bcc": null,
 
     "subject": "Subject line",    
-    "content": "Email content body"
-    "content_type": "text/html"
+    "content": "Email content body",
+    "content_type": "text/html",
 
     "personalizations": [
         {
@@ -164,7 +192,7 @@ Send an email two one or more recipients (supports `IScheduled` and `ISubtask`)
 }
 ```
 returns
-```
+```json
 200 OK
 {
     "schedule": {
@@ -173,7 +201,7 @@ returns
     }        
     "job": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",
-        "taskId": "f232df48-8360-4168-8ce7-9a97c81b7f1c"
+        "task_id": "f232df48-8360-4168-8ce7-9a97c81b7f1c"
     }
 }
 ```
@@ -185,13 +213,13 @@ returns
 
 Send an sms message two one or more recipients
 
-```
+```json
 {    
     "to": [ 
          { "name": "Foo", "address": "+14033101010" }
     ],
         
-    "content": "Email content body"
+    "content": "Email content body",
     
     "personalizations": [
         {
@@ -209,7 +237,7 @@ Send an sms message two one or more recipients
 }
 ```
 returns
-```
+```json
 200 OK
 {
     "schedule": {
@@ -218,7 +246,7 @@ returns
     }, 
     "job": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",
-        "taskId": "f232df48-8360-4168-8ce7-9a97c81b7f1c"
+        "task_id": "f232df48-8360-4168-8ce7-9a97c81b7f1c"
     }
 }
 ```
@@ -229,7 +257,7 @@ returns
 
 Callback endpoint that recieves provider specific HTTP callbacks 
 
-```
+```json
 { /* provider specific body */ }
 ```
 

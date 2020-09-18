@@ -15,7 +15,7 @@ The primary goal is to the ease the barier to entry and provide developers with 
 
 You can build, package and run the entire solution with `up`.
 
-```
+```shell
 $ task up
 ```
 
@@ -52,7 +52,7 @@ Developer overrides are **local only** and are excluded from commits by the `.gi
 > 🚀 In this example, uncommenting the `shipyard_worker` section enables hot-reloading and Visual Studio debugging of the `Shipyard.Worker` dotnet core application. The solution source root is mapped to the image as a mounted volume so that the docker container can monitor the file system for changes. Developer user secrets are also mounted to provide safe storage of secrets via the `dotnet user-secrets` tool.
 
 **docker-compose.local.yml:**
-```
+```yml
 version: '3'
 
 services:
