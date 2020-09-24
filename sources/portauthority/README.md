@@ -54,7 +54,7 @@ Available tasks for this project:
     
     "meta": {
         "foo": "bar",
-        "release_id": 123,
+        "outreach_id": 123,
         "created_by": "foo@test.com"
     }
 }
@@ -193,7 +193,7 @@ Add a task to a job
     
     "meta": {
         "foo": "bar",
-        "release_id": 123,
+        "release_id": 456,
         "created_by": "foo@test.com"
     }
 }

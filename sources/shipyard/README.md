@@ -34,6 +34,21 @@ Available tasks for this project:
 
 &nbsp;
 
+# Workflow
+
+1. POST /v1/api/email/send
+2. Apply personalizations and generate unique message identifiers => EmailMessage[]
+3. Send ScheduleEmail message { email = {..}, schedule = {..} }
+4. Return message IDs
+
+5. IConsume<ScheduleEmail>
+   1. Calculate time of day bucket within send window
+   2. 
+   
+
+
+
+
 
 # Interfaces
 
@@ -195,19 +210,17 @@ returns
 ```json
 200 OK
 {
-    "schedule": {
-        "id": "11bf8a05-cbec-47ef-9417-04e57d45481a",
-        "schedule_date": "2020-09-17T00:08:30:00.000Z"
-    }        
     "job": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",
         "task_id": "f232df48-8360-4168-8ce7-9a97c81b7f1c"
-    }
+    },
+    "messages": [
+        "AX7asd)gaXASD*12KGAJS#"
+    ]         
 }
 ```
 
 <hr/>&nbsp;
-
 
 **POST `/v1/sms/send`**
 
@@ -216,7 +229,7 @@ Send an sms message two one or more recipients
 ```json
 {    
     "to": [ 
-         { "name": "Foo", "address": "+14033101010" }
+         { "number": "+14033101010" }
     ],
         
     "content": "Email content body",
