@@ -4,9 +4,17 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
+    <PackageReference Include="NodaTime" Version="3.0.0" />
+    <PackageReference Include="SendGrid" Version="9.21.0" />
+    <PackageReference Include="Twilio" Version="5.47.1" />
+  </ItemGroup>
+
   <ItemGroup>    
     <ProjectReference Include="..\Shipyard.Contracts\Shipyard.Contracts.csproj" />    
     <ProjectReference Include="..\Shipyard.Data\Shipyard.Data.csproj" />    
   </ItemGroup>
-
 </Project>

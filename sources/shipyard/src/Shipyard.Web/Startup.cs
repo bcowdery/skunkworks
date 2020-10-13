@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,10 @@ namespace Shipyard.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Application Insights
+            services.AddApplicationInsightsTelemetry();
+
+            // Mvc            
             services.AddCors();
             services.AddRazorPages();
             services.AddHttpContextAccessor();
@@ -47,7 +52,6 @@ namespace Shipyard.Web
             services.AddDbContext<ShipyardDbContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString("Default"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
-
 
             // Open API (Swagger) documentation
             services.AddSwaggerGen(c =>

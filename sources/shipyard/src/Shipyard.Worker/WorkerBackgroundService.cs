@@ -22,6 +22,8 @@ namespace Shipyard.Worker
             // proof of concept
             // print a status message every 10 seconds
             
+            _logger.LogDebug("Hello there!");
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
