@@ -4,8 +4,9 @@ dotenv: ['.env']
 
 includes:  
   mssql: ./services/sqlserver
+  portauthority: ./sources/portauthority
   shipyard: ./sources/shipyard
-
+  
 vars:
   SOLUTION_NAME: skunkworks
   SOLUTION_DIR:
@@ -52,7 +53,7 @@ tasks:
 
   build:
     desc: "Builds all container images"
-    cmds:
+    cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} build --force-rm
     
   push:

@@ -1,0 +1,46 @@
+version: '3'
+
+vars:
+  SOLUTION_NAME: skunkworks      
+  WEBAPI_NAME: portauthority_web
+  WORKER_NAME: portauthority_worker
+    
+tasks:    
+
+  logs:
+    desc: "Show portauthority logs"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
+      
+  migrate:
+    desc: "Run portauthority ef database migrations"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 /tools/migration/PortAuthority.Data.Migration
+
+  rmi:
+    desc: "Remove portauthority images"
+    cmds:
+      - cmd: docker image rmi portauthority-worker
+        ignore_error: true
+      - cmd: docker image rmi portauthority-worker:dev
+        ignore_error: true        
+      - cmd: docker image rmi portauthority-web
+        ignore_error: true           
+      - cmd: docker image rmi portauthority-web:dev
+        ignore_error: true
+
+  sh:worker:
+    desc: "Connect to the portauthority-worker shell"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 bash
+
+  sh:web:
+    desc: "Connect to the portauthority-web shell"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
+
+  default:
+    cmds:
+      - task -l
+    

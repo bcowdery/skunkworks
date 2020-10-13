@@ -1,6 +1,36 @@
 version: '3'
 
 services:
+  portauthority_web:    
+    image: portauthority-web
+    build: 
+      context: ./sources/portauthority
+      dockerfile: src/Portauthority.Web/Dockerfile
+    ports:
+      - ${PORTAUTHORITY_HTTP_PORT}:80      
+    depends_on:
+      - mssql
+    environment: 
+      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+
+  portauthority_worker:
+    image: portauthority-worker
+    build: 
+      context: ./sources/portauthority
+      dockerfile: src/Portauthority.Worker/Dockerfile
+    depends_on:
+     # - portauthority_db_migrate
+      - mssql
+    environment: 
+      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+
+  # portauthority_db_migrate:    
+  #   command: dockerize --tcp:1433 --wait 30s /app/Portauthority.Data.Migration
+  #   depends_on: 
+  #     - mssql
+  #   environment: 
+  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+        
   shipyard_web:    
     image: shipyard-web
     build: 

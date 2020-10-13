@@ -49,7 +49,7 @@ Available tasks for this project:
     "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
     "correlation_id": null,
 
-    "type": "send",
+    "type": "scheduled-send",
     "namespace": "com.shipyard.email",
     
     "meta": {
@@ -67,7 +67,7 @@ returns
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
         "correlation_id": null,
 
-        "type": "send",
+        "type": "scheduled-send",
         "namespace": "com.shipyard.email",
 
         "status": "(pending|inprogress|failed|completed)",
@@ -105,7 +105,7 @@ Get job by ID
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
         "correlation_id": null,
 
-        "type": "send",
+        "type": "scheduled-send",
         "namespace": "com.shipyard.email",
 
         "status": "(pending|inprogress|failed|completed)",
@@ -155,7 +155,7 @@ Can search by any combination of
             "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
             "correlation_id": null,
 
-            "type": "send",
+            "type": "scheduled-send",
             "namespace": "com.shipyard.email",
 
             "status": "(pending|inprogress|failed|completed)",
@@ -188,7 +188,7 @@ Add a task to a job
 {
     "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
 
-    "type": "send",
+    "type": "send-message",
     "namespace": "com.shipyard.email",
     
     "meta": {
@@ -212,7 +212,7 @@ Get task by ID
     "task": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
         
-        "type": "send",
+        "type": "send-message",
         "namespace": "com.shipyard.email",
 
         "status": "(pending|inprogress|failed|completed)",
