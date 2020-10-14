@@ -11,7 +11,7 @@ namespace PortAuthority.Data.Migrations.Internal
     public class PortAuthorityMigrationHistoryRepository : SqlServerHistoryRepository
 #pragma warning restore EF1001 // Internal EF Core API usage.
     {
-        protected override string TableSchema { get; } = "Job";
+        protected override string TableSchema { get; } = "pa";
 
         public PortAuthorityMigrationHistoryRepository(HistoryRepositoryDependencies dependencies)
             : base(dependencies)
