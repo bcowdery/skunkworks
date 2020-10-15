@@ -5,9 +5,12 @@ using PortAuthority.Data;
 
 namespace PortAuthority.Test.Mocks
 {
+    /// <summary>
+    /// Factory for producing in-memory instances of the EntityFramework <see cref="DbContext"/>.
+    /// </summary>
     public class DbContextFactory
     {
-        public DbContextFactory()
+        private DbContextFactory()
         {
         }
 

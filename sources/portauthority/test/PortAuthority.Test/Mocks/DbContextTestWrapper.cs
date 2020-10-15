@@ -87,6 +87,9 @@ namespace PortAuthority.Test.Mocks
         }
     }
     
+    /// <summary>
+    /// Extension methods for producing testable <see cref="DbContext"/> instances.
+    /// </summary>
     public static class DbContextTestWrapperExtensions 
     {
         /// <summary>

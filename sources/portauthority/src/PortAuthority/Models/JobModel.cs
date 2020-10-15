@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Models
 {
@@ -28,6 +29,11 @@ namespace PortAuthority.Models
         /// </summary>
         public string Namespace { get; set; }
 
+        /// <summary>
+        /// Job Status
+        /// </summary>
+        public Status Status { get; set; }
+        
         /// <summary>
         /// Start time of the job (null if not started).
         /// </summary>

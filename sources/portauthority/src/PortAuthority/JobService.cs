@@ -65,7 +65,7 @@ namespace PortAuthority
             await _sendEndpoint.Send<CreateJob>(new
             {
                 JobId = form.JobId,
-                CorrelationId = form.JobId,
+                CorrelationId = form.CorrelationId,
                 Type = form.Type,
                 Namespace = form.Namespace
             });
@@ -75,6 +75,12 @@ namespace PortAuthority
 
         public async Task<IResult> StartJob(Guid jobId, DateTimeOffset startTime)
         {
+            var exists = await _dbContext.Jobs.AnyAsync(x => x.JobId == jobId);
+            if (!exists)
+            {
+                return Result.NotFound($"Job does not exist with ID {jobId}");
+            }
+            
             await _sendEndpoint.Send<StartJob>(new
             {
                 JobId = jobId,
@@ -86,6 +92,12 @@ namespace PortAuthority
 
         public async Task<IResult> EndJob(Guid jobId, DateTimeOffset endTime, bool success)
         {
+            var exists = await _dbContext.Jobs.AnyAsync(x => x.JobId == jobId);
+            if (!exists)
+            {
+                return Result.NotFound($"Job does not exist with ID {jobId}");
+            }
+           
             await _sendEndpoint.Send<EndJob>(new
             {
                 JobId = jobId,

@@ -16,6 +16,7 @@ namespace PortAuthority.Assemblers
                 CorrelationId = arg.CorrelationId,
                 Type = arg.Type,
                 Namespace = arg.Namespace,
+                Status = arg.Status,
                 StartTime = arg.StartTime,
                 EndTime = arg.EndTime,
                 Tasks = new SubtaskSummaryModel(),
