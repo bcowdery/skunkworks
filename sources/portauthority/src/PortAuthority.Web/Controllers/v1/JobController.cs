@@ -35,10 +35,11 @@ namespace PortAuthority.Web.Controllers.v1
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet, Route("", Name = nameof(Index))]
-        [ProducesResponseType(typeof(List<JobModel>), StatusCodes.Status200OK)]
-        public IActionResult Index([FromQuery] JobSearchCriteria search, [FromQuery] PagingCriteria paging)
+        [ProducesResponseType(typeof(PagedResult<JobSearchResult>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Index([FromQuery] JobSearchCriteria search, [FromQuery] PagingCriteria paging)
         {
-            return Ok("success");
+            var result = await _jobService.ListJobs(search, paging);
+            return Ok(result.Payload);
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace PortAuthority
     public interface IJobService
     {
         Task<IResult<JobModel>> GetJob(Guid jobId);
-        Task<IResult<PagedResult<JobResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging);
+        Task<IResult<PagedResult<JobSearchResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging);
 
         Task<IResult> CreateJob(CreateJobForm form);
         Task<IResult> StartJob(Guid jobId, DateTimeOffset startTime);

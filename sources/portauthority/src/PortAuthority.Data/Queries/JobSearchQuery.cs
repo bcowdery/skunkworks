@@ -24,7 +24,7 @@ namespace PortAuthority.Data.Queries
         /// <param name="criteria"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        public async Task<PagedResult<JobResult>> Find(JobSearchCriteria criteria, PagingCriteria paging)
+        public async Task<PagedResult<JobSearchResult>> Find(JobSearchCriteria criteria, PagingCriteria paging)
         {
             var query = _dbContext.Jobs.AsQueryable();
 
@@ -45,7 +45,7 @@ namespace PortAuthority.Data.Queries
                 .OrderBy(j => j.Id)
                 .Select(j => new
                 {
-                    Job = new JobResult
+                    Job = new JobSearchResult
                     {
                         JobId = j.JobId,
                         Type = j.Type,
@@ -60,7 +60,7 @@ namespace PortAuthority.Data.Queries
             // No results found, return an empty result set
             if (page == null || page.Length == 0)
             {
-                return PagedResult<JobResult>.Empty(paging);
+                return PagedResult<JobSearchResult>.Empty(paging);
             }
             
             // More than one row found!
@@ -68,14 +68,14 @@ namespace PortAuthority.Data.Queries
             int total = page.First().TotalCount;
             var jobs = page.Select(p => p.Job);
             
-            return new PagedResult<JobResult>(paging, total, jobs);
+            return new PagedResult<JobSearchResult>(paging, total, jobs);
         }
     }
     
     /// <summary>
     /// Job search result
     /// </summary>
-    public class JobResult
+    public class JobSearchResult
     {
         public Guid JobId { get; set; }
         public string Type { get; set; }

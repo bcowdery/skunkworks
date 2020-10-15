@@ -53,7 +53,7 @@ namespace PortAuthority
                 : Result.Ok(_jobAssembler.Assemble(job));
         }
 
-        public async Task<IResult<PagedResult<JobResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging)
+        public async Task<IResult<PagedResult<JobSearchResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging)
         {
             var query = new JobSearchQuery(_dbContext);
             var results = await query.Find(criteria, paging);
