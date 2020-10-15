@@ -39,7 +39,7 @@ namespace PortAuthority.Web
             services.AddCors();
             services.AddRazorPages();
             services.AddHttpContextAccessor();
-            services.AddControllersWithViews(options =>
+            services.AddControllers(options =>
             {
                 options.Conventions.UseSlugifiedRoutes();
             });
