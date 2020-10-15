@@ -74,7 +74,7 @@ namespace PortAuthority.Test.Mocks
                     throw new AssertionException($"Element not found matching \"{predicate.Body}\"");
                 }
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 throw new AssertionException($"More than one element found matching \"{predicate.Body}\"");
             }

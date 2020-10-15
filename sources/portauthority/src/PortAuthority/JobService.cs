@@ -9,12 +9,16 @@ using PortAuthority.Assemblers;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
+using PortAuthority.Data.Queries;
 using PortAuthority.Forms;
 using PortAuthority.Models;
 using PortAuthority.Results;
 
 namespace PortAuthority
 {
+    /// <summary>
+    /// Job service for handling REST API requests
+    /// </summary>
     public class JobService
         : IJobService
     {
@@ -49,9 +53,12 @@ namespace PortAuthority
                 : Result.Ok(_jobAssembler.Assemble(job));
         }
 
-        public IResult<List<JobModel>> ListJobs(JobSearchCriteria criteria)
+        public async Task<IResult<PagedResult<JobResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging)
         {
-            throw new NotImplementedException();
+            var query = new JobSearchQuery(_dbContext);
+            var results = await query.Find(criteria, paging);
+            
+            return Result.Ok(results);
         }
 
         public async Task<IResult> CreateJob(CreateJobForm form)

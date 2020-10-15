@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using PortAuthority.Data;
 
 namespace PortAuthority.Test.Mocks
 {
@@ -10,15 +9,15 @@ namespace PortAuthority.Test.Mocks
     /// </summary>
     public class DbContextFactory
     {
-        private DbContextFactory()
-        {
-        }
-
         /// <summary>
         /// Returns the shared instance of <see cref="DbContextFactory"/>.
         /// </summary>
         public static readonly DbContextFactory Instance = new DbContextFactory();
         
+        private DbContextFactory()
+        {
+        }
+
         /// <summary>
         /// Creates a new in-memory DbContext for testing.
         /// </summary>

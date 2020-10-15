@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using PortAuthority.Data.Queries;
 using PortAuthority.Forms;
 using PortAuthority.Models;
 using PortAuthority.Results;
@@ -11,7 +12,7 @@ namespace PortAuthority
     public interface IJobService
     {
         Task<IResult<JobModel>> GetJob(Guid jobId);
-        IResult<List<JobModel>> ListJobs(JobSearchCriteria criteria);
+        Task<IResult<PagedResult<JobResult>>> ListJobs(JobSearchCriteria criteria, PagingCriteria paging);
 
         Task<IResult> CreateJob(CreateJobForm form);
         Task<IResult> StartJob(Guid jobId, DateTimeOffset startTime);

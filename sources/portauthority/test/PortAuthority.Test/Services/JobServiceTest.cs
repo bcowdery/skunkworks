@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
 using MassTransit;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -15,6 +16,7 @@ using PortAuthority.Assemblers;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
+using PortAuthority.Data.Queries;
 using PortAuthority.Extensions;
 using PortAuthority.Forms;
 using PortAuthority.Test.Fakes;
@@ -304,6 +306,61 @@ namespace PortAuthority.Test.Services
             result.Should().NotBeNull();
             result.IsNotFound().Should().BeTrue();
             result.ErrorMessage.Message.Should().StartWith("Job does not exist with ID");
+        }
+
+        [Test]
+        public async Task Test_ListJobs_FindAll_Should_ReturnPagedList()
+        {
+            // arrange
+            var jobs = new JobFaker()
+                .Generate(100);
+
+            using var context = DbContextFactory.Instance.CreateTestable<PortAuthorityDbContext>();
+            context.Setup(x => x.Jobs, jobs);
+
+            var search = new JobSearchCriteria() { };
+            var paging = new PagingCriteria() { Page = 1, Size = 25 };
+
+            // act
+            var result = await _service.ListJobs(search, paging);
+            
+            // assert
+            result.Should().NotBeNull();
+            result.IsOk().Should().BeTrue();
+
+            var payload = result.Payload;
+            payload.TotalItems.Should().Be(100);
+            payload.TotalPages.Should().Be(4);
+            payload.Data.Should().HaveCount(25);
+        }
+        
+        [Test]
+        public async Task Test_ListJobs_Find_ByCorrelationId_Should_ReturnPagedList()
+        {
+            // arrange
+            var correlationId = Guid.NewGuid();
+            var bulkJobs = new JobFaker().Generate(100);
+            var relatedJobs = new JobFaker().SetCorrelationId(correlationId).Generate(10);
+
+            using var context = DbContextFactory.Instance.CreateTestable<PortAuthorityDbContext>();
+            context.Setup(x => x.Jobs, bulkJobs);
+            context.Setup(x => x.Jobs, relatedJobs);
+
+            var search = new JobSearchCriteria() { CorrelationId = correlationId};
+            var paging = new PagingCriteria() { Page = 1, Size = 25 };
+
+            // act
+            var result = await _service.ListJobs(search, paging);
+            
+            // assert
+            result.Should().NotBeNull();
+            result.IsOk().Should().BeTrue();
+
+            var payload = result.Payload;
+            payload.TotalItems.Should().Be(10);
+            payload.TotalPages.Should().Be(1);
+            payload.Data.Should().HaveCount(10);
+            payload.Data.Should().OnlyContain(x => relatedJobs.Select(j => j.JobId).Contains(x.JobId));
         }
     }
 }

@@ -14,14 +14,16 @@ namespace PortAuthority.Test.Fakes
     public sealed class JobFaker : Faker<Job>
     {
         private Guid? _correlationId;
+        private string _type;
+        private string _namespace;
         private Dictionary<string, object> _metadata;
 
         public JobFaker()
         {
             RuleFor(j => j.JobId, f => NewId.NextGuid());
             RuleFor(j => j.CorrelationId, f => _correlationId);
-            RuleFor(j => j.Type, f => f.Lorem.Word());
-            RuleFor(j => j.Namespace, f => f.Internet.DomainName());
+            RuleFor(j => j.Type, f => _type ?? f.Lorem.Word());
+            RuleFor(j => j.Namespace, f => _namespace ?? f.Internet.DomainName());
             RuleFor(j => j.Status, f => f.PickRandom<Status>());
 
             RuleFor(j => j.StartTime, (f, j) =>
@@ -77,6 +79,28 @@ namespace PortAuthority.Test.Fakes
                 set.RuleFor(j => j.StartTime, f => f.Date.RecentOffset());
                 set.RuleFor(j => j.EndTime, f => f.Date.SoonOffset());
             });
+        }
+
+        /// <summary>
+        /// Explicitly sets the type value for generated jobs
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public JobFaker SetType(string type)
+        {
+            _type = type;
+            return this;
+        }
+        
+        /// <summary>
+        /// Explicitly sets the type value for generated jobs
+        /// </summary>
+        /// <param name="namespace"></param>
+        /// <returns></returns>
+        public JobFaker SetNamespace(string @namespace)
+        {
+            _namespace = @namespace;
+            return this;
         }
 
         /// <summary>
