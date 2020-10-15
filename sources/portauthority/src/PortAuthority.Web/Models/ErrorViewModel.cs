@@ -1,6 +1,4 @@
-using System;
-
-namespace PortAuthority.WebApi.Models
+namespace PortAuthority.Web.Models
 {
     public class ErrorViewModel
     {

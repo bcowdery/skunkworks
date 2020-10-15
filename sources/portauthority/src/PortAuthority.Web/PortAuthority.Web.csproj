@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PortAuthority.Data\PortAuthority.Data.csproj" />
+    <ProjectReference Include="..\PortAuthority\PortAuthority.csproj" />
   </ItemGroup>
 </Project>

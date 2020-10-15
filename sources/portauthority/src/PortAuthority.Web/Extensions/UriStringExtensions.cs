@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace PortAuthority.Web.Extensions
 {
-    public static class StringUriExtensions
+    public static class UriStringExtensions
     {
-
         /// <summary>
         /// Returns true if the string is a valid URI.
         /// </summary>

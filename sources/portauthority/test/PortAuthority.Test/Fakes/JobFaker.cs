@@ -45,9 +45,9 @@ namespace PortAuthority.Test.Fakes
             RuleFor(j => j.Meta,
                 f => _metadata ?? new Dictionary<string, object>()
                 {
-                    {f.Random.Word(), f.Random.Int()},
-                    {f.Random.Word(), f.Lorem.Sentence()},
-                    {f.Random.Word(), f.Random.Bool()}
+                    {$"{f.Lorem.Slug()}-1", f.Random.Int()},
+                    {$"{f.Lorem.Slug()}-2", f.Lorem.Sentence()},
+                    {$"{f.Lorem.Slug()}-3", f.Random.Bool()}
                 });
 
             RuleSet("Pending", set =>

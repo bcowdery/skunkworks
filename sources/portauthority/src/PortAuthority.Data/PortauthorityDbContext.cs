@@ -6,7 +6,7 @@ using PortAuthority.Data.Migrations.Internal;
 
 namespace PortAuthority.Data
 {
-    public class PortAuthorityDbContext : DbContext
+    public class PortAuthorityDbContext : DbContext, IPortAuthorityDbContext
     {
         public PortAuthorityDbContext(DbContextOptions<PortAuthorityDbContext> options) 
             : base(options)
@@ -19,7 +19,7 @@ namespace PortAuthority.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder); // must be first
-
+            
             modelBuilder.ApplyConfigurationsFromAssembly(AssemblyHook.Assembly);
         }
 

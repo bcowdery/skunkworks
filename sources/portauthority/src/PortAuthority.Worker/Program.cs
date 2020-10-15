@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PortAuthority.Bootstrap;
 using PortAuthority.Data;
 
 namespace PortAuthority.Worker
@@ -41,10 +42,11 @@ namespace PortAuthority.Worker
                 {
                     var configuration = hostContext.Configuration;
 
-                    services.AddDbContext<PortAuthorityDbContext>(options =>
-                        options.UseSqlServer(configuration.GetConnectionString("Default"), 
+                    services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
+                        .UseSqlServer(configuration.GetConnectionString("Default"), 
                             providerOptions => providerOptions.EnableRetryOnFailure()));
 
+                    services.AddPortAuthorityServices();
                     services.AddHostedService<WorkerBackgroundService>();
                     
                 })

@@ -5,14 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="9.2.2" />
     <PackageReference Include="MassTransit" Version="7.0.4" />
+    <PackageReference Include="MassTransit.Analyzers" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
     <PackageReference Include="NodaTime" Version="3.0.0" />
+    <PackageReference Include="Scrutor" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>    
     <ProjectReference Include="..\PortAuthority.Contracts\PortAuthority.Contracts.csproj" />    
     <ProjectReference Include="..\PortAuthority.Data\PortAuthority.Data.csproj" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Results\Links\" />
   </ItemGroup>
 </Project>

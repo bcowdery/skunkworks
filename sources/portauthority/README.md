@@ -50,7 +50,7 @@ Available tasks for this project:
     "correlation_id": null,
 
     "type": "scheduled-send",
-    "namespace": "com.shipyard.email",
+    "namespace": "com.shipyard",
     
     "meta": {
         "foo": "bar",
@@ -68,7 +68,7 @@ returns
         "correlation_id": null,
 
         "type": "scheduled-send",
-        "namespace": "com.shipyard.email",
+        "namespace": "com.shipyard",
 
         "status": "(pending|inprogress|failed|completed)",
         "start_time": "2020-09-18T00:09:27:30.132-06:00",
@@ -106,7 +106,7 @@ Get job by ID
         "correlation_id": null,
 
         "type": "scheduled-send",
-        "namespace": "com.shipyard.email",
+        "namespace": "com.shipyard",
 
         "status": "(pending|inprogress|failed|completed)",
         "start_time": "2020-09-18T00:09:27:30.132-06:00",
@@ -156,7 +156,7 @@ Can search by any combination of
             "correlation_id": null,
 
             "type": "scheduled-send",
-            "namespace": "com.shipyard.email",
+            "namespace": "com.shipyard",
 
             "status": "(pending|inprogress|failed|completed)",
             "start_time": "2020-09-18T00:09:27:30.132-06:00",
@@ -188,8 +188,7 @@ Add a task to a job
 {
     "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
 
-    "type": "send-message",
-    "namespace": "com.shipyard.email",
+    "name": "send-message",    
     
     "meta": {
         "foo": "bar",
@@ -212,9 +211,8 @@ Get task by ID
     "task": {
         "id": "049f4d1b-c0c2-4f39-b396-fe5e179f2d92",         
         
-        "type": "send-message",
-        "namespace": "com.shipyard.email",
-
+        "name": "send-message",
+        
         "status": "(pending|inprogress|failed|completed)",
         "start_time": "2020-09-18T00:09:27:30.132-06:00",
         "end_time": null,

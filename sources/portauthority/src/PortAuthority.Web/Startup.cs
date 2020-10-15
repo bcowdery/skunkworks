@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PortAuthority.Bootstrap;
 using PortAuthority.Data;
 using PortAuthority.Web.Extensions;
 using PortAuthority.Web.Settings;
@@ -49,9 +49,12 @@ namespace PortAuthority.Web
             services.Configure<CorsSettings>(Configuration.GetSection("CorsSettings"));
             
             // Database configuration
-            services.AddDbContext<PortAuthorityDbContext>(options => options
+            services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString("Default"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
+
+            // Application services 
+            services.AddPortAuthorityServices();
 
             // Open API (Swagger) documentation
             services.AddSwaggerGen(c =>
@@ -80,7 +83,7 @@ namespace PortAuthority.Web
                     { securityScheme, new string[] { }},
                 });
 
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shipyard API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Port Authority API", Version = "v1" });
             });
         }
 
