@@ -6,7 +6,8 @@ using PortAuthority.Data.Migrations.Internal;
 
 namespace PortAuthority.Data
 {
-    public class PortAuthorityDbContext : DbContext, IPortAuthorityDbContext
+    public class PortAuthorityDbContext 
+        : DbContext, IPortAuthorityDbContext
     {
         public PortAuthorityDbContext(DbContextOptions<PortAuthorityDbContext> options) 
             : base(options)

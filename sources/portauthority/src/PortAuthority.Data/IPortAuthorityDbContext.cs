@@ -7,7 +7,8 @@ using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Data
 {
-    public interface IPortAuthorityDbContext : IDisposable
+    public interface IPortAuthorityDbContext 
+        : IDisposable, IAsyncDisposable
     {
         DbSet<Job> Jobs { get; }
         DbSet<Subtask> Tasks { get; }
