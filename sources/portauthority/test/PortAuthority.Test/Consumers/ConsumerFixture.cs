@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
+using MassTransit;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
+using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,22 +11,46 @@ using NUnit.Framework;
 using PortAuthority.Bootstrap;
 using PortAuthority.Data;
 
-namespace PortAuthority.Test.Data
+namespace PortAuthority.Test.Consumers
 {
     /// <summary>
-    /// Database fixture for working with the EF DbContext using a SqlLite database.
+    /// MassTransit consumer testing fixture using an in-memory service bus transport.
     /// </summary>
-    public class DatabaseFixture
+    public class ConsumerFixture
     {
-        private IServiceScope _testScope;
 
-
-        public DatabaseFixture()
+        public ConsumerFixture()
         {
             Configuration = ConfigurationHelper.GetConfiguration();
-            Services = ServiceCollectionHelper.BuildServiceProvider(ConfigureServices);
+            ServiceProvider = ServiceCollectionHelper.BuildServiceProvider(ConfigureServices);
+            Harness = ServiceProvider.GetRequiredService<InMemoryTestHarness>();
+        }
+        
+        
+        /// <summary>
+        /// Add services to the container
+        /// </summary>
+        /// <param name="services"></param>
+        protected virtual void ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging(logging => logging
+                .AddConfiguration(Configuration)
+                .AddConsole());
+            
+            services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
+                .UseSqlite(Configuration.GetConnectionString("Default")));
+
+            services.AddPortAuthorityServices();
+            services.AddMassTransitInMemoryTestHarness(ConfigureBus);
         }
 
+        /// <summary>
+        /// Add service bus configuration
+        /// </summary>
+        /// <param name="bus"></param>
+        protected virtual void ConfigureBus(IServiceCollectionBusConfigurator bus)
+        {
+        }
         
         /// <summary>
         /// Configuration root
@@ -32,109 +60,46 @@ namespace PortAuthority.Test.Data
         /// <summary>
         /// Dependency Injection service provider (i.e., the DI container)
         /// </summary>
-        protected IServiceProvider Services { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
         /// <summary>
-        /// Logger factory for console output
+        /// MassTransit in-memory testing harness.
         /// </summary>
-        protected ILoggerFactory LogFactory => LoggerFactory.Create(builder => builder
-            .AddConfiguration(Configuration)
-            .AddConsole());
-
-        protected void ConfigureServices(IServiceCollection services)
+        protected InMemoryTestHarness Harness { get; }        
+        
+        /// <summary>
+        /// Constructs an <see cref="IConsumerTestHarness{TConsumer}"/> for testing MassTransit consumers in
+        /// an integration testing scenario. Allows for validation of sent and consumed messages.
+        /// </summary>        
+        protected IConsumerTestHarness<TConsumer> Consumer<TConsumer>()
+            where TConsumer: class, IConsumer
         {
-            services.AddSingleton<ILoggerFactory, LoggerFactory>();
-            services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
-                .UseSqlite(Configuration.GetConnectionString("Default"))
-                .UseLoggerFactory(LogFactory)
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging());
-
-            services.AddPortAuthorityServices();
-        }
-
-        [SetUp]
-        protected void SetupTestScope()
-        {
-            _testScope = Services.CreateScope();
-        }
-
-        [TearDown]
-        protected void TearDownTestScope()
-        {
-            _testScope?.Dispose();
-            _testScope = null;
+            return Harness.Consumer(() => ServiceProvider.GetRequiredService<TConsumer>());
         }
         
         /// <summary>
-        /// Create an instance of the DbContext
+        /// Ensures that the database has been created before the test suite is started.
         /// </summary>
         /// <returns></returns>
-        public IPortAuthorityDbContext CreateDbContext()
-        {
-            return _testScope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
-        }
-
-        /// <summary>
-        /// Perform an action in a new lifetime scope.
-        /// </summary>
-        /// <param name="action"></param>
-        public void Scoped(Action<IPortAuthorityDbContext> action)
-        {
-            using var scope = Services.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
-
-            action(dbContext);
-        }
-
-        /// <summary>
-        /// Perform an action in a new lifetime scope and return the result.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        public T Scoped<T>(Func<IPortAuthorityDbContext, T> action)
-        {
-            using var scope = Services.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
-
-            return action(dbContext);
-        }
-        
-        /// <summary>
-        /// Bring the database up-to-date using migrations.
-        /// </summary>
-        public void Migrate()
-        {
-            Scoped(ctx =>
-            {
-                ctx.Database.Migrate();
-            });
-        }
-
-        /// <summary>
-        /// Create the database
-        /// </summary>
         [OneTimeSetUp]
-        public void EnsureCreated()
+        protected async Task EnsureCreated()
         {
-            Scoped(ctx =>
-            {
-                ctx.Database.EnsureDeleted();
-                ctx.Database.EnsureCreated();
-            });
+            using var scope = ServiceProvider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
+            await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.EnsureCreatedAsync();
         }
         
         /// <summary>
-        /// Delete the database
+        /// Ensures that the database has been deleted after the test suite has completed.
         /// </summary>
+        /// <returns></returns>
         [OneTimeTearDown]
-        public void EnsureDeleted()
+        protected async Task EnsureDeleted()
         {
-            Scoped(ctx =>
-            {
-                ctx.Database.EnsureDeleted();
-            });
+            using var scope = ServiceProvider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
+            await dbContext.Database.EnsureDeletedAsync();
         }
     }
 }

@@ -1,47 +1,45 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Bogus;
 using MassTransit;
-using MassTransit.TestFramework;
-using MassTransit.Testing;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
 using NUnit.Framework;
 using PortAuthority.Contracts.Commands;
-using PortAuthority.Data;
-using PortAuthority.Test.Mocks;
 using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
 {
-    public class CreateJobConsumerTest_Integration 
-        : ConsumerFixture<CreateJobConsumer, CreateJob>
+    public class CreateJobConsumerTest_Integration
+        : ConsumerFixture
     {
-        
-        [Test]
-        public async Task Test_CreateJob_Should_PersistNewJob()
+        protected override void ConfigureBus(IServiceCollectionBusConfigurator bus)
         {
-            var faker = new Faker();
-
-            var harness = GetRequiredService<InMemoryTestHarness>();
-            
-            await harness.InputQueueSendEndpoint.Send<CreateJob>(new 
-            {
-                JobId = NewId.NextGuid(),
-                Type = faker.Lorem.Slug(),
-                Namespace = faker.Internet.DomainName()
-            });
-
-            Assert.Pass();
-            // // did the endpoint consume the message
-            // Assert.That(await _harness.Consumed.Any<CreateJob>());
-            //
-            // // did the actual consumer consume the message
-            // Assert.That(await _consumerHarness.Consumed.Any<CreateJob>());
-            //
-            // // ensure that no faults were published by the consumer
-            // Assert.That(await _harness.Published.Any<Fault<CreateJob>>(), Is.False);
-
+            bus.AddConsumer<CreateJobConsumer>();
         }
+
+        [Test]
+        public async Task Test_CreateJobConsumer_Should_ConsumeMessage_And_CreateJob()
+        {
+            var consumerHarness = Consumer<CreateJobConsumer>();
+            
+            await Harness.Start();
+            try
+            {
+                await Harness.InputQueueSendEndpoint.Send<CreateJob>(new 
+                {
+                    JobId = NewId.NextGuid(),
+                    Type = "foo-bar",
+                    Namespace = "com.portauthority"
+                });
+
+                Assert.That(await Harness.Consumed.Any<CreateJob>(), "endpoint consumed message");
+                Assert.That(await consumerHarness.Consumed.Any<CreateJob>(), "actual consumer consumed the message");
+                Assert.That(await Harness.Published.Any<Fault<CreateJob>>(), Is.False, "message handled without fault");
+            }
+            finally
+            {
+                await Harness.Stop();
+            }
+        }    
     }
 }

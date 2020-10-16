@@ -1,24 +1,75 @@
 ﻿using System;
 using System.Threading.Tasks;
+using GreenPipes;
 using MassTransit;
+using MassTransit.ConsumeConfigurators;
+using MassTransit.Definition;
 using Microsoft.Extensions.Logging;
 using PortAuthority.Contracts.Commands;
+using PortAuthority.Data;
+using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Worker.Consumer
 {
+    /// <summary>
+    /// Consumer that creates a Job.
+    /// </summary>
     public class CreateJobConsumer
         : IConsumer<CreateJob>
     {
         private readonly ILogger<CreateJobConsumer> _logger;
-
-        public CreateJobConsumer(ILogger<CreateJobConsumer> logger)
+        private readonly IPortAuthorityDbContext _dbContext;
+        
+        public CreateJobConsumer(ILogger<CreateJobConsumer> logger, IPortAuthorityDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        public Task Consume(ConsumeContext<CreateJob> context)
+        public async Task Consume(ConsumeContext<CreateJob> context)
         {
-            throw new NotImplementedException();
+            var message = context.Message;
+            
+            _logger.LogInformation("Creating Job Id = {JobId}, Type = {Type}, Namespace = {Namespace}", 
+                message.JobId, 
+                message.Type, 
+                message.Namespace);
+            
+            var job = new Job()
+            {
+                JobId = message.JobId,
+                CorrelationId = message.CorrelationId,
+                Type = message.Type,
+                Namespace = message.Namespace,
+            };
+
+            await _dbContext.Jobs.AddAsync(job);
+            await _dbContext.SaveChangesAsync();
         }
     }
+    
+    public class CreateJobConsumerDefinition 
+        : ConsumerDefinition<CreateJobConsumer>
+    {
+        public CreateJobConsumerDefinition()
+        {
+            // override the default endpoint name
+            EndpointName = "port-authority";
+
+            // limit the number of messages consumed concurrently
+            // this applies to the consumer only, not the endpoint
+            ConcurrentMessageLimit = 8;
+        }
+
+        protected override void ConfigureConsumer(
+            IReceiveEndpointConfigurator endpointConfigurator,
+            IConsumerConfigurator<CreateJobConsumer> consumerConfigurator)
+        {
+            // configure message retry with millisecond intervals
+            endpointConfigurator.UseMessageRetry(r => r.Intervals(100, 500, 1000));
+
+            // use the outbox to prevent duplicate events from being published
+            endpointConfigurator.UseInMemoryOutbox();
+        }
+    }    
 }
