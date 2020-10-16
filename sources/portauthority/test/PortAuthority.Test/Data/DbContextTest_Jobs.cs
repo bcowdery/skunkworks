@@ -21,7 +21,7 @@ namespace PortAuthority.Test.Data
             var job = new JobFaker().Generate();
 
             // act
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Jobs.Add(job);
             dbContext.SaveChanges();
 
@@ -39,7 +39,7 @@ namespace PortAuthority.Test.Data
             // arrange
             var job = new JobFaker().Generate("default,Pending");
 
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Jobs.Add(job);
             dbContext.SaveChanges();
 
@@ -69,7 +69,7 @@ namespace PortAuthority.Test.Data
             // arrange
             var job = new JobFaker().Generate();
             
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Jobs.Add(job);
             dbContext.SaveChanges();
 
@@ -101,7 +101,7 @@ namespace PortAuthority.Test.Data
             // arrange
             var jobs = new JobFaker().Generate(10);
             
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Jobs.AddRange(jobs);
             dbContext.SaveChanges();
 

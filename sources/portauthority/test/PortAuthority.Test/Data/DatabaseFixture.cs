@@ -15,11 +15,6 @@ namespace PortAuthority.Test.Data
     /// </summary>
     public class DatabaseFixture
     {
-        
-        /// <summary>Lifetime scope of the currently running test.</summary>
-        private IServiceScope _testScope;
-
-
         public DatabaseFixture()
         {
             Configuration = ConfigurationHelper.GetConfiguration();
@@ -47,28 +42,34 @@ namespace PortAuthority.Test.Data
         /// Dependency Injection service provider (i.e., the DI container)
         /// </summary>
         protected IServiceProvider ServiceProvider { get; }
-       
         
+
         /// <summary>
-        /// Disposes of the current test lifetime scope.
-        /// </summary>
-        [TearDown]
-        protected void DisposeTestScope()
-        {
-            _testScope?.Dispose();
-            _testScope = null;
-        }
-        
-        /// <summary>
-        /// Create an instance of the DbContext
+        /// Create an instance of the GetDbContext
         /// </summary>
         /// <returns></returns>
-        protected IPortAuthorityDbContext CreateDbContext()
+        protected PortAuthorityDbContext GetDbContext()
         {
-            _testScope ??= ServiceProvider.CreateScope();
-            return _testScope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
+            // Note: The DbContext will automatically dispose of the parent scope. Make sure that
+            //       all usage of the db context is properly disposed of or wrapped in a 'using' statement.
+            var serviceScope = ServiceProvider.CreateScope();
+            return (PortAuthorityDbContext) serviceScope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
         }
+        
+        /// <summary>
+        /// Get service of type T from the test service provider.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetService<T>() => ServiceProvider.GetService<T>();
 
+        /// <summary>
+        /// Get service of type T from the test service provider. Throws an exception if not found. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
+        
         /// <summary>
         /// Perform an action in a new lifetime scope.
         /// </summary>

@@ -19,7 +19,7 @@ namespace PortAuthority.Test.Mocks
         }
 
         /// <summary>
-        /// Creates a new in-memory DbContext for testing.
+        /// Creates a new in-memory GetDbContext for testing.
         /// </summary>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>

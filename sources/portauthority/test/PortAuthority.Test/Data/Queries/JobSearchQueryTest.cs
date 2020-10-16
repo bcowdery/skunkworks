@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using PortAuthority.Data.Queries;
 using PortAuthority.Test.Fakes;
+using PortAuthority.Test.Mocks;
 
 namespace PortAuthority.Test.Data.Queries
 {
@@ -30,7 +31,7 @@ namespace PortAuthority.Test.Data.Queries
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
-            var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             var results = await new JobSearchQuery(dbContext).Find(search, paging);
             
             // assert
@@ -48,9 +49,8 @@ namespace PortAuthority.Test.Data.Queries
             // arrange
             var jobs = new JobFaker().Generate(100);
 
-            using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(jobs);
-            await dbContext.SaveChangesAsync();
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, jobs);
             
             var search = new JobSearchCriteria() { };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -74,9 +74,8 @@ namespace PortAuthority.Test.Data.Queries
             // arrange
             var jobs = new JobFaker().Generate(100);
             
-            using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(jobs);
-            await dbContext.SaveChangesAsync();
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, jobs);
             
             var expected = jobs[39];
             var search = new JobSearchCriteria() { Type = expected.Type, Namespace = expected.Namespace };
@@ -103,10 +102,9 @@ namespace PortAuthority.Test.Data.Queries
             var bulkJobs = new JobFaker().Generate(100);
             var relatedJobs  = new JobFaker().SetCorrelationId(correlationId).Generate(13);
             
-            using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(bulkJobs);
-            await dbContext.Jobs.AddRangeAsync(relatedJobs);
-            await dbContext.SaveChangesAsync();
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, bulkJobs);
+            dbContext.Setup(x => x.Jobs, relatedJobs);
             
             var search = new JobSearchCriteria() { CorrelationId = correlationId };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -131,9 +129,8 @@ namespace PortAuthority.Test.Data.Queries
             var correlationId = Guid.NewGuid();
             var bulkJobs = new JobFaker().Generate(100);
 
-            await using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(bulkJobs);
-            await dbContext.SaveChangesAsync();
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, bulkJobs);
             
             var search = new JobSearchCriteria() { CorrelationId = correlationId };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -156,10 +153,9 @@ namespace PortAuthority.Test.Data.Queries
         {
             // arrange
             var jobs = new JobFaker().Generate(100);
-            
-            using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(jobs);
-            await dbContext.SaveChangesAsync();
+
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, jobs);
 
             var search = new JobSearchCriteria();
             var paging = new PagingCriteria() { Page = 1, Size = 5 };
@@ -182,9 +178,8 @@ namespace PortAuthority.Test.Data.Queries
             // arrange
             var jobs = new JobFaker().Generate(100);
             
-            using var dbContext = CreateDbContext();
-            await dbContext.Jobs.AddRangeAsync(jobs);
-            await dbContext.SaveChangesAsync();
+            await using var dbContext = GetDbContext();
+            dbContext.Setup(x => x.Jobs, jobs);
 
             var search = new JobSearchCriteria();
             

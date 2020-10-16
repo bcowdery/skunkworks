@@ -20,9 +20,11 @@ namespace PortAuthority.Bootstrap
         /// <param name="services"></param>
         public static void AddPortAuthorityServices(this IServiceCollection services) 
         {
-            services.ValidateRequired<IPortAuthorityDbContext, PortAuthorityDbContext>();
             services.ValidateRequired<DbContextOptions<PortAuthorityDbContext>>();
-          
+            services.ValidateRequired<IPortAuthorityDbContext, PortAuthorityDbContext>();
+            //services.ValidateRequired<ISendEndpoint>();
+            //services.ValidateRequired<IPublishEndpoint>(); 
+            
             // Dummies
             // TODO: Placeholder for MassTransit - good enough for debugging & TDD!
             services.AddTransient<ISendEndpoint, DummySendEndpoint>();

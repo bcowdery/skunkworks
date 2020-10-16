@@ -41,7 +41,7 @@ namespace PortAuthority.Test.Data
                 .Generate();
 
             // act
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Tasks.Add(task);
             dbContext.SaveChanges();
 
@@ -61,7 +61,7 @@ namespace PortAuthority.Test.Data
                 .SetJobId(_job.Id)
                 .Generate("default,Pending");
 
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Tasks.Add(task);
             dbContext.SaveChanges();
 
@@ -93,7 +93,7 @@ namespace PortAuthority.Test.Data
                 .SetJobId(_job.Id)
                 .Generate(10);
             
-            using var dbContext = CreateDbContext();
+            var dbContext = GetDbContext();
             dbContext.Tasks.AddRange(tasks);
             dbContext.SaveChanges();
 

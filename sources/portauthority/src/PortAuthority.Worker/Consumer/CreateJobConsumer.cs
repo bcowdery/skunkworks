@@ -29,6 +29,11 @@ namespace PortAuthority.Worker.Consumer
         public async Task Consume(ConsumeContext<CreateJob> context)
         {
             var message = context.Message;
+            if (message.JobId == Guid.Empty)
+            {
+                _logger.LogWarning("Job Id cannot be empty.");
+                return;
+            }
             
             _logger.LogInformation("Creating Job Id = {JobId}, Type = {Type}, Namespace = {Namespace}", 
                 message.JobId, 
@@ -69,7 +74,7 @@ namespace PortAuthority.Worker.Consumer
             endpointConfigurator.UseMessageRetry(r => r.Intervals(100, 500, 1000));
 
             // use the outbox to prevent duplicate events from being published
-            endpointConfigurator.UseInMemoryOutbox();
+            /*endpointConfigurator.UseInMemoryOutbox();*/
         }
     }    
 }

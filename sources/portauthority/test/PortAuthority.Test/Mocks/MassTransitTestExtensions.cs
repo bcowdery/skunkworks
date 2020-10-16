@@ -12,7 +12,7 @@ namespace PortAuthority.Test.Mocks
     /// <summary>
     /// Moq extension methods for working with MassTransit interfaces.
     /// </summary>
-    public static class MassTransitMockExtensions
+    public static class MassTransitTestExtensions
     {
         /// <summary>
         /// Configures a <see cref="ISendEndpoint"/> mock to expect a expected. Returned mock can be verified.
@@ -30,6 +30,9 @@ namespace PortAuthority.Test.Mocks
         }
     }
 
+    /// <summary>
+    /// Internal utility for comparing anonymous types
+    /// </summary>
     internal static class AnonymousType
     {
         /// <summary>
@@ -44,10 +47,18 @@ namespace PortAuthority.Test.Mocks
 
         private static Predicate<object> Matcher(object expected)
         {
+            // Build a predicate that accepts the (actual) object and compares it
+            // to the known expected value. Compare individual properties because
+            // C# gives each anon object it's own unique type - Equals() will not work here.
             return actual =>
             {
-                var expectedProp = expected.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(expected));
-                var actualProp = actual.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(actual));
+                var expectedProp = expected.GetType()
+                    .GetProperties()
+                    .ToDictionary(x => x.Name, x => x.GetValue(expected));
+                
+                var actualProp = actual.GetType()
+                    .GetProperties()
+                    .ToDictionary(x => x.Name, x => x.GetValue(actual));
 
                 foreach (var prop in expectedProp)
                 {

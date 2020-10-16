@@ -9,16 +9,18 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
+using PortAuthority.Data.Entities;
 using PortAuthority.Test.Consumers.TestMessages;
+using PortAuthority.Test.Fakes;
 using PortAuthority.Test.Mocks;
 using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
 {
-    public class CreateJobConsumerTest
+    public class StartJobConsumerTest
     {
         // class under test
-        private CreateJobConsumer _consumer;
+        private StartJobConsumer _consumer;
 
         [SetUp]
         public void Setup()
@@ -26,37 +28,40 @@ namespace PortAuthority.Test.Consumers
             var loggerFactory = NullLoggerFactory.Instance;
             var contextFactory = DbContextFactory.Instance;
             
-            _consumer = new CreateJobConsumer(
-                loggerFactory.CreateLogger<CreateJobConsumer>(),
+            _consumer = new StartJobConsumer(
+                loggerFactory.CreateLogger<StartJobConsumer>(),
                 contextFactory.CreateDbContext<PortAuthorityDbContext>()
             );
         }
 
         [Test]
-        public async Task Test_CreateJob_Should_PersistNewJob()
+        public async Task Test_StartJob_Should_Be_InProgress_With_StartTime()
         {
             // arrange
             var faker = new Faker();
-            var message = new TestCreateJobMessage
+            var job = new JobFaker().Generate("default,Pending");
+            
+            using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            dbContext.Setup(x => x.Jobs, new [] { job });
+            
+            var message = new TestStartJobMessage
             {
-                JobId = NewId.NextGuid(),
-                Type = faker.Lorem.Slug(),
-                Namespace = faker.Internet.DomainName()
+                JobId = job.JobId,
+                StartTime = faker.Date.RecentOffset()
             };
             
             // act
-            var consumeContext = new TestConsumeContext<CreateJob>(message);
+            var consumeContext = new TestConsumeContext<StartJob>(message);
             await _consumer.Consume(consumeContext);
 
             // assert
             var actual = DbContextFactory.Instance
                 .CreateDbContext<PortAuthorityDbContext>()
-                .Jobs.SingleOrDefault(j => j.JobId == message.JobId);
-
+                .Jobs.SingleOrDefault(j => j.JobId == job.JobId);
+            
             actual.Should().NotBeNull();
-            actual.JobId.Should().Be(message.JobId);
-            actual.Type.Should().Be(message.Type);
-            actual.Namespace.Should().Be(message.Namespace);
+            actual.Status.Should().Be(Status.InProgress);
+            actual.StartTime.Should().BeCloseTo(message.StartTime);
         }
     }
 }
