@@ -87,21 +87,7 @@ namespace PortAuthority.Test.Consumers
             var serviceScope = ServiceProvider.CreateScope();
             return (PortAuthorityDbContext) serviceScope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
         }
-
-        /// <summary>
-        /// Get service of type T from the test service provider.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetService<T>() => ServiceProvider.GetService<T>();
-
-        /// <summary>
-        /// Get service of type T from the test service provider. Throws an exception if not found. 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
-                
+        
         /// <summary>
         /// Ensures that the database has been created before the test suite is started.
         /// </summary>
