@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace PortAuthority.Test.Mocks
+namespace PortAuthority.Test.Utils
 {
     public static class DbContextTestExtensions
     {

@@ -9,7 +9,7 @@ using PortAuthority.Contracts.Commands;
 using PortAuthority.Data.Entities;
 using PortAuthority.Test.Consumers.TestMessages;
 using PortAuthority.Test.Fakes;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
@@ -31,7 +31,7 @@ namespace PortAuthority.Test.Consumers
             var job = new JobFaker().Generate("default,Pending");
 
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, new [] { job });
+            await dbContext.Setup(x => x.Jobs, new [] { job });
             
             var message = new TestStartJobMessage()
             {

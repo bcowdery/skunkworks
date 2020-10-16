@@ -10,7 +10,7 @@ using NUnit.Framework;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Test.Consumers.TestMessages;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers

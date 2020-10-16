@@ -12,7 +12,7 @@ using PortAuthority.Data;
 using PortAuthority.Data.Entities;
 using PortAuthority.Test.Consumers.TestMessages;
 using PortAuthority.Test.Fakes;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
@@ -40,9 +40,9 @@ namespace PortAuthority.Test.Consumers
             // arrange
             var faker = new Faker();
             var job = new JobFaker().Generate("default,Pending");
-            
-            using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            dbContext.Setup(x => x.Jobs, new [] { job });
+
+            await using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await dbContext.Setup(x => x.Jobs, new [] { job });
             
             var message = new TestStartJobMessage
             {

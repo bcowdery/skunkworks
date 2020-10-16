@@ -17,7 +17,7 @@ using PortAuthority.Data.Queries;
 using PortAuthority.Extensions;
 using PortAuthority.Forms;
 using PortAuthority.Test.Fakes;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Services
 {
@@ -53,8 +53,8 @@ namespace PortAuthority.Test.Services
             // arrange
             var job = new JobFaker().Generate("default,Pending");
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             // act
             var actual = await _service.GetJob(job.JobId);
@@ -79,8 +79,8 @@ namespace PortAuthority.Test.Services
             // arrange
             var job = new JobFaker().Generate("default,InProgress");
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             // act
             var actual = await _service.GetJob(job.JobId);
@@ -105,8 +105,8 @@ namespace PortAuthority.Test.Services
             // arrange
             var job = new JobFaker().Generate("default,Failed");
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             // act
             var actual = await _service.GetJob(job.JobId);
@@ -195,8 +195,8 @@ namespace PortAuthority.Test.Services
             // arrange
             var job = new JobFaker().Generate();
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             var form = new CreateJobForm()
             {
@@ -220,9 +220,9 @@ namespace PortAuthority.Test.Services
             // arrange
             var job = new JobFaker().Generate("default,Pending");
             var startTime = DateTimeOffset.UtcNow;
-            
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             _mockSendEndpoint
                 .SetupMessage<StartJob>(new
@@ -265,9 +265,9 @@ namespace PortAuthority.Test.Services
             var job = new JobFaker().Generate("default,InProgress");
             var endTime = DateTimeOffset.UtcNow;
             var isSuccess = true;
-            
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, new []{ job });
+
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, new []{ job });
             
             _mockSendEndpoint
                 .SetupMessage<EndJob>(new
@@ -312,8 +312,8 @@ namespace PortAuthority.Test.Services
             var jobs = new JobFaker()
                 .Generate(100);
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, jobs);
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, jobs);
 
             var search = new JobSearchCriteria() { };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -339,9 +339,9 @@ namespace PortAuthority.Test.Services
             var bulkJobs = new JobFaker().Generate(100);
             var relatedJobs = new JobFaker().SetCorrelationId(correlationId).Generate(10);
 
-            using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
-            context.Setup(x => x.Jobs, bulkJobs);
-            context.Setup(x => x.Jobs, relatedJobs);
+            await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await context.Setup(x => x.Jobs, bulkJobs);
+            await context.Setup(x => x.Jobs, relatedJobs);
 
             var search = new JobSearchCriteria() { CorrelationId = correlationId};
             var paging = new PagingCriteria() { Page = 1, Size = 25 };

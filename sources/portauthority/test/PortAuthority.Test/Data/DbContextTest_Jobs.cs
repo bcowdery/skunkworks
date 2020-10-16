@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PortAuthority.Data.Entities;
 using PortAuthority.Test.Fakes;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Data
 {

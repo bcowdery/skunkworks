@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using MassTransit;
 using Moq;
 using Moq.Language.Flow;
-using Newtonsoft.Json;
 
-namespace PortAuthority.Test.Mocks
+namespace PortAuthority.Test.Utils
 {
     /// <summary>
     /// Moq extension methods for working with MassTransit interfaces.

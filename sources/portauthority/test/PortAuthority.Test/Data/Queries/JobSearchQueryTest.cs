@@ -5,7 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using PortAuthority.Data.Queries;
 using PortAuthority.Test.Fakes;
-using PortAuthority.Test.Mocks;
+using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Data.Queries
 {

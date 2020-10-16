@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
-namespace PortAuthority.Test.Mocks
+namespace PortAuthority.Test.Utils
 {
     /// <summary>
     /// Factory for producing in-memory instances of the EntityFramework <see cref="DbContext"/>.
