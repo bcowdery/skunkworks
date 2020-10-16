@@ -50,7 +50,7 @@ namespace PortAuthority.Test.Data.Queries
             var jobs = new JobFaker().Generate(100);
 
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, jobs);
             
             var search = new JobSearchCriteria() { };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -75,7 +75,7 @@ namespace PortAuthority.Test.Data.Queries
             var jobs = new JobFaker().Generate(100);
             
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, jobs);
             
             var expected = jobs[39];
             var search = new JobSearchCriteria() { Type = expected.Type, Namespace = expected.Namespace };
@@ -103,8 +103,8 @@ namespace PortAuthority.Test.Data.Queries
             var relatedJobs  = new JobFaker().SetCorrelationId(correlationId).Generate(13);
             
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, bulkJobs);
-            dbContext.Setup(x => x.Jobs, relatedJobs);
+            await dbContext.Setup(x => x.Jobs, bulkJobs);
+            await dbContext.Setup(x => x.Jobs, relatedJobs);
             
             var search = new JobSearchCriteria() { CorrelationId = correlationId };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -130,7 +130,7 @@ namespace PortAuthority.Test.Data.Queries
             var bulkJobs = new JobFaker().Generate(100);
 
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, bulkJobs);
+            await dbContext.Setup(x => x.Jobs, bulkJobs);
             
             var search = new JobSearchCriteria() { CorrelationId = correlationId };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
@@ -155,7 +155,7 @@ namespace PortAuthority.Test.Data.Queries
             var jobs = new JobFaker().Generate(100);
 
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, jobs);
 
             var search = new JobSearchCriteria();
             var paging = new PagingCriteria() { Page = 1, Size = 5 };
@@ -179,7 +179,7 @@ namespace PortAuthority.Test.Data.Queries
             var jobs = new JobFaker().Generate(100);
             
             await using var dbContext = GetDbContext();
-            dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, jobs);
 
             var search = new JobSearchCriteria();
             

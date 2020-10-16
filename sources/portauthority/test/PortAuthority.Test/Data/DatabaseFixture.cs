@@ -69,32 +69,6 @@ namespace PortAuthority.Test.Data
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T GetRequiredService<T>() => ServiceProvider.GetRequiredService<T>();
-        
-        /// <summary>
-        /// Perform an action in a new lifetime scope.
-        /// </summary>
-        /// <param name="action"></param>
-        protected void Scoped(Action<IPortAuthorityDbContext> action)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
-
-            action(dbContext);
-        }
-
-        /// <summary>
-        /// Perform an action in a new lifetime scope and return the result.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        protected T Scoped<T>(Func<IPortAuthorityDbContext, T> action)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<IPortAuthorityDbContext>();
-
-            return action(dbContext);
-        }
 
         /// <summary>
         /// Ensures that the database has been created before the test suite is started.

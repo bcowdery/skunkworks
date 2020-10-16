@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using PortAuthority.Data.Entities;
 using PortAuthority.Test.Fakes;
+using PortAuthority.Test.Mocks;
 
 namespace PortAuthority.Test.Data
 {
@@ -15,95 +17,77 @@ namespace PortAuthority.Test.Data
         : DatabaseFixture
     {
         [Test]
-        public void Test_AddJob_Should_Persist()
+        public async Task Test_AddJob_Should_Persist()
         {
             // arrange
             var job = new JobFaker().Generate();
 
             // act
-            var dbContext = GetDbContext();
-            dbContext.Jobs.Add(job);
-            dbContext.SaveChanges();
+            await using var dbContext = GetDbContext();
+            await dbContext.Jobs.AddAsync(job);
+            await dbContext.SaveChangesAsync();
 
             // assert
-            Scoped(ctx =>
-            {
-                var actual = ctx.Jobs.Find(job.Id);
-                actual.Should().BeEquivalentTo(job);
-            });
+            await using var actualDbContext = GetDbContext();
+            var actual = actualDbContext.Jobs.Find(job.Id);
+            actual.Should().BeEquivalentTo(job);
         }
 
         [Test]
-        public void Test_UpdateJob_Should_Persist()
+        public async Task Test_UpdateJob_Should_Persist()
         {
             // arrange
             var job = new JobFaker().Generate("default,Pending");
 
-            var dbContext = GetDbContext();
-            dbContext.Jobs.Add(job);
-            dbContext.SaveChanges();
+            await using var dbContext = GetDbContext();
+            await dbContext.Setup(x => x.Jobs, job);
 
             // act
-            var updated = Scoped(ctx =>
-            {
-                var entity = ctx.Jobs.Find(job.Id);
-                entity.Status = Status.InProgress;
-                entity.StartTime = DateTimeOffset.Now;
+            var updated = dbContext.Jobs.Find(job.Id);
+            updated.Status = Status.InProgress;
+            updated.StartTime = DateTimeOffset.Now;
 
-                ctx.SaveChanges();
-
-                return entity;
-            });
+            await dbContext.SaveChangesAsync();
 
             // assert
-            Scoped(ctx =>
-            {
-                var actual = ctx.Jobs.Find(job.Id);
-                actual.Should().BeEquivalentTo(updated);
-            });
+            await using var actualDbContext = GetDbContext();
+            var actual = actualDbContext.Jobs.Find(job.Id);
+            actual.Should().BeEquivalentTo(updated);
         }
         
         [Test]
-        public void Test_UpdateJob_AddTask_Should_Persist()
+        public async Task Test_UpdateJob_AddTask_Should_Persist()
         {
             // arrange
             var job = new JobFaker().Generate();
-            
-            var dbContext = GetDbContext();
-            dbContext.Jobs.Add(job);
-            dbContext.SaveChanges();
-
             var tasks = new SubtaskFaker().Generate(10);
+            
+            await using var dbContext = GetDbContext();
+            await dbContext.Setup(x => x.Jobs, new []{job});
 
             // act
-            Scoped(ctx =>
-            {
-                var entity = ctx.Jobs.Find(job.Id);
-                entity.Tasks.AddRange(tasks);
-
-                ctx.SaveChanges();
-            });
-
+            var entity = dbContext.Jobs.Find(job.Id);
+            entity.Tasks.AddRange(tasks);
+            await dbContext.SaveChangesAsync();
+        
             // assert
-            Scoped(ctx =>
-            {
-                var actual = ctx.Jobs
-                    .Include(x => x.Tasks)
-                    .Single(x => x.Id == job.Id);
+            await using var actualDbContext = GetDbContext();
+            var actual = actualDbContext.Jobs
+                .Include(x => x.Tasks)
+                .Single(x => x.Id == job.Id);
 
-                actual.Tasks.Should().HaveCount(10);
-            });
+            actual.Tasks.Should().HaveCount(10);
+        
         }
 
         [Test]
-        public void Test_FindJob_ByGuid_Should_Match()
+        public async Task Test_FindJob_ByGuid_Should_Match()
         {
             // arrange
             var jobs = new JobFaker().Generate(10);
             
-            var dbContext = GetDbContext();
-            dbContext.Jobs.AddRange(jobs);
-            dbContext.SaveChanges();
+            await using var dbContext = GetDbContext();
+            await dbContext.Setup(x => x.Jobs, jobs);
 
             // act
             var expected = jobs[3]; /* random selection by fair dice roll */
