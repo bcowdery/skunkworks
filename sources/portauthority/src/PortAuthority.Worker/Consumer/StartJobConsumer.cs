@@ -43,6 +43,12 @@ namespace PortAuthority.Worker.Consumer
                 return;
             }
 
+            if (!job.IsPending())
+            {
+                _logger.LogWarning("Job has already been started. Id = {JobId}", message.JobId);
+                return;                
+            }
+            
             job.Status = Status.InProgress;
             job.StartTime = message.StartTime;
 

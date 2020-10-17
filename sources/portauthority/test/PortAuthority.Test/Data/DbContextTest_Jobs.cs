@@ -63,7 +63,7 @@ namespace PortAuthority.Test.Data
             var tasks = new SubtaskFaker().Generate(10);
             
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, new []{job});
+            await dbContext.Setup(x => x.Jobs, job);
 
             // act
             var entity = dbContext.Jobs.Find(job.Id);

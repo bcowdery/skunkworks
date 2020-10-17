@@ -64,5 +64,21 @@ namespace PortAuthority.Data.Entities
         /// Metadata
         /// </summary>
         public Dictionary<string, object> Meta { get; set; } = new Dictionary<string, object>();
+
+        
+        public bool IsPending()
+        {
+            return Status == Status.Pending;
+        }
+
+        public bool IsRunning()
+        {
+            return Status == Status.InProgress;
+        }
+
+        public bool IsFinished()
+        {
+            return Status == Status.Failed || Status == Status.Completed;
+        }
     }
 }

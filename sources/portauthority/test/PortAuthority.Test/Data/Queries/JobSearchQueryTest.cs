@@ -11,6 +11,8 @@ namespace PortAuthority.Test.Data.Queries
 {
     public class JobSearchQueryTest : DatabaseFixture
     {
+        /* delete data between each test */
+        
         [SetUp]
         public async Task SetupDatabase()
         {
@@ -20,7 +22,7 @@ namespace PortAuthority.Test.Data.Queries
         [TearDown]
         public async Task ClearDatabase()
         {
-            await EnsureDeleted();
+            await EnsureDeleted(); 
         }
         
         [Test]

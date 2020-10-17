@@ -16,10 +16,10 @@ using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
 {
-    public class StartJobConsumerTest
+    public class EndJobConsumerTest
     {
         // class under test
-        private StartJobConsumer _consumer;
+        private EndJobConsumer _consumer;
 
         [SetUp]
         public void Setup()
@@ -27,29 +27,30 @@ namespace PortAuthority.Test.Consumers
             var loggerFactory = NullLoggerFactory.Instance;
             var contextFactory = DbContextFactory.Instance;
             
-            _consumer = new StartJobConsumer(
-                loggerFactory.CreateLogger<StartJobConsumer>(),
+            _consumer = new EndJobConsumer(
+                loggerFactory.CreateLogger<EndJobConsumer>(),
                 contextFactory.CreateDbContext<PortAuthorityDbContext>()
             );
         }
 
         [Test]
-        public async Task Test_StartJob_Should_Be_InProgress_With_StartTime()
+        public async Task Test_EndJob_Success_True_Should_Be_Completed_With_EndTime()
         {
             // arrange
-            var job = new JobFaker().Generate("default,Pending");
+            var job = new JobFaker().Generate("default,InProgress");
 
             await using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
             await dbContext.Setup(x => x.Jobs, job);
             
-            var message = new TestStartJobMessage
+            var message = new TestEndJobMessage()
             {
                 JobId = job.JobId,
-                StartTime = DateTimeOffset.Now
+                EndTime = DateTimeOffset.Now,
+                Success = true
             };
             
-            // act;
-            await _consumer.Consume(new TestConsumeContext<StartJob>(message));
+            // act
+            await _consumer.Consume(new TestConsumeContext<EndJob>(message));
 
             // assert
             var actual = DbContextFactory.Instance
@@ -57,12 +58,12 @@ namespace PortAuthority.Test.Consumers
                 .Jobs.SingleOrDefault(j => j.JobId == job.JobId);
             
             actual.Should().NotBeNull();
-            actual.Status.Should().Be(Status.InProgress, because: "job status updated");
-            actual.StartTime.Should().BeCloseTo(message.StartTime, because: "job start time updated");
+            actual.Status.Should().Be(Status.Completed, because: "job status updated");
+            actual.EndTime.Should().BeCloseTo(message.EndTime, because: "job end time updated");
         }
         
         [Test]
-        public async Task Test_StartJob_NotFound_Should_noop()
+        public async Task Test_EndJob_Success_False_Should_Be_Failed_With_EndTime()
         {
             // arrange
             var job = new JobFaker().Generate("default,InProgress");
@@ -70,14 +71,44 @@ namespace PortAuthority.Test.Consumers
             await using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
             await dbContext.Setup(x => x.Jobs, job);
             
-            var message = new TestStartJobMessage
+            var message = new TestEndJobMessage()
             {
-                JobId = Guid.NewGuid(), /* job does not exist */
-                StartTime = DateTimeOffset.Now.AddDays(99)
+                JobId = job.JobId,
+                EndTime = DateTimeOffset.Now,
+                Success = false
             };
             
             // act
-            await _consumer.Consume(new TestConsumeContext<StartJob>(message));
+            await _consumer.Consume(new TestConsumeContext<EndJob>(message));
+
+            // assert
+            var actual = DbContextFactory.Instance
+                .CreateDbContext<PortAuthorityDbContext>()
+                .Jobs.SingleOrDefault(j => j.JobId == job.JobId);
+            
+            actual.Should().NotBeNull();
+            actual.Status.Should().Be(Status.Failed, because: "job status updated");
+            actual.EndTime.Should().BeCloseTo(message.EndTime, because: "job end time updated");
+        }
+        
+        [Test]
+        public async Task Test_EndJob_NotFound_Should_noop()
+        {
+            // arrange
+            var job = new JobFaker().Generate("default,InProgress");
+
+            await using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
+            await dbContext.Setup(x => x.Jobs, job);
+            
+            var message = new TestEndJobMessage()
+            {
+                JobId = Guid.NewGuid(), /* job does not exist */
+                EndTime = DateTimeOffset.Now.AddDays(99),
+                Success = false
+            };
+            
+            // act
+            await _consumer.Consume(new TestConsumeContext<EndJob>(message));
 
             // assert
             var actual = DbContextFactory.Instance
@@ -87,25 +118,27 @@ namespace PortAuthority.Test.Consumers
             actual.Should().NotBeNull();
             actual.Status.Should().Be(job.Status);
             actual.StartTime.Should().BeCloseTo(job.StartTime.Value, because: "job start time should not have changed");
+            actual.EndTime.Should().BeNull("bad job id, end time not set");
         }        
         
         [Test]
-        public async Task Test_StartJob_AlreadyInProgress_Should_noop()
+        public async Task Test_EndJob_AlreadyComplete_Should_noop()
         {
             // arrange
-            var job = new JobFaker().Generate("default,InProgress");
+            var job = new JobFaker().Generate("default,Completed");
 
             await using var dbContext = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
             await dbContext.Setup(x => x.Jobs, job);
             
-            var message = new TestStartJobMessage
+            var message = new TestEndJobMessage()
             {
                 JobId = job.JobId,
-                StartTime = DateTimeOffset.Now.AddDays(99)
+                EndTime = DateTimeOffset.Now.AddDays(99),
+                Success = true
             };
             
             // act
-            await _consumer.Consume(new TestConsumeContext<StartJob>(message));
+            await _consumer.Consume(new TestConsumeContext<EndJob>(message));
 
             // assert
             var actual = DbContextFactory.Instance
@@ -115,6 +148,7 @@ namespace PortAuthority.Test.Consumers
             actual.Should().NotBeNull();
             actual.Status.Should().Be(job.Status);
             actual.StartTime.Should().BeCloseTo(job.StartTime.Value, because: "job start time should not have changed");
+            actual.EndTime.Should().BeCloseTo(job.EndTime.Value, because: "job end time should not have changed");
         }
     }
 }

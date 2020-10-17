@@ -36,17 +36,15 @@ namespace PortAuthority.Test.Consumers
         public async Task Test_CreateJob_Should_PersistNewJob()
         {
             // arrange
-            var faker = new Faker();
             var message = new TestCreateJobMessage
             {
                 JobId = NewId.NextGuid(),
-                Type = faker.Lorem.Slug(),
-                Namespace = faker.Internet.DomainName()
+                Type = "test-createjob",
+                Namespace = "com.portauthority"
             };
             
             // act
-            var consumeContext = new TestConsumeContext<CreateJob>(message);
-            await _consumer.Consume(consumeContext);
+            await _consumer.Consume(new TestConsumeContext<CreateJob>(message));
 
             // assert
             var actual = DbContextFactory.Instance
