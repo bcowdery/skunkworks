@@ -1,0 +1,27 @@
+version: '3'
+
+vars:
+  NGINX_NAME: nginx
+  NGINX_DIR: '{{.SOLUTION_DIR}}/services/nginx'
+
+tasks:
+
+  log:
+    desc: "Show logs for service"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.NGINX_NAME}}_1 -f --tail 100
+
+  logs:
+    deps: [log]
+
+  sh:
+    desc: "Start shell in service"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.NGINX_NAME}}_1 bash
+
+  restart:
+    desc: "Restart this service"
+    cmds:
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.NGINX_NAME}}_1
+        ignore_error: true
+      - task: :up
