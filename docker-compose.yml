@@ -64,6 +64,12 @@ services:
   #   environment: 
   #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
 
+  # azstorage:
+  #   image: mcr.microsoft.com/azure-storage/azurite
+  #   command: azurite-blob --blobHost 0.0.0.0
+  #   ports:
+  #     - ${AZSTORAGE_PORT}:10000
+
   mssql:
     image: mcr.microsoft.com/mssql/server
     ports:
@@ -85,6 +91,9 @@ services:
       - ./services/nginx/conf.d/:/etc/nginx/conf.d    
       - ./services/nginx/sites-available/:/etc/nginx/sites-available
       - ./services/nginx/sites-enabled/:/etc/nginx/sites-enabled
+  
+  # rabbit:
+  #   image: rabbitmap:3.8-management-alpine   
 
 # volumes:
 #   mssql_data:

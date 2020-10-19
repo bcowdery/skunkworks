@@ -1,0 +1,26 @@
+version: '3'
+
+vars:
+  AZSTOREAGE_NAME: azstorage
+  AZSTORAGE_DIR: '{{.SOLUTION_DIR}}/services/azurestorage'
+
+tasks:
+
+  info:
+    desc: "Show info for this service"
+    cmds:
+      - 'echo AZSTOREAGE_NAME: {{.AZSTOREAGE_NAME}}'
+      - 'echo AZSTORAGE_DIR: {{toSlash .AZSTORAGE_DIR}}'
+
+  log:
+    desc: "Show logs for service"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.AZSTOREAGE_NAME}}_1 -f --tail 100
+
+  logs:
+    deps: [log]
+
+  sh:
+    desc: "Start shell in service"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.AZSTOREAGE_NAME}}_1 bash

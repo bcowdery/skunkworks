@@ -3,8 +3,10 @@ version: '3'
 dotenv: ['.env']
 
 includes:  
-  nginx: ./services/nginx  
+  nginx: ./services/nginx
+  azstorage: ./services/azurestorage
   mssql: ./services/sqlserver
+  rabbit: ./services/rabbitmq
   portauthority: ./sources/portauthority  
   shipyard: ./sources/shipyard
   

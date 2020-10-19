@@ -1,0 +1,26 @@
+version: '3'
+
+vars:
+  RABBIT_NAME: rabbit
+  RABBIT_DIR: '{{.SOLUTION_DIR}}/services/rabbitmq'
+
+tasks:
+
+  info:
+    desc: "Show info for this service"
+    cmds:
+      - 'echo RABBIT_NAME: {{.RABBIT_NAME}}'
+      - 'echo RABBIT_DIR: {{toSlash .RABBIT_DIR}}'
+
+  log:
+    desc: "Show logs for service"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.RABBIT_NAME}}_1 -f --tail 100
+
+  logs:
+    deps: [log]
+
+  sh:
+    desc: "Start shell in service"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.RABBIT_NAME}}_1 bash
