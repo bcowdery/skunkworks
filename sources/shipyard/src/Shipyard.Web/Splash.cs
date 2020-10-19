@@ -13,7 +13,7 @@ namespace Shipyard.Web
   ____) | | | | | |_) | |_| | (_| | | | (_| |
  |_____/|_| |_|_| .__/ \__, |\__,_|_|  \__,_|
                 | |     __/ |                
-                |_|    |___/                 POOP
+                |_|    |___/ 
 
 Copyright © {DateTime.Now:yyyy}
 Shipyard WebAPI, Version {Assembly.GetEntryAssembly()?.GetName().Version}    

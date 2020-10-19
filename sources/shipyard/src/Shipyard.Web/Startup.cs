@@ -87,8 +87,12 @@ namespace Shipyard.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<CorsSettings> corsOptions)
         {
+            // Set base path when hosting in a virtual path
+            // required for load-balacing, proxies or azure front door routing
+            app.UsePathBase(Configuration["PathPrefix"]);
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            // Default route template is /swagger/{documentName}/swagger.json
+            // Default route template is ./swagger/{documentName}/swagger.json
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -111,7 +115,6 @@ namespace Shipyard.Web
             }
 
             // HTTP Request pipeline
-            app.UsePathBase(Configuration["PathPrefix"]);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

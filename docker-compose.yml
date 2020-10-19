@@ -5,7 +5,7 @@ services:
     image: portauthority-web
     build: 
       context: ./sources/portauthority
-      dockerfile: src/Portauthority.Web/Dockerfile
+      dockerfile: src/PortAuthority.Web/Dockerfile
     ports:
       - ${PORTAUTHORITY_HTTP_PORT}:80      
     depends_on:
@@ -18,7 +18,7 @@ services:
     image: portauthority-worker
     build: 
       context: ./sources/portauthority
-      dockerfile: src/Portauthority.Worker/Dockerfile
+      dockerfile: src/PortAuthority.Worker/Dockerfile
     depends_on:     
       - mssql
       # - portauthority_db_migrate
@@ -32,30 +32,33 @@ services:
   #   environment: 
   #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
         
-  # shipyard_web:    
-  #   image: shipyard-web
-  #   build: 
-  #     context: ./sources/shipyard/
-  #     dockerfile: src/Shipyard.Web/Dockerfile
-  #   ports:
-  #     - ${SHIPYARD_HTTP_PORT}:80      
-  #   depends_on:
-  #     - mssql
-  #   environment: 
-  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;
-  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  shipyard_web:    
+    image: shipyard-web
+    build: 
+      context: ./sources/shipyard/
+      dockerfile: src/Shipyard.Web/Dockerfile
+    ports:
+      - ${SHIPYARD_HTTP_PORT}:80      
+    depends_on:
+      - mssql
+      - azstorage
+    environment: 
+      - PathPrefix=/messaging/
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;
+      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
 
-  # shipyard_worker:
-  #   image: shipyard-worker
-  #   build: 
-  #     context: ./sources/shipyard
-  #     dockerfile: src/Shipyard.Worker/Dockerfile
-  #   depends_on:
-  #    # - shipyard_db_migrate
-  #     - mssql
-  #   environment: 
-  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;    
-  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  shipyard_worker:
+    image: shipyard-worker
+    build: 
+      context: ./sources/shipyard
+      dockerfile: src/Shipyard.Worker/Dockerfile
+    depends_on:     
+      - mssql
+      - azstorage
+      # - shipyard_db_migrate
+    environment: 
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;    
+      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
 
   # shipyard_db_migrate:    
   #   command: dockerize --tcp:1433 --wait 30s /app/Shipyard.Data.Migration
@@ -64,11 +67,11 @@ services:
   #   environment: 
   #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
 
-  # azstorage:
-  #   image: mcr.microsoft.com/azure-storage/azurite
-  #   command: azurite-blob --blobHost 0.0.0.0
-  #   ports:
-  #     - ${AZSTORAGE_PORT}:10000
+  azstorage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite-blob --blobHost 0.0.0.0
+    ports:
+      - ${AZSTORAGE_PORT}:10000
 
   mssql:
     image: mcr.microsoft.com/mssql/server
@@ -86,6 +89,7 @@ services:
       - ${NGINX_HTTP_PORT}:80      
     depends_on:
       - portauthority_web      
+      - shipyard_web
     volumes:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./services/nginx/conf.d/:/etc/nginx/conf.d    
