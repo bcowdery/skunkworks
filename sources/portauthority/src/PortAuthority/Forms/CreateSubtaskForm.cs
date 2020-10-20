@@ -5,7 +5,7 @@ using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Forms
 {
-    public class CreateSubtaskForm 
+    public class CreateSubtaskForm
         : CreateSubtask
     {
         public Guid JobId { get; set; }

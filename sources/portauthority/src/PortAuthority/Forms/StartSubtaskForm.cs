@@ -3,7 +3,7 @@ using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Forms
 {
-    public class StartJobForm
+    public class StartSubtaskForm
     {
         public DateTimeOffset StartTime { get; set; }
 

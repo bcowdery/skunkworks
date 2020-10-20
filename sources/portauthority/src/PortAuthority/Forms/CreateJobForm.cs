@@ -5,7 +5,7 @@ using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Forms
 {
-    public class CreateJobForm 
+    public class CreateJobForm
         : CreateJob
     {
         public Guid JobId { get; set; }
