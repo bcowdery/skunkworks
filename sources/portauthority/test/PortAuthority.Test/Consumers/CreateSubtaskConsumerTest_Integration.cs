@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,13 @@ namespace PortAuthority.Test.Consumers
             {
                 JobId = job.JobId,
                 TaskId = NewId.NextGuid(),
-                Name = "test-create-subtask"
+                Name = "test-create-subtask",
+                Meta = new Dictionary<string, object>()
+                {
+                    { "foo", "bar"},
+                    { "baz", 1 },
+                    { "zap", DateTime.UtcNow }
+                }
             };
             
             await Harness.Start();
@@ -57,6 +64,7 @@ namespace PortAuthority.Test.Consumers
                 actual.Should().NotBeNull();
                 actual.TaskId.Should().Be(message.TaskId);
                 actual.Name.Should().Be(message.Name);
+                actual.Meta.Should().BeEquivalentTo(message.Meta);
             }
             finally
             {

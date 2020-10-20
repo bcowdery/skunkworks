@@ -47,6 +47,7 @@ namespace PortAuthority.Consumers
                 CorrelationId = message.CorrelationId,
                 Type = message.Type,
                 Namespace = message.Namespace,
+                Meta = message.Meta
             };
 
             await _dbContext.Jobs.AddAsync(job);

@@ -23,5 +23,10 @@ namespace PortAuthority.Contracts.Commands
         /// Task name
         /// </summary>
         string Name { get; }
+        
+        /// <summary>
+        /// Additional task metadata
+        /// </summary>
+        Dictionary<string,object> Meta { get; }        
     }
 }

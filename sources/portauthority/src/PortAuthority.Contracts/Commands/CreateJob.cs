@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PortAuthority.Contracts.Commands
 {
@@ -26,5 +27,10 @@ namespace PortAuthority.Contracts.Commands
         /// Job namespace
         /// </summary>
         string Namespace { get; }
+        
+        /// <summary>
+        /// Additional job metadata
+        /// </summary>
+        Dictionary<string,object> Meta { get; }
     }
 }

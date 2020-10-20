@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Test.Consumers.TestMessages
@@ -13,5 +14,6 @@ namespace PortAuthority.Test.Consumers.TestMessages
         public Guid? CorrelationId { get; set; }
         public string Type { get; set; }
         public string Namespace { get; set; }
+        public Dictionary<string, object> Meta { get; set; }
     }
 }

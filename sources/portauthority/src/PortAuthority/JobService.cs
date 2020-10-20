@@ -82,7 +82,8 @@ namespace PortAuthority
                 JobId = form.JobId,
                 CorrelationId = form.CorrelationId,
                 Type = form.Type,
-                Namespace = form.Namespace
+                Namespace = form.Namespace,
+                Meta = form.Meta
             });
 
             _logger.LogInformation("Sent <{MessageType}> command", nameof(CreateJob));

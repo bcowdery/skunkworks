@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
@@ -40,7 +42,13 @@ namespace PortAuthority.Test.Consumers
             {
                 JobId = NewId.NextGuid(),
                 Type = "test-create-job",
-                Namespace = "com.portauthority"
+                Namespace = "com.portauthority",
+                Meta = new Dictionary<string, object>()
+                {
+                    { "foo", "bar"},
+                    { "baz", 1 },
+                    { "zap", DateTime.UtcNow }
+                }
             };
             
             // act
@@ -55,6 +63,7 @@ namespace PortAuthority.Test.Consumers
             actual.JobId.Should().Be(message.JobId);
             actual.Type.Should().Be(message.Type);
             actual.Namespace.Should().Be(message.Namespace);
+            actual.Meta.Should().BeEquivalentTo(message.Meta);
         }
     }
 }

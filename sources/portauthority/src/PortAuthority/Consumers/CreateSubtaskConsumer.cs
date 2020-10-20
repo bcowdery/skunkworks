@@ -59,6 +59,7 @@ namespace PortAuthority.Consumers
                 JobId = job.Id,
                 TaskId = message.TaskId,
                 Name = message.Name,
+                Meta = message.Meta
             };
 
             await _dbContext.Tasks.AddAsync(task);

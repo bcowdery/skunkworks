@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,13 @@ namespace PortAuthority.Test.Consumers
             {
                 JobId = NewId.NextGuid(),
                 Type = "test-createjob",
-                Namespace = "com.portauthority"
+                Namespace = "com.portauthority",
+                Meta = new Dictionary<string, object>()
+                {
+                    { "foo", "bar"},
+                    { "baz", 1 },
+                    { "zap", DateTime.UtcNow }
+                }                
             };
             
             await Harness.Start();
@@ -51,6 +58,7 @@ namespace PortAuthority.Test.Consumers
                 actual.JobId.Should().Be(message.JobId);
                 actual.Type.Should().Be(message.Type);
                 actual.Namespace.Should().Be(message.Namespace);
+                actual.Meta.Should().BeEquivalentTo(message.Meta);
             }
             finally
             {
