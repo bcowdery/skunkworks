@@ -23,7 +23,7 @@ namespace PortAuthority.Data.Entities
         public Job Job { get; set; }
         
         /// <summary>
-        /// Sub-task ID. Use of sequential GUID's is recommended for performance.
+        /// Sub-task ID. Use of sequential GUID's are recommended for performance.
         /// <example><code>NewId.NextGuid()</code></example>
         /// </summary>
         [Required]
@@ -54,5 +54,21 @@ namespace PortAuthority.Data.Entities
         /// Metadata
         /// </summary>
         public Dictionary<string, object> Meta { get; set; } = new Dictionary<string, object>();
+        
+
+        public bool IsPending()
+        {
+            return Status == Status.Pending;
+        }
+
+        public bool IsRunning()
+        {
+            return Status == Status.InProgress;
+        }
+
+        public bool IsFinished()
+        {
+            return Status == Status.Failed || Status == Status.Completed;
+        }        
     }
 }

@@ -32,11 +32,11 @@ namespace PortAuthority.Consumers
             var message = context.Message;
             if (message.JobId == Guid.Empty)
             {
-                _logger.LogWarning("Job Id cannot be empty.");
+                _logger.LogWarning("Job id cannot be empty.");
                 return;
             }
             
-            _logger.LogInformation("Creating Job Id = {JobId}, Type = {Type}, Namespace = {Namespace}", 
+            _logger.LogInformation("Creating Job [JobId = {JobId}, Type = {Type}, Namespace = {Namespace}]", 
                 message.JobId, 
                 message.Type, 
                 message.Namespace);

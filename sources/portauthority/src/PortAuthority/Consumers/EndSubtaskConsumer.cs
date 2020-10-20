@@ -4,25 +4,53 @@ using GreenPipes;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
+using PortAuthority.Data;
+using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Consumers
 {
+    /// <summary>
+    /// Consumer that updates a sub-task completion status on end time.
+    /// </summary>    
     public class EndSubtaskConsumer
         : IConsumer<EndSubtask>
     {
-        private readonly ILogger<EndSubtask> _logger;
+        private readonly ILogger<EndSubtaskConsumer> _logger;
+        private readonly IPortAuthorityDbContext _dbContext;
 
-        public EndSubtaskConsumer(ILogger<EndSubtask> logger)
+        public EndSubtaskConsumer(ILogger<EndSubtaskConsumer> logger, IPortAuthorityDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        public Task Consume(ConsumeContext<EndSubtask> context)
+        public async Task Consume(ConsumeContext<EndSubtask> context)
         {
-            throw new NotImplementedException();
+            var message = context.Message;
+
+            _logger.LogInformation("Ending Sub-task Id = {TaskId}", message.TaskId);
+
+            var task = await _dbContext.Tasks.SingleOrDefaultAsync(x => x.TaskId == message.TaskId);
+            if (task == null)
+            {
+                _logger.LogWarning("Sub-task does not exist with Id = {TaskId}", message.TaskId);
+                return;
+            }
+
+            if (task.IsFinished())
+            {
+                _logger.LogWarning("Sub-task has already been ended. Id = {JobId}", message.TaskId);
+                return;                
+            }
+            
+            task.Status = message.Success ? Status.Completed : Status.Failed;
+            task.EndTime = message.EndTime;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 

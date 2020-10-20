@@ -4,25 +4,53 @@ using GreenPipes;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
+using PortAuthority.Data;
+using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Consumers
 {
+    /// <summary>
+    /// Consumer that starts a sub-task and updates the status to <see cref="Status.InProgress"/>
+    /// </summary>
     public class StartSubtaskConsumer
         : IConsumer<StartSubtask>
     {
-        private readonly ILogger<StartSubtask> _logger;
+        private readonly ILogger<StartSubtaskConsumer> _logger;
+        private readonly IPortAuthorityDbContext _dbContext;
 
-        public StartSubtaskConsumer(ILogger<StartSubtask> logger)
+        public StartSubtaskConsumer(ILogger<StartSubtaskConsumer> logger, IPortAuthorityDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        public Task Consume(ConsumeContext<StartSubtask> context)
+        public async Task Consume(ConsumeContext<StartSubtask> context)
         {
-            throw new NotImplementedException();
+            var message = context.Message;
+
+            _logger.LogInformation("Starting sub-task Id = {TaskId}", message.TaskId);
+
+            var task = await _dbContext.Tasks.SingleOrDefaultAsync(x => x.TaskId == message.TaskId);
+            if (task == null)
+            {
+                _logger.LogWarning("Sub-task does not exist with Id = {TaskId}", message.TaskId);
+                return;
+            }
+
+            if (!task.IsPending())
+            {
+                _logger.LogWarning("Sub-task has already been started. Id = {TaskId}", message.TaskId);
+                return;                
+            }
+            
+            task.Status = Status.InProgress;
+            task.StartTime = message.StartTime;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
     

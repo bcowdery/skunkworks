@@ -15,28 +15,30 @@ using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Consumers
 {
-    public class EndJobConsumerTest_Integration
+    public class EndSubtaskConsumerTest_Integration
         : ConsumerFixture
     {
         protected override void ConfigureBus(IServiceCollectionBusConfigurator bus)
         {
-            bus.AddConsumer<EndJobConsumer>();
+            bus.AddConsumer<EndSubtaskConsumer>();
         }
         
         [Test]
-        public async Task Test_EndJobConsumer_Success_True_Should_Consume_With_Status_Completed()
+        public async Task Test_EndSubtaskConsumer_Success_True_Should_Consume_With_Status_Completed()
         {
             // arrange
-            var consumerHarness = Consumer<EndJobConsumer>();
+            var consumerHarness = Consumer<EndSubtaskConsumer>();
 
             var job = new JobFaker().Generate("default,InProgress");
+            var task = new SubtaskFaker().SetJob(job).Generate("default,InProgress");
 
             await using var dbContext = GetDbContext();
             await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, task);
             
-            var message = new TestEndJobMessage()
+            var message = new TestEndSubtaskMessage()
             {
-                JobId = job.JobId,
+                TaskId = task.TaskId,
                 EndTime = DateTimeOffset.Now,
                 Success = true
             };
@@ -46,20 +48,20 @@ namespace PortAuthority.Test.Consumers
             try
             {
                 // act
-                await Harness.InputQueueSendEndpoint.Send<EndJob>(message);
+                await Harness.InputQueueSendEndpoint.Send<EndSubtask>(message);
 
                 // assert
-                Assert.That(await Harness.Consumed.Any<EndJob>(), "endpoint consumed message");
-                Assert.That(await consumerHarness.Consumed.Any<EndJob>(), "actual consumer consumed the message");
-                Assert.That(await Harness.Published.Any<Fault<EndJob>>(), Is.False, "message handled without fault");
+                Assert.That(await Harness.Consumed.Any<EndSubtask>(), "endpoint consumed message");
+                Assert.That(await consumerHarness.Consumed.Any<EndSubtask>(), "actual consumer consumed the message");
+                Assert.That(await Harness.Published.Any<Fault<EndSubtask>>(), Is.False, "message handled without fault");
 
                 await using var actualDbContext = GetDbContext();
-                var actual = actualDbContext.Jobs.SingleOrDefault(j => j.JobId == message.JobId);
+                var actual = actualDbContext.Tasks.SingleOrDefault(t => t.TaskId == task.TaskId);
             
                 actual.Should().NotBeNull();
-                actual.JobId.Should().Be(message.JobId);
-                actual.Status.Should().Be(Status.Completed, "job status is successful");
-                actual.EndTime.Should().BeCloseTo(message.EndTime, because: "job end time updated");
+                actual.TaskId.Should().Be(task.TaskId);
+                actual.Status.Should().Be(Status.Completed, "task status is successful");
+                actual.EndTime.Should().BeCloseTo(message.EndTime, because: "task end time updated");
             }
             finally
             {

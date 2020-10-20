@@ -41,8 +41,8 @@ namespace PortAuthority
         {
             if (taskId == Guid.Empty)
             {
-                _logger.LogWarning("Subtask ID cannot be empty");
-                return Result.BadRequest<SubtaskModel>($"Subtask ID cannot be empty");
+                _logger.LogWarning("Sub-task ID cannot be empty");
+                return Result.BadRequest<SubtaskModel>($"Sub-task ID cannot be empty");
             }
 
             var job = await _dbContext.Tasks
@@ -50,7 +50,7 @@ namespace PortAuthority
                 .SingleOrDefaultAsync(x => x.TaskId == taskId);
             
             return job == null
-                ? Result.NotFound<SubtaskModel>($"Subtask not found with ID {taskId}")
+                ? Result.NotFound<SubtaskModel>($"Sub-task not found with ID {taskId}")
                 : Result.Ok(_taskAssembler.Assemble(job));
         }
 
@@ -74,8 +74,8 @@ namespace PortAuthority
             var taskExists = await _dbContext.Tasks.AnyAsync(x => x.Job.JobId == form.JobId && x.TaskId == form.TaskId);
             if (taskExists)
             {
-                _logger.LogWarning("Subtask already exists with ID = {TaskId}", form.TaskId);
-                return Result.Conflict($"Subtask already exists with ID {form.TaskId}");
+                _logger.LogWarning("Sub-task already exists with ID = {TaskId}", form.TaskId);
+                return Result.Conflict($"Sub-task already exists with ID {form.TaskId}");
             }
 
             await _sendEndpointProvider.Send<CreateSubtask>(new
@@ -95,8 +95,8 @@ namespace PortAuthority
             var exists = await _dbContext.Tasks.AnyAsync(x => x.TaskId == taskId);
             if (!exists)
             {
-                _logger.LogWarning("Subtask does not exist with ID = {TaskId}", taskId);
-                return Result.NotFound($"Subtask does not exist with ID {taskId}");
+                _logger.LogWarning("Sub-task does not exist with ID = {TaskId}", taskId);
+                return Result.NotFound($"Sub-task does not exist with ID {taskId}");
             }
            
             await _sendEndpointProvider.Send<StartSubtask>(new
@@ -115,8 +115,8 @@ namespace PortAuthority
             var exists = await _dbContext.Tasks.AnyAsync(x => x.TaskId == taskId);
             if (!exists)
             {
-                _logger.LogWarning("Subtask does not exist with ID = {TaskId}", taskId);
-                return Result.NotFound($"Subtask does not exist with ID {taskId}");
+                _logger.LogWarning("Sub-task does not exist with ID = {TaskId}", taskId);
+                return Result.NotFound($"Sub-task does not exist with ID {taskId}");
             }
            
             await _sendEndpointProvider.Send<EndSubtask>(new

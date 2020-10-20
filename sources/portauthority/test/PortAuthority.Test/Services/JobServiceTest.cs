@@ -246,7 +246,7 @@ namespace PortAuthority.Test.Services
         public async Task Test_StartJob_InvalidId_Should_ReturnNotFound()
         {
             // arrange
-            var badId = Guid.NewGuid();
+            var badId = Guid.NewGuid(); /* job does not exist */
             var startTime = DateTimeOffset.UtcNow;
                 
             // act
@@ -292,7 +292,7 @@ namespace PortAuthority.Test.Services
         public async Task Test_EndJob_InvalidId_Should_ReturnNotFound()
         {
             // arrange
-            var badId = Guid.NewGuid();
+            var badId = Guid.NewGuid(); /* job does not exist */
             var startTime = DateTimeOffset.UtcNow;
             var isSuccess = false;
                 

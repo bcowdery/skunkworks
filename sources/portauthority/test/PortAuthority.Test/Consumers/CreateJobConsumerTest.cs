@@ -39,7 +39,7 @@ namespace PortAuthority.Test.Consumers
             var message = new TestCreateJobMessage
             {
                 JobId = NewId.NextGuid(),
-                Type = "test-createjob",
+                Type = "test-create-job",
                 Namespace = "com.portauthority"
             };
             

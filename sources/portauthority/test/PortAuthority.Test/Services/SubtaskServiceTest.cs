@@ -139,7 +139,7 @@ namespace PortAuthority.Test.Services
             result.Should().NotBeNull();
             result.IsNotFound().Should().BeTrue();
             result.Payload.Should().BeNull();
-            result.ErrorMessage.Message.Should().StartWith("Subtask not found with ID");
+            result.ErrorMessage.Message.Should().StartWith("Sub-task not found with ID");
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace PortAuthority.Test.Services
             result.Should().NotBeNull();
             result.IsBadRequest().Should().BeTrue();
             result.Payload.Should().BeNull();
-            result.ErrorMessage.Message.Should().StartWith("Subtask ID cannot be empty");
+            result.ErrorMessage.Message.Should().StartWith("Sub-task ID cannot be empty");
         }
 
         [Test]
@@ -235,7 +235,7 @@ namespace PortAuthority.Test.Services
             
             var form = new CreateSubtaskForm()
             {
-                JobId = job.JobId,
+                JobId = job.JobId, 
                 TaskId = task.TaskId,
                 Name = "test-createtask-task-id-already-exists"
             };
@@ -255,7 +255,7 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsConflict().Should().BeTrue();
-            result.ErrorMessage.Message.Should().StartWith("Subtask already exists");
+            result.ErrorMessage.Message.Should().StartWith("Sub-task already exists");
         }
 
         [Test]
@@ -293,7 +293,7 @@ namespace PortAuthority.Test.Services
         public async Task Test_StartTask_InvalidId_Should_ReturnNotFound()
         {
             // arrange
-            var badId = Guid.NewGuid();
+            var badId = Guid.NewGuid(); /* task does not exist */
             var startTime = DateTimeOffset.UtcNow;
                 
             // act
@@ -302,7 +302,7 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsNotFound().Should().BeTrue();
-            result.ErrorMessage.Message.Should().StartWith("Subtask does not exist with ID");
+            result.ErrorMessage.Message.Should().StartWith("Sub-task does not exist with ID");
         }
         
         [Test]
@@ -342,7 +342,7 @@ namespace PortAuthority.Test.Services
         public async Task Test_EndJob_InvalidId_Should_ReturnNotFound()
         {
             // arrange
-            var badId = Guid.NewGuid();
+            var badId = Guid.NewGuid(); /* task does not exist */
             var startTime = DateTimeOffset.UtcNow;
             var isSuccess = false;
                 
@@ -352,7 +352,7 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsNotFound().Should().BeTrue();
-            result.ErrorMessage.Message.Should().StartWith("Subtask does not exist with ID");
+            result.ErrorMessage.Message.Should().StartWith("Sub-task does not exist with ID");
         }
  
         [Test]

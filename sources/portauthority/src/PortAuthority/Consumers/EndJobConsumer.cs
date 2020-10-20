@@ -13,6 +13,9 @@ using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Consumers
 {
+    /// <summary>
+    /// Consumer that updates a job's completion status on end time.
+    /// </summary>
     public class EndJobConsumer
         : IConsumer<EndJob>
     {

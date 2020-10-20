@@ -17,7 +17,7 @@ namespace PortAuthority.Data.Entities
         public long Id { get; set; }
 
         /// <summary>
-        /// Job ID. Use of sequential GUID's is recommended for performance.
+        /// Job ID. Use of sequential GUIDs are recommended for performance.
         /// <example><code>NewId.NextGuid()</code></example>
         /// </summary>
         [Required]
