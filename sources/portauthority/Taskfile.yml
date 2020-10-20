@@ -12,11 +12,6 @@ tasks:
     cmds:
       - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
       - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
-      
-  migrate:
-    desc: "Run portauthority ef database migrations"
-    cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 /tools/migration/PortAuthority.Data.Migration
 
   rmi:
     desc: "Remove portauthority images"
@@ -29,7 +24,11 @@ tasks:
         ignore_error: true           
       - cmd: docker image rmi portauthority-web:dev
         ignore_error: true
-
+      - cmd: docker image rmi portauthority-dbmigrate
+        ignore_error: true
+      - cmd: docker image rmi portauthority-dbmigrate:dev
+        ignore_error: true
+        
   sh:worker:
     desc: "Connect to the portauthority-worker shell"
     cmds:

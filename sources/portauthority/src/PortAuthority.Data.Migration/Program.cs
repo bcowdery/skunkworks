@@ -12,7 +12,7 @@ namespace PortAuthority.Data.Migration
     /// Uses appsettings.local.json when developing locally. Environment variables will be used as
     /// the connection string source when the migration host is executed in the compiled docker container.
     ///
-    /// You may also provide connection strings as command line arguments in the format of --ConnectionStrings__Default=Value
+    /// You may also provide connection strings as command line arguments in the format of --ConnectionStrings__SqlDatabase=Value
     /// </summary>
     public class Program
     {
@@ -27,7 +27,7 @@ namespace PortAuthority.Data.Migration
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<PortAuthorityDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("Default"));
+                .UseSqlServer(configuration.GetConnectionString("SqlDatabase"));
 
             await using var ctx = new PortAuthorityDbContext(optionsBuilder.Options);
             await ctx.Database.MigrateAsync();

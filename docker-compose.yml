@@ -11,6 +11,7 @@ services:
     depends_on:
       - mssql
       - rabbit
+      - portauthority_dbmigrate
     environment:       
       - PathPrefix=/jobs/
       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
@@ -24,17 +25,21 @@ services:
     depends_on:     
       - mssql
       - rabbit
-      # - portauthority_db_migrate
+      - portauthority_dbmigrate
     environment:       
       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  # portauthority_db_migrate:    
-  #   command: dockerize --tcp:1433 --wait 30s /app/Portauthority.Data.Migration
-  #   depends_on: 
-  #     - mssql
-  #   environment: 
-  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+  portauthority_dbmigrate:    
+    image: portauthority-dbmigrate
+    command: dockerize -wait tcp://mssql:1433 -timeout 30s dotnet PortAuthority.Data.Migration.dll
+    build: 
+      context: ./sources/portauthority
+      dockerfile: src/PortAuthority.Data.Migration/Dockerfile
+    depends_on: 
+      - mssql
+    environment: 
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
         
   # shipyard_web:    
   #   image: shipyard-web
@@ -83,8 +88,8 @@ services:
     image: mcr.microsoft.com/mssql/server
     ports:
       - ${MSSQL_PORT}:1433    
-    # volumes:
-    #   - mssql_data:/var/opt/mssql/data/
+    volumes:
+      - ./data/mssql/:/var/opt/mssql/data/
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${MSSQL_PASS}
@@ -107,11 +112,7 @@ services:
     ports:
         - ${RABBIT_PORT}:15672
     volumes:
-      - rabbit_data:/var/lib/rabbitmq/mnesia/
+      - ./data/rabbitmq/:/var/lib/rabbitmq/mnesia/
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
-
-volumes:
-  rabbit_data:
-#   mssql_data:

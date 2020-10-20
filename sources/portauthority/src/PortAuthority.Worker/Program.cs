@@ -61,9 +61,9 @@ namespace PortAuthority.Worker
                             cfg.ConfigureEndpoints(context);
                         });
                     });
-
-                    services.AddHostedService<MassTransitHostedService>(); //todo-brian: Use MassTransit.AspNetCore (it's not actually AspNet... bad naming).
-
+                    
+                    services.AddMassTransitHostedService();
+                    
                     // Application Services
                     services.AddPortAuthorityServices();
                     services.AddHostedService<WorkerBackgroundService>();

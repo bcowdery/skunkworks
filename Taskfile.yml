@@ -79,7 +79,7 @@ tasks:
   nuke:
     desc: "Nuke all data files and reset the solution"
     cmds:
-      - docker volume rm -f {{.SOLUTION_NAME}}_mssql_data
+      - rm -rf ./data/
 
   default:
     cmds:

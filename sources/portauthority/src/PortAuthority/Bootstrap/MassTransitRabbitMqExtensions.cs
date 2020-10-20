@@ -16,8 +16,6 @@ namespace PortAuthority.Bootstrap
         /// <returns></returns>
         public static IRabbitMqBusFactoryConfigurator AmqpHost(this IRabbitMqBusFactoryConfigurator configurator, string amqpUri)
         {
-            Console.Out.WriteLine("Rabbit = " + amqpUri);
-            
             if (string.IsNullOrEmpty(amqpUri))
             {
                 throw new ArgumentException(nameof(amqpUri));

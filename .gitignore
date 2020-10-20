@@ -2,6 +2,7 @@
 
 ### Skunkworks ###
 docker-compose.local.yml
+/data/
 
 ### Taskfile ###
 .task/
