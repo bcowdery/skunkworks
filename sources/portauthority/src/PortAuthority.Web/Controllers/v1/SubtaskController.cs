@@ -36,7 +36,7 @@ namespace PortAuthority.Web.Controllers.v1
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{taskId}")]
         [ProducesResponseType(typeof(SubtaskModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorMessage), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetJob(Guid id)

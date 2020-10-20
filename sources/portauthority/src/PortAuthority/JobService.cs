@@ -23,9 +23,10 @@ namespace PortAuthority
         : IJobService
     {
         private readonly ILogger<JobService> _logger;
+        private readonly IAssembler<Job, JobModel> _jobAssembler;
         private readonly IPortAuthorityDbContext _dbContext;
         private readonly ISendEndpointProvider _sendEndpointProvider;
-        private readonly IAssembler<Job, JobModel> _jobAssembler;
+        
         
         public JobService(
             ILogger<JobService> logger,
@@ -46,7 +47,9 @@ namespace PortAuthority
                 return Result.BadRequest<JobModel>($"Job ID cannot be empty");
             }
 
-            var job = await _dbContext.Jobs.SingleOrDefaultAsync(x => x.JobId == jobId);
+            var job = await _dbContext.Jobs
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.JobId == jobId);
 
             return job == null
                 ? Result.NotFound<JobModel>($"Job not found with ID {jobId}")

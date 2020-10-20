@@ -3,15 +3,16 @@ using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Forms
 {
-    public class StartJobForm 
-        : StartJob
+    public class EndJobForm 
+        : EndJob
     {
-        public Guid JobId { get; set;  }
-        public DateTimeOffset StartTime { get; set; }
+        public Guid JobId { get; set; }
+        public bool Success { get; set; }
+        public DateTimeOffset EndTime { get; set; }
 
         public override string ToString()
         {
-            return $"{nameof(JobId)}: {JobId}, {nameof(StartTime)}: {StartTime}";
+            return $"{nameof(JobId)}: {JobId}, {nameof(Success)}: {Success}, {nameof(EndTime)}: {EndTime}";
         }
     }
 }

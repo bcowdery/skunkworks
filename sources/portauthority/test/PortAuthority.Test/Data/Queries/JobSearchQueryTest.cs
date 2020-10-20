@@ -9,7 +9,8 @@ using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Data.Queries
 {
-    public class JobSearchQueryTest : DatabaseFixture
+    public class JobSearchQueryTest 
+        : DatabaseFixture
     {
         /* delete data between each test */
         
@@ -40,6 +41,26 @@ namespace PortAuthority.Test.Data.Queries
             results.Should().NotBeNull();
             results.Page.Should().Be(1);
             results.Size.Should().Be(25);
+            results.TotalItems.Should().Be(0);
+            results.TotalPages.Should().Be(0);            
+            results.Data.Should().BeNullOrEmpty();
+        }
+        
+        [Test]
+        public async Task Test_JobSearchQuery_DefaultPaging_Should_ReturnEmptyResult()
+        {
+            // arrange
+            var search = new JobSearchCriteria() { };
+            var paging = new PagingCriteria() { };
+            
+            // act
+            var dbContext = GetDbContext();
+            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            
+            // assert
+            results.Should().NotBeNull();
+            results.Page.Should().Be(0);
+            results.Size.Should().Be(0);
             results.TotalItems.Should().Be(0);
             results.TotalPages.Should().Be(0);            
             results.Data.Should().BeNullOrEmpty();
