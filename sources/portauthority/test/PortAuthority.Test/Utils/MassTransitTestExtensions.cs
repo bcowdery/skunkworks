@@ -16,14 +16,28 @@ namespace PortAuthority.Test.Utils
         /// <summary>
         /// Configures a <see cref="ISendEndpoint"/> mock to expect a expected. Returned mock can be verified.
         /// </summary>
-        /// <param name="mockSendEndpoint"></param>
+        /// <param name="mockEndpointProvider"></param>
         /// <param name="expected"></param>
         /// <typeparam name="TMessage"></typeparam>
         /// <returns></returns>
-        public static IReturnsResult<ISendEndpoint> SetupMessage<TMessage>(this Mock<ISendEndpoint> mockSendEndpoint, object expected)
+        public static IReturnsResult<ISendEndpoint> SetupMessage<TMessage>(this Mock<ISendEndpointProvider> mockEndpointProvider, object expected)
             where TMessage : class
         {
-            return mockSendEndpoint
+            if (!EndpointConvention.TryGetDestinationAddress<TMessage>(out var destinationAddress))
+            {
+                // this is just a mock, so the real value shouldn't matter here as long as we're not mixing
+                // integration tests and mock tests in the same suite. Use the same convention as the
+                // MassTransitInMemoryTestHarness just in case...
+                EndpointConvention.Map<TMessage>(new Uri("http://localhost/input-queue"));
+            }
+         
+            var mockEndpoint = new Mock<ISendEndpoint>();
+       
+            mockEndpointProvider
+                .Setup(x => x.GetSendEndpoint(It.IsAny<Uri>()))
+                .Returns(Task.FromResult(mockEndpoint.Object));
+            
+            return mockEndpoint
                 .Setup(x => x.Send<TMessage>(AnonymousType.Matches(expected), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
         }

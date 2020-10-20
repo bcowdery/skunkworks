@@ -9,7 +9,7 @@ using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
 
-namespace PortAuthority.Worker.Consumer
+namespace PortAuthority.Consumers
 {
     /// <summary>
     /// Consumer that creates a Job.
@@ -53,17 +53,20 @@ namespace PortAuthority.Worker.Consumer
         }
     }
     
+    /// <summary>
+    /// Endpoint configuration for the <see cref="CreateJobConsumer"/>
+    /// </summary>
     public class CreateJobConsumerDefinition 
         : ConsumerDefinition<CreateJobConsumer>
     {
         public CreateJobConsumerDefinition()
         {
             // override the default endpoint name
-            EndpointName = "port-authority";
+            EndpointName = "port-authority-jobs";
 
             // limit the number of messages consumed concurrently
             // this applies to the consumer only, not the endpoint
-            ConcurrentMessageLimit = 8;
+            /*ConcurrentMessageLimit = 8;*/
         }
 
         protected override void ConfigureConsumer(

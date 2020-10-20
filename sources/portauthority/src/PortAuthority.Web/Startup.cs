@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -50,8 +48,20 @@ namespace PortAuthority.Web
             
             // Database configuration
             services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("Default"),
+                .UseSqlServer(Configuration.GetConnectionString("SqlDatabase"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
+
+            // Mass Transit
+            services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
+                });
+            });
+            
+            services.AddMassTransitHostedService();
 
             // Application services 
             services.AddPortAuthorityServices();

@@ -4,12 +4,14 @@
     <LangVersion>latest</LangVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>79E0FD33-A3C8-4224-A631-38DFA448D296</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="7.0.4" />
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.0.4" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.0.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.15.0" />
+    <!--<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />-->
   </ItemGroup>
 
   <ItemGroup>

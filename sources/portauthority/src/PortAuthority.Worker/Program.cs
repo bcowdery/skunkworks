@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PortAuthority.Bootstrap;
 using PortAuthority.Data;
+using PortAuthority.Consumers;
 
 namespace PortAuthority.Worker
 {
@@ -36,19 +38,35 @@ namespace PortAuthority.Worker
                 .ConfigureLogging((hostContext, logging) =>
                 {
                     logging.ClearProviders();
+                    logging.AddApplicationInsights();
                     logging.AddConsole();
                 })                
                 .ConfigureServices((hostContext, services) =>
                 {
                     var configuration = hostContext.Configuration;
 
+                    // EF Databases
                     services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
-                        .UseSqlServer(configuration.GetConnectionString("Default"), 
+                        .UseSqlServer(configuration.GetConnectionString("SqlDatabase"), 
                             providerOptions => providerOptions.EnableRetryOnFailure()));
 
+                    // Mass Transit
+                    services.AddMassTransit(x =>
+                    {
+                        x.AddConsumersFromNamespaceContaining<CreateJobConsumer>();
+                        x.SetKebabCaseEndpointNameFormatter();
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
+                            cfg.ConfigureEndpoints(context);
+                        });
+                    });
+
+                    services.AddHostedService<MassTransitHostedService>(); //todo-brian: Use MassTransit.AspNetCore (it's not actually AspNet... bad naming).
+
+                    // Application Services
                     services.AddPortAuthorityServices();
                     services.AddHostedService<WorkerBackgroundService>();
-                    
                 })
                 .UseConsoleLifetime();                
     }

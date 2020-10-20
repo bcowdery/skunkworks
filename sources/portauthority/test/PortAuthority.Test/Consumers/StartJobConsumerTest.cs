@@ -6,13 +6,13 @@ using MassTransit.TestFramework;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using PortAuthority.Consumers;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
 using PortAuthority.Test.Consumers.TestMessages;
 using PortAuthority.Test.Fakes;
 using PortAuthority.Test.Utils;
-using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
 {

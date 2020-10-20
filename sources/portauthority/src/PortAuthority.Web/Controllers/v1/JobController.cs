@@ -67,7 +67,7 @@ namespace PortAuthority.Web.Controllers.v1
         /// </summary>
         /// <param name="createJob"></param>
         /// <returns></returns>
-        [HttpPost, Route("{id}", Name = nameof(CreateJob))]
+        [HttpPost, Route("", Name = nameof(CreateJob))]
         [ProducesResponseType(typeof(JsonLinks), StatusCodes.Status202Accepted)]
         [ProducesResponseType(typeof(ErrorMessage), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateJob([FromBody] CreateJobForm createJob)

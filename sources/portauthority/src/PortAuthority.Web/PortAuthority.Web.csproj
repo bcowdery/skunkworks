@@ -3,10 +3,12 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>79E0FD33-A3C8-4224-A631-38DFA448D296</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />    
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />

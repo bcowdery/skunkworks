@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>79E0FD33-A3C8-4224-A631-38DFA448D296</UserSecretsId>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -23,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <ProjectReference Include="..\..\src\PortAuthority.Worker\PortAuthority.Worker.csproj" />    
     <ProjectReference Include="..\..\src\PortAuthority\PortAuthority.csproj" />    
   </ItemGroup>
 

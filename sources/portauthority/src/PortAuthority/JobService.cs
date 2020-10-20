@@ -24,19 +24,19 @@ namespace PortAuthority
     {
         private readonly ILogger<JobService> _logger;
         private readonly IPortAuthorityDbContext _dbContext;
-        private readonly ISendEndpoint _sendEndpoint;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
         private readonly IAssembler<Job, JobModel> _jobAssembler;
         
         public JobService(
             ILogger<JobService> logger,
             IPortAuthorityDbContext dbContext,
-            ISendEndpoint sendEndpoint,
+            ISendEndpointProvider sendEndpointProvider,
             IAssembler<Job, JobModel> jobAssembler)
         {
             _logger = logger;
             _jobAssembler = jobAssembler;
             _dbContext = dbContext;
-            _sendEndpoint = sendEndpoint;
+            _sendEndpointProvider = sendEndpointProvider;
         }
 
         public async Task<IResult<JobModel>> GetJob(Guid jobId)
@@ -69,7 +69,7 @@ namespace PortAuthority
                 return Result.Conflict($"Job already exists with ID {form.JobId}");
             }
 
-            await _sendEndpoint.Send<CreateJob>(new
+            await _sendEndpointProvider.Send<CreateJob>(new
             {
                 JobId = form.JobId,
                 CorrelationId = form.CorrelationId,
@@ -88,7 +88,7 @@ namespace PortAuthority
                 return Result.NotFound($"Job does not exist with ID {jobId}");
             }
             
-            await _sendEndpoint.Send<StartJob>(new
+            await _sendEndpointProvider.Send<StartJob>(new
             {
                 JobId = jobId,
                 StartTime = startTime
@@ -105,7 +105,7 @@ namespace PortAuthority
                 return Result.NotFound($"Job does not exist with ID {jobId}");
             }
            
-            await _sendEndpoint.Send<EndJob>(new
+            await _sendEndpointProvider.Send<EndJob>(new
             {
                 JobId = jobId,
                 EndTime = endTime,

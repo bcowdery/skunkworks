@@ -10,9 +10,11 @@ services:
       - ${PORTAUTHORITY_HTTP_PORT}:80      
     depends_on:
       - mssql
+      - rabbit
     environment:       
       - PathPrefix=/jobs/
-      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+      - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
   portauthority_worker:
     image: portauthority-worker
@@ -21,57 +23,61 @@ services:
       dockerfile: src/PortAuthority.Worker/Dockerfile
     depends_on:     
       - mssql
+      - rabbit
       # - portauthority_db_migrate
     environment:       
-      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+      - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
   # portauthority_db_migrate:    
   #   command: dockerize --tcp:1433 --wait 30s /app/Portauthority.Data.Migration
   #   depends_on: 
   #     - mssql
   #   environment: 
-  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
         
-  shipyard_web:    
-    image: shipyard-web
-    build: 
-      context: ./sources/shipyard/
-      dockerfile: src/Shipyard.Web/Dockerfile
-    ports:
-      - ${SHIPYARD_HTTP_PORT}:80      
-    depends_on:
-      - mssql
-      - azstorage
-    environment: 
-      - PathPrefix=/messaging/
-      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;
-      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  # shipyard_web:    
+  #   image: shipyard-web
+  #   build: 
+  #     context: ./sources/shipyard/
+  #     dockerfile: src/Shipyard.Web/Dockerfile
+  #   ports:
+  #     - ${SHIPYARD_HTTP_PORT}:80      
+  #   depends_on:
+  #     - azstorage
+  #     - mssql
+  #     - rabbit
+  #   environment: 
+  #     - PathPrefix=/messaging/
+  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
+  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  shipyard_worker:
-    image: shipyard-worker
-    build: 
-      context: ./sources/shipyard
-      dockerfile: src/Shipyard.Worker/Dockerfile
-    depends_on:     
-      - mssql
-      - azstorage
-      # - shipyard_db_migrate
-    environment: 
-      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://skunkworks_azstorage_1:10000/devstoreaccount1;    
-      - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  # shipyard_worker:
+  #   image: shipyard-worker
+  #   build: 
+  #     context: ./sources/shipyard
+  #     dockerfile: src/Shipyard.Worker/Dockerfile
+  #   depends_on:     
+  #     - azstorage  
+  #     - mssql      
+  #     - rabbit
+  #     # - shipyard_db_migrate
+  #   environment: 
+  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
+  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
   # shipyard_db_migrate:    
   #   command: dockerize --tcp:1433 --wait 30s /app/Shipyard.Data.Migration
   #   depends_on: 
   #     - mssql
   #   environment: 
-  #     - ConnectionStrings__Default=Server=skunkworks_mssql_1;Database=skunkworks;User=sa;Password=${MSSQL_SA_PASSWORD}
+  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  azstorage:
-    image: mcr.microsoft.com/azure-storage/azurite
-    command: azurite-blob --blobHost 0.0.0.0
-    ports:
-      - ${AZSTORAGE_PORT}:10000
+  # azstorage:
+  #   image: mcr.microsoft.com/azure-storage/azurite
+  #   command: azurite-blob --blobHost 0.0.0.0
+  #   ports:
+  #     - ${AZSTORAGE_PORT}:10000
 
   mssql:
     image: mcr.microsoft.com/mssql/server
@@ -81,7 +87,7 @@ services:
     #   - mssql_data:/var/opt/mssql/data/
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - SA_PASSWORD=${MSSQL_PASS}
 
   nginx:
     image: nginx    
@@ -89,15 +95,23 @@ services:
       - ${NGINX_HTTP_PORT}:80      
     depends_on:
       - portauthority_web      
-      - shipyard_web
+      #- shipyard_web
     volumes:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./services/nginx/conf.d/:/etc/nginx/conf.d    
       - ./services/nginx/sites-available/:/etc/nginx/sites-available
       - ./services/nginx/sites-enabled/:/etc/nginx/sites-enabled
   
-  # rabbit:
-  #   image: rabbitmap:3.8-management-alpine   
+  rabbit:
+    image: rabbitmq:3.8-management-alpine   
+    ports:
+        - ${RABBIT_PORT}:15672
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq/mnesia/
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
 
-# volumes:
+volumes:
+  rabbit_data:
 #   mssql_data:

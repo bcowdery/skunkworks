@@ -28,7 +28,7 @@ namespace PortAuthority.Test.Services
 
         // mocks
         private readonly MockRepository _mocks = new MockRepository(MockBehavior.Default);
-        private Mock<ISendEndpoint> _mockSendEndpoint;
+        private Mock<ISendEndpointProvider> _mockSendEndpoint;
         
         [SetUp]
         public void Setup()
@@ -37,7 +37,7 @@ namespace PortAuthority.Test.Services
             var loggerFactory = NullLoggerFactory.Instance;
             var contextFactory = DbContextFactory.Instance;
             
-            _mockSendEndpoint = _mocks.Create<ISendEndpoint>();
+            _mockSendEndpoint = _mocks.Create<ISendEndpointProvider>();
             
             _service = new JobService(
                 loggerFactory.CreateLogger<JobService>(),

@@ -6,9 +6,9 @@ using FluentAssertions;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using NUnit.Framework;
+using PortAuthority.Consumers;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Test.Consumers.TestMessages;
-using PortAuthority.Worker.Consumer;
 
 namespace PortAuthority.Test.Consumers
 {
