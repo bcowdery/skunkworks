@@ -37,6 +37,7 @@ namespace PortAuthority.Bootstrap
             
             // Declared services            
             services.AddScoped<IJobService, JobService>();
+            services.AddScoped<ISubtaskService, SubtaskService>();
         }
     }
 }

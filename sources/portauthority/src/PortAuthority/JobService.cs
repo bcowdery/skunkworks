@@ -23,9 +23,9 @@ namespace PortAuthority
         : IJobService
     {
         private readonly ILogger<JobService> _logger;
-        private readonly IAssembler<Job, JobModel> _jobAssembler;
         private readonly IPortAuthorityDbContext _dbContext;
         private readonly ISendEndpointProvider _sendEndpointProvider;
+        private readonly IAssembler<Job, JobModel> _jobAssembler;
         
         
         public JobService(
@@ -35,15 +35,17 @@ namespace PortAuthority
             IAssembler<Job, JobModel> jobAssembler)
         {
             _logger = logger;
-            _jobAssembler = jobAssembler;
             _dbContext = dbContext;
             _sendEndpointProvider = sendEndpointProvider;
+            _jobAssembler = jobAssembler;
         }
 
+        
         public async Task<IResult<JobModel>> GetJob(Guid jobId)
         {
             if (jobId == Guid.Empty)
             {
+                _logger.LogWarning("Job ID cannot be empty");
                 return Result.BadRequest<JobModel>($"Job ID cannot be empty");
             }
 
@@ -51,6 +53,8 @@ namespace PortAuthority
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.JobId == jobId);
 
+            // TODO: Add the SubtaskSummaryModel to the query and JobModel
+            
             return job == null
                 ? Result.NotFound<JobModel>($"Job not found with ID {jobId}")
                 : Result.Ok(_jobAssembler.Assemble(job));
@@ -69,6 +73,7 @@ namespace PortAuthority
             var exists = await _dbContext.Jobs.AnyAsync(x => x.JobId == form.JobId);
             if (exists)
             {
+                _logger.LogWarning("Job already exists with ID = {JobId}", form.JobId);
                 return Result.Conflict($"Job already exists with ID {form.JobId}");
             }
 
@@ -80,6 +85,8 @@ namespace PortAuthority
                 Namespace = form.Namespace
             });
 
+            _logger.LogInformation("Sent <{MessageType}> command", nameof(CreateJob));
+            
             return Result.Ok();
         }
 
@@ -88,6 +95,7 @@ namespace PortAuthority
             var exists = await _dbContext.Jobs.AnyAsync(x => x.JobId == jobId);
             if (!exists)
             {
+                _logger.LogWarning("Job does not exist with ID = {JobId}", jobId);
                 return Result.NotFound($"Job does not exist with ID {jobId}");
             }
             
@@ -97,6 +105,8 @@ namespace PortAuthority
                 StartTime = startTime
             });
 
+            _logger.LogInformation("Sent <{MessageType}> command", nameof(StartJob));
+            
             return Result.Ok();
         }
 
@@ -105,6 +115,7 @@ namespace PortAuthority
             var exists = await _dbContext.Jobs.AnyAsync(x => x.JobId == jobId);
             if (!exists)
             {
+                _logger.LogWarning("Job does not exist with ID = {JobId}", jobId);
                 return Result.NotFound($"Job does not exist with ID {jobId}");
             }
            
@@ -115,32 +126,9 @@ namespace PortAuthority
                 Success = success
             });
 
+            _logger.LogInformation("Sent <{MessageType}> command", nameof(EndJob));
+            
             return Result.Ok();
-        }
-
-        public Task<IResult<SubtaskModel>> GetTask(Guid taskId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IResult<List<SubtaskModel>> ListTasks(Guid jobId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult> CreateTask(Guid jobId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult> StartTask(Guid jobId, Guid taskId, DateTimeOffset startTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult> EndTask(Guid jobId, Guid taskId, DateTimeOffset endTime, bool success)
-        {
-            throw new NotImplementedException();
         }
     }
 }

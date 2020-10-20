@@ -12,14 +12,17 @@ namespace PortAuthority.Test.Fakes
     /// </summary>
     public sealed class SubtaskFaker : Faker<Subtask>
     {
+        private Job _job;
         private long? _jobId;
+        private string _name;
         private Dictionary<string, object> _metadata;
         
         public SubtaskFaker()
         {
+            RuleFor(j => j.Job, f => _job);
             RuleFor(j => j.JobId, f => _jobId ?? 0L);
             RuleFor(j => j.TaskId, f => NewId.NextGuid());
-            RuleFor(j => j.Name, f => f.Lorem.Word());
+            RuleFor(j => j.Name, f => _name ?? f.Lorem.Word());
             RuleFor(j => j.Status, f => f.PickRandom<Status>());
 
             RuleFor(j => j.StartTime, (f, j) =>
@@ -78,6 +81,18 @@ namespace PortAuthority.Test.Fakes
         }
 
         /// <summary>
+        /// Explicitly set parent job.
+        /// </summary>
+        /// <param name="job"></param>
+        /// <returns></returns>
+        public SubtaskFaker SetJob(Job job)
+        {
+            _job = job;
+            _jobId = job.Id;
+            return this;
+        }
+        
+        /// <summary>
         /// Explicitly set parent job ID.
         /// </summary>
         /// <param name="jobId"></param>
@@ -87,7 +102,18 @@ namespace PortAuthority.Test.Fakes
             _jobId = jobId;
             return this;
         }
-
+        
+        /// <summary>
+        /// Explicitly set the task name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public SubtaskFaker SetName(string name)
+        {
+            _name = name;
+            return this;
+        }
+        
         /// <summary>
         /// Explicitly sets the metadata for generated jobs.
         /// </summary>

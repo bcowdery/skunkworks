@@ -30,7 +30,7 @@ namespace PortAuthority.Models
         public string Namespace { get; set; }
 
         /// <summary>
-        /// Job Status
+        /// Job status
         /// </summary>
         public Status Status { get; set; }
         

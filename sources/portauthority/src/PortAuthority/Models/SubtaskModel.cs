@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PortAuthority.Data.Entities;
 
 namespace PortAuthority.Models
 {
@@ -17,7 +18,12 @@ namespace PortAuthority.Models
         /// Sub-task name
         /// </summary>
         public string Name { get; set; }
-
+        
+        /// <summary>
+        /// Sub-task status
+        /// </summary>
+        public Status Status { get; set; }
+        
         /// <summary>
         /// Start time of the task (null if not started).
         /// </summary>

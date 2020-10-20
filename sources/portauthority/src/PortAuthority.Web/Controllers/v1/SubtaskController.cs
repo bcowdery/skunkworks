@@ -20,12 +20,12 @@ namespace PortAuthority.Web.Controllers.v1
     public class SubtaskController : Controller
     {
         private readonly ILogger<JobController> _logger;
-        private readonly IJobService _jobService;
+        private readonly ISubtaskService _subtaskService;
 
-        public SubtaskController(ILogger<JobController> logger, IJobService jobService)
+        public SubtaskController(ILogger<JobController> logger, ISubtaskService subtaskService)
         {
             _logger = logger;
-            _jobService = jobService;
+            _subtaskService = subtaskService;
         }
         
         [HttpGet, Route("")]
@@ -41,14 +41,14 @@ namespace PortAuthority.Web.Controllers.v1
         [ProducesResponseType(typeof(ErrorMessage), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetJob(Guid id)
         {
-            var result = await _jobService.GetTask(id);
+            var result = await _subtaskService.GetTask(id);
 
             if (result.IsNotFound())
             {
                 return NotFound(result.ErrorMessage);
             }
 
-            return Ok(new { Job = result.Payload });
+            return Ok(new { Task = result.Payload });
         }
     }
 }

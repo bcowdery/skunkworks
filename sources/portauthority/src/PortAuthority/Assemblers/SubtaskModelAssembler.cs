@@ -14,6 +14,7 @@ namespace PortAuthority.Assemblers
             {
                 TaskId = arg.TaskId,
                 Name = arg.Name,
+                Status = arg.Status,
                 StartTime = arg.StartTime,
                 EndTime = arg.EndTime,
                 Meta = arg.Meta

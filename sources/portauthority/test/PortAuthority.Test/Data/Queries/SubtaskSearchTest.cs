@@ -9,7 +9,7 @@ using PortAuthority.Test.Utils;
 
 namespace PortAuthority.Test.Data.Queries
 {
-    public class JobSearchQueryTest 
+    public class SubtaskSearchQueryTest 
         : DatabaseFixture
     {
         /* delete data between each test */
@@ -27,15 +27,15 @@ namespace PortAuthority.Test.Data.Queries
         }
         
         [Test]
-        public async Task Test_JobSearchQuery_NoData_Should_ReturnEmptyResult()
+        public async Task Test_SubtaskSearchQuery_NoData_Should_ReturnEmptyResult()
         {
             // arrange
-            var search = new JobSearchCriteria() { };
+            var search = new SubtaskSearchCriteria() { };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
             var dbContext = GetDbContext();
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
@@ -47,7 +47,7 @@ namespace PortAuthority.Test.Data.Queries
         }
         
         [Test]
-        public async Task Test_JobSearchQuery_DefaultPaging_Should_ReturnEmptyResult()
+        public async Task Test_SubtaskSearchQuery_DefaultPaging_Should_ReturnEmptyResult()
         {
             // arrange
             var job = new JobFaker().Generate();
@@ -57,11 +57,11 @@ namespace PortAuthority.Test.Data.Queries
             await dbContext.Setup(x => x.Jobs, job);
             await dbContext.Setup(x => x.Tasks, tasks);
             
-            var search = new JobSearchCriteria() { };
+            var search = new SubtaskSearchCriteria() { };
             var paging = new PagingCriteria() { };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
@@ -73,19 +73,21 @@ namespace PortAuthority.Test.Data.Queries
         }
         
         [Test]
-        public async Task Test_JobSearchQuery_DefaultCriteria_Should_ReturnAll()
+        public async Task Test_SubtaskSearchQuery_DefaultCriteria_Should_ReturnAll()
         {
             // arrange
-            var jobs = new JobFaker().Generate(100);
+            var job = new JobFaker().Generate();
+            var tasks = new SubtaskFaker().SetJob(job).Generate(100);
 
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, tasks);
             
-            var search = new JobSearchCriteria() { };
+            var search = new SubtaskSearchCriteria() { };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
@@ -94,78 +96,87 @@ namespace PortAuthority.Test.Data.Queries
             results.TotalItems.Should().Be(100);
             results.TotalPages.Should().Be(4);
             results.Data.Should().HaveCount(25);
-            results.Data.Should().OnlyHaveUniqueItems(x => x.JobId);
+            results.Data.Should().OnlyHaveUniqueItems(x => x.TaskId);
         }
         
         [Test]
-        public async Task Test_JobSearchQuery_FindByTypeAndNamespace_Should_ReturnMatching()
+        public async Task Test_SubtaskSearchQuery_FindByName_Should_ReturnMatching()
         {
             // arrange
-            var jobs = new JobFaker().Generate(100);
+            var expectedName = "find-by-name";
             
+            var job = new JobFaker().Generate("default,InProgress");
+            var tasks = new SubtaskFaker().SetJob(job).Generate(100);
+            var tasksToFind = new SubtaskFaker().SetJob(job).SetName(expectedName).Generate(4); 
+                
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, tasks);
+            await dbContext.Setup(x => x.Tasks, tasksToFind);
             
-            var expected = jobs[39];
-            var search = new JobSearchCriteria() { Type = expected.Type, Namespace = expected.Namespace };
+            var search = new SubtaskSearchCriteria() { Name = expectedName };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
             results.Page.Should().Be(1);
             results.Size.Should().Be(25);
-            results.TotalItems.Should().Be(1);
+            results.TotalItems.Should().Be(4);
             results.TotalPages.Should().Be(1);
-            results.Data.Should().HaveCount(1);
-            results.Data.Should().OnlyContain(x => x.Type == expected.Type && x.Namespace == expected.Namespace);
+            results.Data.Should().HaveCount(4);
+            results.Data.Should().OnlyContain(x => x.Name == expectedName);
         }        
 
         [Test]
-        public async Task Test_JobSearchQuery_FindByCorrelationId_Should_ReturnMatching()
+        public async Task Test_SubtaskSearchQuery_FindByJobId_Should_ReturnMatching()
         {
             // arrange
-            var correlationId = Guid.NewGuid();
-            var bulkJobs = new JobFaker().Generate(100);
-            var relatedJobs  = new JobFaker().SetCorrelationId(correlationId).Generate(13);
+            var jobA = new JobFaker().Generate("default,InProgress");
+            var jobB = new JobFaker().Generate("default,InProgress");
+            
+            var aTasks = new SubtaskFaker().SetJob(jobA).Generate(100);
+            var bTasks  = new SubtaskFaker().SetJob(jobB).Generate(23);
             
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, bulkJobs);
-            await dbContext.Setup(x => x.Jobs, relatedJobs);
+            await dbContext.Setup(x => x.Jobs, new [] { jobA, jobB });
+            await dbContext.Setup(x => x.Tasks, aTasks);
+            await dbContext.Setup(x => x.Tasks, bTasks);
             
-            var search = new JobSearchCriteria() { CorrelationId = correlationId };
+            var search = new SubtaskSearchCriteria() { JobId = jobB.JobId };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
             results.Page.Should().Be(1);
             results.Size.Should().Be(25);
-            results.TotalItems.Should().Be(13);
+            results.TotalItems.Should().Be(23);
             results.TotalPages.Should().Be(1);
-            results.Data.Should().HaveCount(13);
-            results.Data.Should().OnlyContain(x => relatedJobs.Select(j => j.JobId).Contains(x.JobId));
+            results.Data.Should().HaveCount(23);
+            results.Data.Should().OnlyContain(x => bTasks.Select(t => t.TaskId).Contains(x.TaskId));
         }            
         
         [Test]
-        public async Task Test_JobSearchQuery_FindByCorrelationId_None_Should_ReturnEmpty()
+        public async Task Test_SubtaskSearchQuery_FindByJobId_None_Should_ReturnEmpty()
         {
             // arrange
-            var correlationId = Guid.NewGuid();
-            var bulkJobs = new JobFaker().Generate(100);
-
-            await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, bulkJobs);
+            var job = new JobFaker().Generate("default,InProgress");
+            var tasks = new SubtaskFaker().SetJob(job).Generate(17);
             
-            var search = new JobSearchCriteria() { CorrelationId = correlationId };
+            await using var dbContext = GetDbContext();
+            await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, tasks);
+            
+            var search = new SubtaskSearchCriteria() { JobId = Guid.Empty };
             var paging = new PagingCriteria() { Page = 1, Size = 25 };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
@@ -178,19 +189,21 @@ namespace PortAuthority.Test.Data.Queries
         
 
         [Test]
-        public async Task Test_JobSearchQuery_TinyPageSize_Should_ReturnPagedResult()
+        public async Task Test_SubtaskSearchQuery_TinyPageSize_Should_ReturnPagedResult()
         {
             // arrange
-            var jobs = new JobFaker().Generate(100);
-
+            var job = new JobFaker().Generate("default,InProgress");
+            var tasks = new SubtaskFaker().SetJob(job).Generate(100);
+            
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, tasks);
 
-            var search = new JobSearchCriteria();
+            var search = new SubtaskSearchCriteria();
             var paging = new PagingCriteria() { Page = 1, Size = 5 };
             
             // act
-            var results = await new JobSearchQuery(dbContext).Find(search, paging);
+            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
             
             // assert
             results.Should().NotBeNull();
@@ -202,18 +215,20 @@ namespace PortAuthority.Test.Data.Queries
         }         
         
         [Test]
-        public async Task Test_JobSearchQuery_PageForward_Should_ReturnNewPage()
+        public async Task Test_SubtaskSearchQuery_PageForward_Should_ReturnNewPage()
         {
             // arrange
-            var jobs = new JobFaker().Generate(100);
+            var job = new JobFaker().Generate("default,InProgress");
+            var tasks = new SubtaskFaker().SetJob(job).Generate(100);
             
             await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, jobs);
+            await dbContext.Setup(x => x.Jobs, job);
+            await dbContext.Setup(x => x.Tasks, tasks);
 
-            var search = new JobSearchCriteria();
+            var search = new SubtaskSearchCriteria();
             
             // act
-            var query = new JobSearchQuery(dbContext);
+            var query = new SubtaskSearchQuery(dbContext);
             var page1 = await query.Find(search, new PagingCriteria() { Page = 1, Size = 5 });
             var page2 = await query.Find(search, new PagingCriteria() { Page = 2, Size = 5 });
             var page3 = await query.Find(search, new PagingCriteria() { Page = 3, Size = 5 });

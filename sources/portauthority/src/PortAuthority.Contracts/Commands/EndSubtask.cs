@@ -7,7 +7,7 @@ namespace PortAuthority.Contracts.Commands
     /// </summary>
     public interface EndSubtask
     {
-        Guid Id { get; }
+        Guid TaskId { get; }
         bool Success { get; }
         DateTimeOffset EndTime { get; }
     }
