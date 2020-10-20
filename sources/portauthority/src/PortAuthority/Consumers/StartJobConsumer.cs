@@ -9,6 +9,7 @@ using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
@@ -65,7 +66,7 @@ namespace PortAuthority.Consumers
         public StartJobConsumerDefinition()
         {
             // override the default endpoint name
-            EndpointName = "port-authority-jobs";
+            EndpointName = PortAuthorityEndpointConventions.JobEndpoint;
 
             // limit the number of messages consumed concurrently
             // this applies to the consumer only, not the endpoint

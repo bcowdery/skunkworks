@@ -5,6 +5,7 @@ using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
 using Microsoft.Extensions.Logging;
+using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
 
 namespace PortAuthority.Consumers
@@ -34,7 +35,7 @@ namespace PortAuthority.Consumers
         public StartSubtaskConsumerDefinition()
         {
             // override the default endpoint name
-            EndpointName = "port-authority-tasks";
+            EndpointName = PortAuthorityEndpointConventions.SubtaskEndpoint;
 
             // limit the number of messages consumed concurrently
             // this applies to the consumer only, not the endpoint

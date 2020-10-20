@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PortAuthority.Bootstrap;
+using PortAuthority.Contracts;
+using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
 using PortAuthority.Web.Extensions;
 using PortAuthority.Web.Settings;
@@ -51,13 +53,14 @@ namespace PortAuthority.Web
                 .UseSqlServer(Configuration.GetConnectionString("SqlDatabase"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
 
-            // Mass Transit
+            // MassTransit messaging endpoints
             services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
+                    PortAuthorityEndpointConventions.Map();
                 });
             });
             
