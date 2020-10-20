@@ -10,13 +10,14 @@ using PortAuthority.Data;
 namespace PortAuthority.Data.Migrations
 {
     [DbContext(typeof(PortAuthorityDbContext))]
-    [Migration("20201014172101_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201020160852_InitialSchemaCreation")]
+    partial class InitialSchemaCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("pa")
                 .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -58,6 +59,8 @@ namespace PortAuthority.Data.Migrations
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CorrelationId");
 
                     b.HasIndex("JobId");
 

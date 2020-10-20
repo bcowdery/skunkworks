@@ -27,7 +27,8 @@ namespace PortAuthority.Data.Migration
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<PortAuthorityDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("SqlDatabase"));
+                .UseSqlServer(configuration.GetConnectionString("SqlDatabase"), options => options
+                    .EnableRetryOnFailure());
 
             await using var ctx = new PortAuthorityDbContext(optionsBuilder.Options);
             await ctx.Database.MigrateAsync();

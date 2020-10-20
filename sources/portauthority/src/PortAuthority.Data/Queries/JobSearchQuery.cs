@@ -26,6 +26,12 @@ namespace PortAuthority.Data.Queries
         /// <returns></returns>
         public async Task<PagedResult<JobSearchResult>> Find(JobSearchCriteria criteria, PagingCriteria paging)
         {
+            if (paging.Page <= 0 || paging.Size <= 0)
+            {
+                return PagedResult<JobSearchResult>.Empty(paging);
+            }
+
+            // Build search query
             var query = _dbContext.Jobs.AsQueryable();
 
             if (!string.IsNullOrEmpty(criteria.Type) || !string.IsNullOrEmpty(criteria.Namespace))

@@ -8,6 +8,9 @@ namespace PortAuthority.Data.Queries
     /// </summary>
     public class JobSearchCriteria
     {
+        /// <summary>
+        /// Optional correlation ID to find related jobs
+        /// </summary>
         public Guid? CorrelationId { get; set; }
         
         /// <summary>
@@ -19,5 +22,10 @@ namespace PortAuthority.Data.Queries
         /// Namespace of the job to search for (both Type & Namespace are required 
         /// </summary>
         public string Namespace { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(CorrelationId)}: {CorrelationId}, {nameof(Type)}: {Type}, {nameof(Namespace)}: {Namespace}";
+        }
     }
 }

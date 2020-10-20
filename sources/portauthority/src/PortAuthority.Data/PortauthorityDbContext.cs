@@ -20,7 +20,8 @@ namespace PortAuthority.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder); // must be first
-            
+
+            modelBuilder.HasDefaultSchema("pa");
             modelBuilder.ApplyConfigurationsFromAssembly(AssemblyHook.Assembly);
         }
 

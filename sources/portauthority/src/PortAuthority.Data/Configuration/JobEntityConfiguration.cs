@@ -14,6 +14,7 @@ namespace PortAuthority.Data.Configuration
         {          
             // Indexes
             builder.HasIndex(j => j.JobId);
+            builder.HasIndex(j => j.CorrelationId);
             builder.HasIndex(j => new { j.Type, j.Namespace });
 
             // One-to-many
