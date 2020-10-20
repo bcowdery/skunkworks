@@ -10,12 +10,12 @@ namespace PortAuthority.Data.Queries
         /// <summary>
         /// Page number
         /// </summary>
-        public int Page { get; set; }
-        
+        public int Page { get; set; } = 1;
+
         /// <summary>
         /// Page size
         /// </summary>
-        public int Size { get; set; }
+        public int Size { get; set; } = 25;
 
         public override string ToString()
         {
