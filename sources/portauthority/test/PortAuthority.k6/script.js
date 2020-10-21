@@ -27,7 +27,7 @@ export const options = {
         'Create Job errors': ['rate<0.1'],  // 1% of total create job requests are allowed to fail
         'Get Job errors':    ['rate<0.1'],  // 1% of total get job requests are allowed to fail
         'Update Job errors': ['rate<0.1'],  // 1% of total update job requests are allowd to fail
-        http_req_duration:   ['p(99)<100'], // 99% of requests must complete in less than 100ms
+        http_req_duration:   ['p(99)<1500'], // 99% of requests must complete in less than 1.5s
     },
 };
 

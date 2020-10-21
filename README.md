@@ -11,6 +11,22 @@ The primary goal is to the ease the barier to entry and provide developers with 
 
 &nbsp;
 
+
+# Goals
+
+| Goal                                 | How                     | Success |
+|--------------------------------------|-------------------------|---------|
+| **Low barrier to entry**<br/> Developers should be able to get up and running without needing to install and configure services for each aspect of the application stack (e.g., SQL Server, Reddis, Azure emulators, dotnet core versions etc.). Out of the box, developers should be able to get up and running with a single command. | Docker Compose + Task Runners | ✅ 🎉 |
+| **Dotnet core live-reload**<br/> Provide the option to run dotnet core applications using the `watch` command for live reloading of changes. Changes to source code should be refleted in the running container allowing fast turaround time and testing of changes. This needs to be an opt-in feature allowing developers to enable a "development mode" for just the service their working on. | Implemented in `Dockerfile.develop` image files and docker compose development overrides  | ✅ |
+| **Consumer testing**<br/> MassTransit async message consumers need to be unit-testable! The bulk of our testing should be done as unit tests, with a few integration tests to ensure that messages can be delivered and processed when "sent" over the bus.  | NUnit `ConsumerFixture` using the MassTransit in-memory test harness. | ✅ | 
+| **Send/Publish endpoint testing**<br/> Need a way to assert that messages have been sent to a publish or send endpoint when verifing unit test. Much of this behaviour lives in MassTransit extension methods, making it difficult to easily unit test services that are sending messages. | Mock send endpoints and custom extension methods created to verify send and publish operations. | ✅ | 
+| **EF DbContext testing**<br/> EntityFramework `DbContext` classes cannot be mocked out - using InMemory databases also has some drawbacks as it does not expose issues in generated SQL & possible client-side evaluation errors. Need to support testing data repositories against a relational database, and an easy way to construct a DbContext when building services in unit tests. | [Bogus](https://github.com/bchavez/Bogus) data generation and custom extension methods setting up data.<br/> `DbContextFactory` allows easy creation of a context for unit testing. | ✅ |
+| **Load Testing**<br/> Developers should be able to load test services easily with a single command. Requires no local dependencies and can be easily scripted. Load tests should be ran against the running application stack and not as one-off builds or unit tests. _The goal of these tests is to proove that the service can stand up to expected load._ | [k6.io](http://k6.io) load tests embedded in an ad-hoc container. | ✅ 🚀 |
+
+
+&nbsp;
+
+
 # Getting Started
 
 You can build, package and run the entire solution with `up`.
