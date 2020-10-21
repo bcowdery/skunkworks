@@ -78,12 +78,14 @@ tasks:
   prune:
     desc: "Prune obsolete remote git branches and local container images"
     cmds:
+      - echo 'Pruning unused git and docker resources'
       - git fetch origin --prune
       - docker system prune -af
   
   nuke:
     desc: "Nuke all data files and reset the solution"
     cmds:
+      - echo 'Deleting all local mount points from ./data/'
       - rm -rf ./data/
 
   default:
