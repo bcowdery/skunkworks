@@ -7,8 +7,14 @@ includes:
   azstorage: ./services/azurestorage
   mssql: ./services/sqlserver
   rabbit: ./services/rabbitmq
-  portauthority: ./sources/portauthority  
-  shipyard: ./sources/shipyard
+  
+  portauthority:
+    taskfile: ./sources/portauthority/Taskfile.yml
+    dir: ./sources/portauthority    
+
+  shipyard: 
+    taskfile: ./sources/shipyard/Taskfile.yml
+    dir: ./sources/shipyard
   
 vars:
   SOLUTION_NAME: skunkworks
@@ -73,8 +79,7 @@ tasks:
     desc: "Prune obsolete remote git branches and local container images"
     cmds:
       - git fetch origin --prune
-      - docker images prune -a
-      - docker container prune -all
+      - docker system prune -af
   
   nuke:
     desc: "Nuke all data files and reset the solution"

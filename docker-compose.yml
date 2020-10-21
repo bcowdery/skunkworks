@@ -89,18 +89,18 @@ services:
     ports:
       - ${MSSQL_PORT}:1433    
     volumes:
-      - ./data/mssql/:/var/opt/mssql/data/
+      - ./data/mssql/:/var/opt/mssql/data/:cached
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${MSSQL_PASS}
 
-  nginx:
-    image: nginx    
-    ports:
-      - ${NGINX_HTTP_PORT}:80      
+  proxy:
+    image: nginx:alpine    
     depends_on:
       - portauthority_web      
       #- shipyard_web
+    ports:
+      - ${NGINX_HTTP_PORT}:80      
     volumes:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./services/nginx/conf.d/:/etc/nginx/conf.d    
@@ -112,7 +112,7 @@ services:
     ports:
         - ${RABBIT_PORT}:15672
     volumes:
-      - ./data/rabbitmq/:/var/lib/rabbitmq/mnesia/
+      - ./data/rabbitmq/:/var/lib/rabbitmq/mnesia/:cached
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}

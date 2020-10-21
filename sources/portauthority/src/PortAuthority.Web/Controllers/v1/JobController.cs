@@ -79,8 +79,12 @@ namespace PortAuthority.Web.Controllers.v1
         [ProducesResponseType(typeof(ErrorMessage), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateJob([FromBody] CreateJobForm createJob)
         {
-            _logger.LogInformation("Creating job = [{Job}]", createJob);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             
+            _logger.LogInformation("Creating job = [{Job}]", createJob);
             var result = await _jobService.CreateJob(createJob);
 
             if (result.IsConflict())

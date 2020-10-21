@@ -2,17 +2,40 @@ version: '3'
 
 vars:
   SOLUTION_NAME: skunkworks      
-  WEBAPI_NAME: portauthority_web
-  WORKER_NAME: portauthority_worker
+  PA_WEBAPI_NAME: portauthority_web
+  PA_WORKER_NAME: portauthority_worker
     
 tasks:    
 
   logs:
     desc: "Show portauthority logs"
     cmds:
-      - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
-      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.PA_WORKER_NAME}}_1 -f --tail 100
 
+  sh:worker:
+    desc: "Connect to the portauthority-worker shell"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.PA_WORKER_NAME}}_1 bash
+
+  sh:web:
+    desc: "Connect to the portauthority-web shell"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 bash
+      
+  dbmigrate:
+    desc: "Run database migrations"
+    cmds:
+      - docker build -t portauthority-dbmigrate:latest -f src/PortAuthority.Data.Migration/Dockerfile .
+      - docker run --rm -it --network={{.SOLUTION_NAME}}_default portauthority-dbmigrate:latest
+
+  loadtest:
+    desc: "Run k6 load tests"
+    dir: ./test/PortAuthority.k6/
+    cmds:
+      - docker build -t portauthority-k6:latest .
+      - docker run --rm -it --network={{.SOLUTION_NAME}}_default portauthority-k6:latest
+      
   rmi:
     desc: "Remove portauthority images"
     cmds:
@@ -28,17 +51,7 @@ tasks:
         ignore_error: true
       - cmd: docker image rmi portauthority-dbmigrate:dev
         ignore_error: true
-        
-  sh:worker:
-    desc: "Connect to the portauthority-worker shell"
-    cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 bash
-
-  sh:web:
-    desc: "Connect to the portauthority-web shell"
-    cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
-
+      
   default:
     cmds:
       - task -l
