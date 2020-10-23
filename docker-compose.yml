@@ -1,6 +1,12 @@
 version: '3'
 
-services:
+services:  
+  
+  #################################
+  ## Port Authority 
+  ## Job management system
+  #################################
+  
   portauthority_web:    
     image: portauthority-web
     build: 
@@ -40,39 +46,45 @@ services:
       - mssql
     environment: 
       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
-        
-   shipyard_web:    
-     image: shipyard-web
-     build: 
-       context: ./sources/shipyard/
-       dockerfile: src/Shipyard.Web/Dockerfile
-     ports:
-       - ${SHIPYARD_HTTP_PORT}:80      
-     depends_on:
-       #- azstorage
-       - mssql
-       - rabbit
-       - shipyard_dbmigrate 
-     environment: 
-       - PathPrefix=/messaging/
-       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
-       - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
-       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-   shipyard_worker:
-     image: shipyard-worker
-     build: 
-       context: ./sources/shipyard
-       dockerfile: src/Shipyard.Worker/Dockerfile
-     depends_on:     
-       #- azstorage  
-       - mssql      
-       - rabbit
-       - shipyard_dbmigrate
-     environment: 
-       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
-       - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
-       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+
+  #################################
+  ## Shipyard 
+  ## SMS/Email Messaging system
+  #################################
+
+  shipyard_web:    
+    image: shipyard-web
+    build: 
+      context: ./sources/shipyard/
+      dockerfile: src/Shipyard.Web/Dockerfile
+    ports:
+      - ${SHIPYARD_HTTP_PORT}:80      
+    depends_on:
+      #- azstorage
+      - mssql
+      - rabbit
+      - shipyard_dbmigrate 
+    environment: 
+      - PathPrefix=/messaging/
+      - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+
+  shipyard_worker:
+    image: shipyard-worker
+    build: 
+      context: ./sources/shipyard
+      dockerfile: src/Shipyard.Worker/Dockerfile
+    depends_on:     
+      #- azstorage  
+      - mssql      
+      - rabbit
+      - shipyard_dbmigrate
+    environment: 
+      - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+      - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
   shipyard_dbmigrate:
     image: shipyard-dbmigrate
@@ -84,6 +96,11 @@ services:
       - mssql
     environment:
       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+
+
+  #################################
+  ## Services
+  #################################
 
   # azstorage:
   #   image: mcr.microsoft.com/azure-storage/azurite
