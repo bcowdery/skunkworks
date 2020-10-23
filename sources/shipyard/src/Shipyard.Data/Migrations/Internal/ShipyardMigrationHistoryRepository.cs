@@ -11,7 +11,7 @@ namespace Shipyard.Data.Migrations.Internal
     public class ShipyardMigrationHistoryRepository : SqlServerHistoryRepository
 #pragma warning restore EF1001 // Internal EF Core API usage.
     {
-        protected override string TableSchema { get; } = "Yrd";
+        protected override string TableSchema { get; } = "yrd";
 
         public ShipyardMigrationHistoryRepository(HistoryRepositoryDependencies dependencies)
             : base(dependencies)

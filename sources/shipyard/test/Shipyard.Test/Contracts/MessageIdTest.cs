@@ -1,17 +1,17 @@
-using System;
+﻿using System;
 using System.Linq;
-using Xunit;
 using Bogus;
 using FluentAssertions;
+using NUnit.Framework;
 using Shipyard.Contracts;
-using Shipyard.Messages;
-using Shipyard.Test.Fakes;
+using Shipyard.Contracts.MessageTypes;
+using Shipyard.MessageTypes;
 
 namespace Shipyard.Test.Contracts
 {
     public class MessageIdTest 
     {
-        [Fact]
+        [Test]
         public void MessageId_For_Email_Should_Be_Repeatable()
         {
             // arrange
@@ -29,7 +29,7 @@ namespace Shipyard.Test.Contracts
             messageId.Value.Should().Be("dYBH4XqQmPti2xeDCsB8RunLQz0");
         }
 
-        [Fact]
+        [Test]
         public void MessageId_For_MixedTypes_Should_Be_Unique()
         {
             // arrange

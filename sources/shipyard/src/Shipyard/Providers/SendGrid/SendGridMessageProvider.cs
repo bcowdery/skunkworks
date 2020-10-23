@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Shipyard.Contracts;
+using Shipyard.Contracts.MessageTypes;
 
 namespace Shipyard.Providers.SendGrid
 {

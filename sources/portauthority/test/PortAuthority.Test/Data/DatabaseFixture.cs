@@ -28,7 +28,7 @@ namespace PortAuthority.Test.Data
                 .AddConsole());
             
             services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
-                .UseSqlite(Configuration.GetConnectionString("Default")));
+                .UseSqlite(Configuration.GetConnectionString("SqlDatabase")));
 
             services.AddPortAuthorityServices();
         }

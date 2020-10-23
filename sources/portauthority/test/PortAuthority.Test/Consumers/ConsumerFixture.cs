@@ -37,7 +37,7 @@ namespace PortAuthority.Test.Consumers
                 .AddConsole());
             
             services.AddDbContext<IPortAuthorityDbContext, PortAuthorityDbContext>(options => options
-                .UseSqlite(Configuration.GetConnectionString("Default")));
+                .UseSqlite(Configuration.GetConnectionString("SqlDatabase")));
 
             services.AddPortAuthorityServices();
             services.AddMassTransitInMemoryTestHarness(ConfigureBus);

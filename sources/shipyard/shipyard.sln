@@ -15,9 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Web", "src\Shipyar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BD3AF77-8F46-47A8-A92A-DD6556331A9A}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\.env = ..\..\.env
 		..\..\docker-compose.local.yml = ..\..\docker-compose.local.yml
-		..\..\docker-compose.local.yml.example = ..\..\docker-compose.local.yml.example
 		..\..\docker-compose.yml = ..\..\docker-compose.yml
+		README.md = README.md
 		Taskfile.yml = Taskfile.yml
 	EndProjectSection
 EndProject
@@ -27,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Worker", "src\Ship
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F29EAC72-7FC5-489B-B299-A7187B3E8AEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipyard.Test", "test\Shipyard.Test\Shipyard.Test.csproj", "{0EE1C700-2712-4362-ACAF-B4FBF1AFAB4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipyard.Test", "test\Shipyard.Test\Shipyard.Test.csproj", "{0EE1C700-2712-4362-ACAF-B4FBF1AFAB4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

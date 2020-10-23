@@ -54,6 +54,7 @@ services:
   #     - rabbit
   #   environment: 
   #     - PathPrefix=/messaging/
+  #     - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
   #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
   #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
@@ -66,12 +67,13 @@ services:
   #     - azstorage  
   #     - mssql      
   #     - rabbit
-  #     # - shipyard_db_migrate
+  #     # - shipyard_dbmigrate
   #   environment: 
+  #     - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
   #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
   #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  # shipyard_db_migrate:    
+  # shipyard_dbmigrate:    
   #   command: dockerize --tcp:1433 --wait 30s /app/Shipyard.Data.Migration
   #   depends_on: 
   #     - mssql

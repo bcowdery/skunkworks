@@ -12,6 +12,7 @@ namespace PortAuthority.Data
     {
         DbSet<Job> Jobs { get; }
         DbSet<Subtask> Tasks { get; }
+        
         DatabaseFacade Database { get; }
 
         int SaveChanges();

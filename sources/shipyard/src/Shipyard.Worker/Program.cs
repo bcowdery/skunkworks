@@ -1,12 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Shipyard.Bootstrap;
 using Shipyard.Data;
 
 namespace Shipyard.Worker
@@ -41,10 +43,26 @@ namespace Shipyard.Worker
                 {
                     var configuration = hostContext.Configuration;
 
-                    services.AddDbContext<ShipyardDbContext>(options =>
-                        options.UseSqlServer(configuration.GetConnectionString("Default"), 
+                    // EF Databases
+                    services.AddDbContext<IShipyardDbContext, ShipyardDbContext>(options =>
+                        options.UseSqlServer(configuration.GetConnectionString("SqlDatabase"), 
                             providerOptions => providerOptions.EnableRetryOnFailure()));
 
+                    services.AddMassTransit(x =>
+                    {
+                        //x.AddConsumersFromNamespaceContaining<ScheduleEmailConsumer>();
+
+                        x.SetKebabCaseEndpointNameFormatter();
+                        x.UsingRabbitMq((context, cfg) =>
+                        {
+                            cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
+                            cfg.ConfigureEndpoints(context);
+                        });
+                    });
+                    
+                    services.AddMassTransitHostedService();
+
+                    // Application Services
                     services.AddHostedService<WorkerBackgroundService>();
                     
                 })

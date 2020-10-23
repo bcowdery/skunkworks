@@ -59,7 +59,7 @@ namespace PortAuthority.Web
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
                     PortAuthorityEndpointConventions.Map();
                 });
             });

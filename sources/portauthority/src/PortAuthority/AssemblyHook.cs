@@ -11,7 +11,7 @@ namespace PortAuthority
     public static class AssemblyHook
     {
         /// <summary>
-        /// Assembly reference for PortAuthority
+        /// Assembly reference for PortAuthority.DLL
         /// </summary>
         public static Assembly Assembly = typeof(AssemblyHook).Assembly;
     }

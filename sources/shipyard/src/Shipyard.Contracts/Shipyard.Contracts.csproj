@@ -5,6 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="7.0.4" />
     <PackageReference Include="NodaTime" Version="3.0.0" />
   </ItemGroup>
 </Project>

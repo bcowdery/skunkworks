@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -14,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Shipyard.Bootstrap;
+using Shipyard.Contracts;
 using Shipyard.Data;
 using Shipyard.Web.Extensions;
 using Shipyard.Web.Settings;
@@ -49,9 +52,25 @@ namespace Shipyard.Web
             services.Configure<CorsSettings>(Configuration.GetSection("CorsSettings"));
             
             // Database configuration
-            services.AddDbContext<ShipyardDbContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("Default"),
+            services.AddDbContext<IShipyardDbContext, ShipyardDbContext>(options => options
+                .UseSqlServer(Configuration.GetConnectionString("SqlDatabase"),
                     providerOptions => providerOptions.EnableRetryOnFailure()));
+            
+            // MassTransit messaging endpoints
+            services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
+                    ShipyardEndpointConventions.Map();
+                });
+            });
+            
+            services.AddMassTransitHostedService();
+
+            // Application services 
+            services.AddShipyardServices();
 
             // Open API (Swagger) documentation
             services.AddSwaggerGen(c =>

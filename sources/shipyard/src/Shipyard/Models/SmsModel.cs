@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using Shipyard.Contracts.Addresses;
@@ -7,7 +7,7 @@ namespace Shipyard.Models
 {
     public class SmsModel
     {                
-        public ISchedule Schedule { get; set; }
+        public DateTimeOffset? ScheduleTime { get; set; }
         
         public PhoneNumber[] To { get; set; }
         

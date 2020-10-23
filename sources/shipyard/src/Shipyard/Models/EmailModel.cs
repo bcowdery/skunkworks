@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
@@ -8,7 +8,7 @@ namespace Shipyard.Models
 {
     public class EmailModel
     {
-        public ISchedule Schedule { get; set; }
+        public DateTimeOffset? ScheduleTime { get; set; }
 
         public EmailAddress[] To { get; set; }
         public EmailAddress[] Cc { get; set; }

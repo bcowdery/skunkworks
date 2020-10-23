@@ -1,6 +1,4 @@
-using System;
-
-namespace Shipyard.WebApi.Models
+namespace Shipyard.Web.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,11 @@
+﻿using System;
+using Shipyard.Contracts.MessageTypes;
+
 namespace Shipyard.Contracts.Commands 
 {
     public interface ScheduleEmail
     {
         IEmail Email { get; }
-        ISchedule Schedule { get; }        
+        DateTimeOffset? ScheduleTime { get; }
     }
 }

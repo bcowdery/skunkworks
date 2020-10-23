@@ -1,11 +1,12 @@
 ﻿using System.Net.Mime;
 using Bogus;
 using Shipyard.Contracts.Addresses;
-using Shipyard.Messages;
+using Shipyard.MessageTypes;
 
 namespace Shipyard.Test.Fakes
 {
-    public sealed class EmailFaker : Faker<Email>
+    public sealed class EmailFaker 
+        : Faker<Email>
     {
         private static readonly EmailAddress _defaultFrom = new EmailAddress("Brian", "brian@example.com");
         private static readonly EmailAddressFaker _emailAddresses = new EmailAddressFaker();

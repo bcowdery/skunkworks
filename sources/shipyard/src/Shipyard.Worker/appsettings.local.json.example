@@ -1,5 +1,6 @@
 {
-  "ConnectionStrings": {
-    "Default": "Server=localhost;Database=skunkworks;Trusted_Connection=True;"
-  }
+    "ConnectionStrings": {
+        "SqlDatabase": "Server=localhost,11433;Database=skunkworks;User=sa;Password=r00tp@ssw0rD",
+        "Rabbit": "amqp://guest:guest@localhost/"
+    }
 }

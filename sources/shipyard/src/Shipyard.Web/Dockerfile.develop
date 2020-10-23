@@ -18,12 +18,9 @@ EXPOSE 80
 # Restore packages to prime the package cache for the dev image
 WORKDIR /app
 COPY . .
-RUN dotnet restore src/Shipyard.Data.Migration
 RUN dotnet restore src/Shipyard.Web
 
 # Build development image, this assumes that ./shipyard/src is mounted as /app/src
-RUN echo "dotnet publish src/Shipyard.Data.Migration -c ${BUILD_CONFIGURATION} -o /tools/migration" >> entrypoint.sh
-
 RUN echo "dotnet build src/Shipyard.Web -c ${BUILD_CONFIGURATION}" >> entrypoint.sh
 RUN echo "dotnet watch --project src/Shipyard.Web -- run -c ${BUILD_CONFIGURATION} --no-launch-profile" >> entrypoint.sh
 
