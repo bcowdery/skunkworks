@@ -41,44 +41,49 @@ services:
     environment: 
       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
         
-  # shipyard_web:    
-  #   image: shipyard-web
-  #   build: 
-  #     context: ./sources/shipyard/
-  #     dockerfile: src/Shipyard.Web/Dockerfile
-  #   ports:
-  #     - ${SHIPYARD_HTTP_PORT}:80      
-  #   depends_on:
-  #     - azstorage
-  #     - mssql
-  #     - rabbit
-  #   environment: 
-  #     - PathPrefix=/messaging/
-  #     - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
-  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
-  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+   shipyard_web:    
+     image: shipyard-web
+     build: 
+       context: ./sources/shipyard/
+       dockerfile: src/Shipyard.Web/Dockerfile
+     ports:
+       - ${SHIPYARD_HTTP_PORT}:80      
+     depends_on:
+       #- azstorage
+       - mssql
+       - rabbit
+       - shipyard_dbmigrate 
+     environment: 
+       - PathPrefix=/messaging/
+       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+       - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;
+       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  # shipyard_worker:
-  #   image: shipyard-worker
-  #   build: 
-  #     context: ./sources/shipyard
-  #     dockerfile: src/Shipyard.Worker/Dockerfile
-  #   depends_on:     
-  #     - azstorage  
-  #     - mssql      
-  #     - rabbit
-  #     # - shipyard_dbmigrate
-  #   environment: 
-  #     - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
-  #     - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
-  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+   shipyard_worker:
+     image: shipyard-worker
+     build: 
+       context: ./sources/shipyard
+       dockerfile: src/Shipyard.Worker/Dockerfile
+     depends_on:     
+       #- azstorage  
+       - mssql      
+       - rabbit
+       - shipyard_dbmigrate
+     environment: 
+       - ConnectionStrings__Rabbit=amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbit/
+       - ConnectionStrings__AzureStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azstorage:10000/devstoreaccount1;    
+       - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
-  # shipyard_dbmigrate:    
-  #   command: dockerize --tcp:1433 --wait 30s /app/Shipyard.Data.Migration
-  #   depends_on: 
-  #     - mssql
-  #   environment: 
-  #     - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
+  shipyard_dbmigrate:
+    image: shipyard-dbmigrate
+    command: dockerize -wait tcp://mssql:1433 -timeout 30s dotnet PortAuthority.Data.Migration.dll
+    build:
+      context: ./sources/shipyard
+      dockerfile: src/Shipyard.Data.Migration/Dockerfile
+    depends_on:
+      - mssql
+    environment:
+      - ConnectionStrings__SqlDatabase=Server=mssql;Database=skunkworks;User=sa;Password=${MSSQL_PASS}
 
   # azstorage:
   #   image: mcr.microsoft.com/azure-storage/azurite
@@ -100,7 +105,7 @@ services:
     image: nginx:alpine    
     depends_on:
       - portauthority_web      
-      #- shipyard_web
+      - shipyard_web
     ports:
       - ${NGINX_HTTP_PORT}:80      
     volumes:
