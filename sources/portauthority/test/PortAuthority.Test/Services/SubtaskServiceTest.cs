@@ -27,8 +27,8 @@ namespace PortAuthority.Test.Services
         private SubtaskService _service;
 
         // mocks
-        private readonly MockRepository _mocks = new MockRepository(MockBehavior.Default);
-        private Mock<ISendEndpointProvider> _mockSendEndpoint;
+        private MockRepository _mocks;
+        private Mock<ISendEndpointProvider> _mockSendEndpointProvider;
         
         [SetUp]
         public void Setup()
@@ -37,12 +37,13 @@ namespace PortAuthority.Test.Services
             var loggerFactory = NullLoggerFactory.Instance;
             var contextFactory = DbContextFactory.Instance;
             
-            _mockSendEndpoint = _mocks.Create<ISendEndpointProvider>();
+            _mocks = new MockRepository(MockBehavior.Default);
+            _mockSendEndpointProvider = _mocks.Create<ISendEndpointProvider>();
             
             _service = new SubtaskService(
                 loggerFactory.CreateLogger<SubtaskService>(),
                 contextFactory.CreateDbContext<PortAuthorityDbContext>(),
-                _mockSendEndpoint.Object,
+                _mockSendEndpointProvider.Object,
                 assembler
             );
         }
@@ -174,14 +175,13 @@ namespace PortAuthority.Test.Services
                 Name = "test-createtask-ok"
             };
 
-            _mockSendEndpoint
+            _mockSendEndpointProvider
                 .SetupMessage<CreateSubtask>(new
                 {
                     JobId = form.JobId,
-                    CorrelationId = form.TaskId,
+                    TaskId = form.TaskId,
                     Name = form.Name
-                })
-                .Verifiable();
+                });
                 
             // act
             var result = await _service.CreateTask(form);
@@ -189,8 +189,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+
+            _mocks.Verify();
         }
         
         [Test]
@@ -203,16 +203,7 @@ namespace PortAuthority.Test.Services
                 TaskId = NewId.NextGuid(),
                 Name = "test-createtask-job-not-exists"
             };
-
-            _mockSendEndpoint
-                .SetupMessage<CreateSubtask>(new
-                {
-                    JobId = form.JobId,
-                    CorrelationId = form.TaskId,
-                    Name = form.Name
-                })
-                .Verifiable();
-                
+            
             // act
             var result = await _service.CreateTask(form);
             
@@ -240,15 +231,6 @@ namespace PortAuthority.Test.Services
                 Name = "test-createtask-task-id-already-exists"
             };
 
-            _mockSendEndpoint
-                .SetupMessage<CreateSubtask>(new
-                {
-                    JobId = form.JobId,
-                    CorrelationId = form.TaskId,
-                    Name = form.Name
-                })
-                .Verifiable();
-                
             // act
             var result = await _service.CreateTask(form);
             
@@ -271,13 +253,12 @@ namespace PortAuthority.Test.Services
             
             var startTime = DateTimeOffset.UtcNow;
             
-            _mockSendEndpoint
+            _mockSendEndpointProvider
                 .SetupMessage<StartSubtask>(new
                 {
                     TaskId = task.TaskId,
                     StartTime = startTime
-                })
-                .Verifiable();
+                });
                 
             // act
             var result = await _service.StartTask(task.TaskId, startTime);
@@ -285,8 +266,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+
+            _mocks.Verify();
         }
         
         [Test]
@@ -319,14 +300,13 @@ namespace PortAuthority.Test.Services
             var endTime = DateTimeOffset.UtcNow;
             var isSuccess = true;
 
-            _mockSendEndpoint
+            _mockSendEndpointProvider
                 .SetupMessage<EndSubtask>(new
                 {
                     TaskId = task.TaskId,
                     EndTime = endTime,
                     Success = isSuccess
-                })
-                .Verifiable();
+                });
                 
             // act
             var result = await _service.EndTask(task.TaskId, endTime, isSuccess);
@@ -334,8 +314,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+
+            _mocks.Verify();
         }
         
         [Test]

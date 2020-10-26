@@ -27,8 +27,8 @@ namespace PortAuthority.Test.Services
         private JobService _service;
 
         // mocks
-        private readonly MockRepository _mocks = new MockRepository(MockBehavior.Default);
-        private Mock<ISendEndpointProvider> _mockSendEndpoint;
+        private MockRepository _mocks;
+        private Mock<ISendEndpointProvider> _mockSendEndpointProvider;
         
         [SetUp]
         public void Setup()
@@ -37,12 +37,13 @@ namespace PortAuthority.Test.Services
             var loggerFactory = NullLoggerFactory.Instance;
             var contextFactory = DbContextFactory.Instance;
             
-            _mockSendEndpoint = _mocks.Create<ISendEndpointProvider>();
+            _mocks = new MockRepository(MockBehavior.Default);
+            _mockSendEndpointProvider = _mocks.Create<ISendEndpointProvider>();
             
             _service = new JobService(
                 loggerFactory.CreateLogger<JobService>(),
                 contextFactory.CreateDbContext<PortAuthorityDbContext>(),
-                _mockSendEndpoint.Object,
+                _mockSendEndpointProvider.Object,
                 assembler
             );
         }
@@ -169,15 +170,13 @@ namespace PortAuthority.Test.Services
                 Namespace = faker.Internet.DomainName()
             };
 
-            _mockSendEndpoint
+            _mockSendEndpointProvider
                 .SetupMessage<CreateJob>(new
                 {
                     JobId = form.JobId,
-                    CorrelationId = form.CorrelationId,
                     Type = form.Type,
-                    Namespace = form.Namespace
-                })
-                .Verifiable();
+                    Namespace = form.Namespace,
+                });
                 
             // act
             var result = await _service.CreateJob(form);
@@ -185,8 +184,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+
+            _mocks.Verify();
         }
 
         [Test]
@@ -223,14 +222,13 @@ namespace PortAuthority.Test.Services
 
             await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
             await context.Setup(x => x.Jobs, job);
-            
-            _mockSendEndpoint
+
+            _mockSendEndpointProvider
                 .SetupMessage<StartJob>(new
                 {
-                    JobId = job.JobId,
+                    JobId = job.JobId, 
                     StartTime = startTime
-                })
-                .Verifiable();
+                });
                 
             // act
             var result = await _service.StartJob(job.JobId, startTime);
@@ -238,8 +236,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+
+            _mocks.Verify();
         }
         
         [Test]
@@ -269,14 +267,13 @@ namespace PortAuthority.Test.Services
             await using var context = DbContextFactory.Instance.CreateDbContext<PortAuthorityDbContext>();
             await context.Setup(x => x.Jobs, job);
             
-            _mockSendEndpoint
+            _mockSendEndpointProvider
                 .SetupMessage<EndJob>(new
                 {
                     JobId = job.JobId,
                     EndTime = endTime,
                     Success = isSuccess
-                })
-                .Verifiable();
+                });
                 
             // act
             var result = await _service.EndJob(job.JobId, endTime, isSuccess);
@@ -284,8 +281,8 @@ namespace PortAuthority.Test.Services
             // assert
             result.Should().NotBeNull();
             result.IsOk().Should().BeTrue();
-            
-            _mockSendEndpoint.Verify();
+    
+            _mocks.Verify();
         }
         
         [Test]

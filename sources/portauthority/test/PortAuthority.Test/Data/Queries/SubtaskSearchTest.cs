@@ -47,32 +47,6 @@ namespace PortAuthority.Test.Data.Queries
         }
         
         [Test]
-        public async Task Test_SubtaskSearchQuery_DefaultPaging_Should_ReturnEmptyResult()
-        {
-            // arrange
-            var job = new JobFaker().Generate();
-            var tasks = new SubtaskFaker().SetJob(job).Generate(100);
-
-            await using var dbContext = GetDbContext();
-            await dbContext.Setup(x => x.Jobs, job);
-            await dbContext.Setup(x => x.Tasks, tasks);
-            
-            var search = new SubtaskSearchCriteria() { };
-            var paging = new PagingCriteria() { };
-            
-            // act
-            var results = await new SubtaskSearchQuery(dbContext).Find(search, paging);
-            
-            // assert
-            results.Should().NotBeNull();
-            results.Page.Should().Be(0);
-            results.Size.Should().Be(0);
-            results.TotalItems.Should().Be(0);
-            results.TotalPages.Should().Be(0);            
-            results.Data.Should().BeNullOrEmpty();
-        }
-        
-        [Test]
         public async Task Test_SubtaskSearchQuery_DefaultCriteria_Should_ReturnAll()
         {
             // arrange
