@@ -60,7 +60,7 @@ Available tasks for this project:
 
 ## Development Overrides
 
-All services can be overridden by editing the `docker-compose.local.yml` file. This allows you to enable development & debugging utilities on a service-by-service basis. Developers are able to customize their environment to focus their development efforts on a small part of the platform 
+All services can be overridden by editing the `docker-compose.override.yml` file. This allows you to enable development & debugging utilities on a service-by-service basis. Developers are able to customize their environment to focus their development efforts on a small part of the platform 
 
 > 🚀 Developer overrides are **local only** and are excluded from commits by the `.gitignore` file.
 
@@ -69,7 +69,7 @@ All services can be overridden by editing the `docker-compose.local.yml` file. T
 
 In this example, uncommenting the `shipyard_worker` section enables hot-reloading and Visual Studio debugging of the `Shipyard.Worker` dotnet core application. The solution source root is mapped to the image as a mounted volume so that the docker container can monitor the file system for changes. Developer user secrets are also mounted to provide safe storage of secrets via the `dotnet user-secrets` tool.
 
-**docker-compose.local.yml:**
+**docker-compose.override.yml:**
 ```yml
 version: '3'
 

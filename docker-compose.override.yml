@@ -8,6 +8,7 @@ version: '3'
 #     volumes:
 #       - ./sources/portauthority/src/:/app/src/      
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 
 #   portauthority_worker:
@@ -17,6 +18,7 @@ version: '3'
 #     volumes:
 #       - ./sources/portauthority/src/:/app/src/        
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 
 #   shipyard_web:  
@@ -26,6 +28,7 @@ version: '3'
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/      
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 
 #   shipyard_worker:
@@ -35,4 +38,5 @@ version: '3'
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/        
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/

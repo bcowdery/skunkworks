@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
+using MassTransit.Conductor;
+using MassTransit.Definition;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -59,9 +61,11 @@ namespace PortAuthority.Web
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
                     PortAuthorityEndpointConventions.Map();
                 });
+
+                x.AddServiceClient();
             });
             
             services.AddMassTransitHostedService();

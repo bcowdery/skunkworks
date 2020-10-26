@@ -26,17 +26,17 @@ silent: true
 tasks:
   
   prepare:
-    desc: "Creates the .env & docker-compose.local.yml config files for local development"
+    desc: "Creates the docker-compose.override.yml config local development overrides"
     cmds: 
-      - cp docker-compose.local.yml.example docker-compose.local.yml    
+      - cp docker-compose.override.yml.example docker-compose.override.yml    
     status:
-      - test -f docker-compose.local.yml
+      - test -f docker-compose.override.yml
 
   up:
     desc: "Bring up the solution"
     deps: [ prepare ]
     cmds:
-      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
+      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.override.yml up -d --no-recreate
 
   down: 
     desc: "Bring down the solution"

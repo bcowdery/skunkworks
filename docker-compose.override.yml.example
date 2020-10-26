@@ -1,0 +1,42 @@
+version: '3'
+
+# services:
+#   portauthority_web:  
+#     image: portauthority-web:dev
+#     build:
+#       dockerfile: src/PortAuthority.Web/Dockerfile.develop
+#     volumes:
+#       - ./sources/portauthority/src/:/app/src/      
+#       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
+#       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
+
+#   portauthority_worker:
+#     image: portauthority-worker:dev
+#     build: 
+#       dockerfile: src/PortAuthority.Worker/Dockerfile.develop
+#     volumes:
+#       - ./sources/portauthority/src/:/app/src/        
+#       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
+#       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
+
+#   shipyard_web:  
+#     image: shipyard-web:dev
+#     build:
+#       dockerfile: src/Shipyard.Web/Dockerfile.develop
+#     volumes:
+#       - ./sources/shipyard/src/:/app/src/      
+#       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
+#       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
+
+#   shipyard_worker:
+#     image: shipyard-worker:dev
+#     build: 
+#       dockerfile: src/Shipyard.Worker/Dockerfile.develop
+#     volumes:
+#       - ./sources/shipyard/src/:/app/src/        
+#       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
+#       - $APPDATA/ASP.NET/Https:/root/.aspnet/https:ro
+#       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/

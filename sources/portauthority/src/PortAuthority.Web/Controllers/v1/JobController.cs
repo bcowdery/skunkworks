@@ -12,6 +12,7 @@ using PortAuthority.Extensions;
 using PortAuthority.Forms;
 using PortAuthority.Models;
 using PortAuthority.Results.Errors;
+using PortAuthority.Web.Extensions;
 using PortAuthority.Web.Results;
 
 namespace PortAuthority.Web.Controllers.v1
@@ -59,7 +60,7 @@ namespace PortAuthority.Web.Controllers.v1
             _logger.LogInformation("Get job Id = {JobId}", id);
             
             var result = await _jobService.GetJob(id);
-
+            
             if (result.IsNotFound())
             {
                 _logger.LogWarning("Job not found with Id = {JobId}", id);

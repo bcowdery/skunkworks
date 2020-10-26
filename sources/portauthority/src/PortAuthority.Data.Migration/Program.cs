@@ -3,6 +3,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using PortAuthority.Data.Migration.Extensions;
 
 namespace PortAuthority.Data.Migration
 {
@@ -18,20 +22,35 @@ namespace PortAuthority.Data.Migration
     {
         static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
-                .Build();
-
-            var optionsBuilder = new DbContextOptionsBuilder<PortAuthorityDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("SqlDatabase"), options => options
-                    .EnableRetryOnFailure());
-
-            await using var ctx = new PortAuthorityDbContext(optionsBuilder.Options);
-            await ctx.Database.MigrateAsync();
+            using var host = CreateHostBuilder(args).Build();
+            await host.MigrateDatabaseAsync<PortAuthorityDbContext>();
+            await host.RunAsync(); /* does nothing, keeps the container alive */
         }
+        
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    var env = hostingContext.HostingEnvironment;
+                    config.SetBasePath(env.ContentRootPath);
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+                    config.AddEnvironmentVariables();
+                })
+                .ConfigureLogging((hostContext, logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.AddApplicationInsights();
+                    logging.AddConsole();
+                })                
+                .ConfigureServices((hostContext, services) =>
+                {
+                    var configuration = hostContext.Configuration;
+
+                    services.AddDbContext<PortAuthorityDbContext>(options => options
+                        .UseSqlServer(configuration.GetConnectionString("SqlDatabase"), 
+                            providerOptions => providerOptions.EnableRetryOnFailure()));
+                })
+                .UseConsoleLifetime();
     }
 }
