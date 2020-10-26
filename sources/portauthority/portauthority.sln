@@ -4,9 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6DE4E746-AA40-43E1-BE87-8444B39B44E6}"
-ProjectSection(SolutionItems) = preProject
-	src\Directory.Build.Props = src\Directory.Build.Props
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.Props = src\Directory.Build.Props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortAuthority", "src\PortAuthority\PortAuthority.csproj", "{4EDDAE4F-44CE-494C-A4BD-E529B4850911}"
 EndProject
@@ -26,15 +26,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortAuthority.Test", "test\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E49F281-92FA-49F4-A3BE-1DEEACECE24B}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\.env = ..\..\.env
+		..\..\docker-compose.local.yml = ..\..\docker-compose.local.yml
+		..\..\docker-compose.yml = ..\..\docker-compose.yml
 		README.md = README.md
 		Taskfile.yml = Taskfile.yml
-		..\..\docker-compose.yml = ..\..\docker-compose.yml
-		..\..\.env = ..\..\.env
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PortAuthority.k6", "test\PortAuthority.k6\PortAuthority.k6.shproj", "{785C3A9E-577D-4287-8785-FBEFE527B570}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		test\PortAuthority.k6\PortAuthority.k6.projitems*{785c3a9e-577d-4287-8785-fbefe527b570}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

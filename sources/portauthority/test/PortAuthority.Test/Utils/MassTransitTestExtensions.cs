@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
 using Moq;
-using Moq.Language.Flow;
 
 namespace PortAuthority.Test.Utils
 {
@@ -20,7 +19,7 @@ namespace PortAuthority.Test.Utils
         /// <param name="expected"></param>
         /// <typeparam name="TMessage"></typeparam>
         /// <returns></returns>
-        public static IReturnsResult<ISendEndpoint> SetupMessage<TMessage>(this Mock<ISendEndpointProvider> mockEndpointProvider, object expected)
+        public static Mock<ISendEndpoint> SetupMessage<TMessage>(this Mock<ISendEndpointProvider> mockEndpointProvider, object expected)
             where TMessage : class
         {
             if (!EndpointConvention.TryGetDestinationAddress<TMessage>(out var destinationAddress))
@@ -35,53 +34,73 @@ namespace PortAuthority.Test.Utils
        
             mockEndpointProvider
                 .Setup(x => x.GetSendEndpoint(It.IsAny<Uri>()))
-                .Returns(Task.FromResult(mockEndpoint.Object));
+                .Returns(Task.FromResult(mockEndpoint.Object))
+                .Verifiable();
             
-            return mockEndpoint
-                .Setup(x => x.Send<TMessage>(AnonymousType.Matches(expected), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+            mockEndpoint
+                .Setup(x => x.Send<TMessage>(AnonymousType.Matches<TMessage>(expected), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            return mockEndpoint;
         }
     }
 
     /// <summary>
     /// Internal utility for comparing anonymous types
     /// </summary>
-    internal static class AnonymousType
+    public static class AnonymousType
     {
         /// <summary>
         /// Constructs a matcher that compares properties between anonymous types.
         /// </summary>
         /// <param name="expected"></param>
         /// <returns></returns>
-        public static object Matches(object expected)
+        public static TMessage Matches<TMessage>(object expected)
+            where TMessage : class
         {
-            return Match.Create(Matcher(expected));
+            return Match.Create<TMessage>(
+                CreateMatcher<TMessage>(expected),
+                () => AnonymousType.Matches<TMessage>(expected));
         }
 
-        private static Predicate<object> Matcher(object expected)
-        {
-            // Build a predicate that accepts the (actual) object and compares it
-            // to the known expected value. Compare individual properties because
-            // C# gives each anon object it's own unique type - Equals() will not work here.
-            return actual =>
+        /// <summary>
+        /// Constructs a predicate function that matches to an expected message value.
+        /// </summary>
+        /// <param name="expectedMessage"></param>
+        /// <typeparam name="TMessage"></typeparam>
+        /// <returns></returns>
+        private static Func<object, Type, bool> CreateMatcher<TMessage>(object expectedMessage) =>
+            (actualMessage, parameterType) =>
             {
-                var expectedProp = expected.GetType()
-                    .GetProperties()
-                    .ToDictionary(x => x.Name, x => x.GetValue(expected));
-                
-                var actualProp = actual.GetType()
-                    .GetProperties()
-                    .ToDictionary(x => x.Name, x => x.GetValue(actual));
-
-                foreach (var prop in expectedProp)
+                // actual message is of the same type as the generic TMessage
+                if (actualMessage == null || !parameterType.IsInstanceOfType(actualMessage))
                 {
-                    if (!actualProp.ContainsKey(prop.Key))
+                    return false;
+                }
+                
+                // anonymous objects have a hidden generated type and cannot be compared using Equals() unless
+                // both objets were generated from the same method in the same assembly. Compare objects using 
+                // property matching so that we can match any two objects with a similar structure.
+                var expectedProperties = expectedMessage.GetType()
+                    .GetProperties()
+                    .ToDictionary(x => x.Name, x => x.GetValue(expectedMessage));                
+                
+                var actualProperties = actualMessage.GetType()
+                    .GetProperties()
+                    .ToDictionary(x => x.Name, x => x.GetValue(actualMessage));
+                
+                foreach (var expectedProp in expectedProperties)
+                {
+                    if (!actualProperties.ContainsKey(expectedProp.Key))
                         return false;
-                    if (prop.Value != null && !prop.Value.Equals(actualProp[prop.Key]))
+                    if (expectedProp.Value == null && actualProperties[expectedProp.Key] != null)
+                        return false;
+                    if (expectedProp.Value != null && !expectedProp.Value.Equals(actualProperties[expectedProp.Key]))
                         return false;
                 }
+                
                 return true;
             };
-        }        
     }
 }

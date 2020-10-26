@@ -76,7 +76,7 @@ namespace PortAuthority
                 _logger.LogWarning("Job already exists with ID = {JobId}", form.JobId);
                 return Result.Conflict($"Job already exists with ID {form.JobId}");
             }
-
+            
             await _sendEndpointProvider.Send<CreateJob>(new
             {
                 JobId = form.JobId,
