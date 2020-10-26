@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PortAuthority.Contracts;
 using Shipyard.Bootstrap;
 using Shipyard.Contracts;
 using Shipyard.Data;
@@ -62,7 +63,8 @@ namespace Shipyard.Web
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
+                    PortAuthorityEndpointConventions.Map();
                     ShipyardEndpointConventions.Map();
                 });
             });

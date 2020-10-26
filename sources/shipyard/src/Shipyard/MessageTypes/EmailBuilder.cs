@@ -9,6 +9,9 @@ using Shipyard.Models;
 
 namespace Shipyard.MessageTypes
 {
+    /// <summary>
+    /// Builder for constructing <see cref="IEmail"/> messages.
+    /// </summary>
     public class EmailBuilder
     {
         private EmailAddress _from;

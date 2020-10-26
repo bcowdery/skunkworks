@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\portauthority\src\PortAuthority.Contracts\PortAuthority.Contracts.csproj" />
     <ProjectReference Include="..\Shipyard\Shipyard.csproj" />
   </ItemGroup>
 </Project>

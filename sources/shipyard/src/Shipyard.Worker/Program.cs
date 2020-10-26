@@ -50,12 +50,11 @@ namespace Shipyard.Worker
 
                     services.AddMassTransit(x =>
                     {
-                        //x.AddConsumersFromNamespaceContaining<ScheduleEmailConsumer>();
-
+                        x.AddConsumersFromNamespaceContaining<ScheduleEmailConsumer>();
                         x.SetKebabCaseEndpointNameFormatter();
                         x.UsingRabbitMq((context, cfg) =>
                         {
-                            cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
+                            
                             cfg.ConfigureEndpoints(context);
                         });
                     });
