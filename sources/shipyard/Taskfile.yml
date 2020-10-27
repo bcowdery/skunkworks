@@ -7,12 +7,15 @@ vars:
     
 tasks:    
 
-  logs:
+  log:
     desc: "Show shipyard logs"
     cmds:
       - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
       - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
-      
+
+  logs:
+    deps: [log]      
+
   migrate:
     desc: "Run shipyard ef database migrations"
     cmds:

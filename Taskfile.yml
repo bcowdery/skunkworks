@@ -35,9 +35,11 @@ tasks:
   up:
     desc: "Bring up the solution"
     deps: [ prepare ]
+    vars:
+      PROFILE: local
     cmds:
       - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
-
+    
   down: 
     desc: "Bring down the solution"
     cmds:
@@ -55,11 +57,14 @@ tasks:
     cmds:
       - docker ps --format "table {{"{{"}}.ID{{"}}"}}\t{{"{{"}}.Names{{"}}"}}\t{{"{{"}}.Status{{"}}"}}\t{{"{{"}}.Image{{"}}"}}"
 
-  logs:
+  log:
     desc: "Display logs for solution"
     cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} logs -f --tail 100    
 
+  logs:
+    deps: [log]
+    
   build:
     desc: "Builds all container images"
     cmds: 
