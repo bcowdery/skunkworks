@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Shipyard.Bootstrap;
+using Shipyard.Consumers;
 using Shipyard.Data;
 
 namespace Shipyard.Worker
@@ -54,7 +55,6 @@ namespace Shipyard.Worker
                         x.SetKebabCaseEndpointNameFormatter();
                         x.UsingRabbitMq((context, cfg) =>
                         {
-                            
                             cfg.ConfigureEndpoints(context);
                         });
                     });
@@ -62,6 +62,7 @@ namespace Shipyard.Worker
                     services.AddMassTransitHostedService();
 
                     // Application Services
+                    services.AddShipyardServices();
                     services.AddHostedService<WorkerBackgroundService>();
                     
                 })

@@ -8,14 +8,12 @@ using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using PortAuthority.Contracts;
 using Shipyard.Bootstrap;
 using Shipyard.Contracts;
 using Shipyard.Data;
@@ -64,7 +62,6 @@ namespace Shipyard.Web
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
-                    PortAuthorityEndpointConventions.Map();
                     ShipyardEndpointConventions.Map();
                 });
             });
