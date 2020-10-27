@@ -125,12 +125,13 @@ services:
       - shipyard_web
     ports:
       - '${NGINX_HTTP_PORT}:80'      
-    volumes:
-      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./services/nginx/conf.d/:/etc/nginx/conf.d
+    volumes:      
+      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf      
+      - ./services/nginx/conf.d/:/etc/nginx/conf.d      
       - ./services/nginx/sites-available/:/etc/nginx/sites-available
-      - ./services/nginx/sites-enabled/:/etc/nginx/sites-enabled
-  
+      - ./services/nginx/sites-enabled/:/etc/nginx/sites-enabled          
+      - ./services/nginx/html:/usr/share/nginx/html
+
   rabbit:
     image: rabbitmq:3.8-management-alpine   
     ports:
