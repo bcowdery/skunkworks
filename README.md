@@ -102,6 +102,12 @@ services:
 
 &nbsp;
 
+## Mission Control
+
+Mission Control is a top level admin app and system monitoring dashboard. 
+
+**Url:** http://localhost/admin/
+
 ## Shipyard
 
 Shipyard is a service designed to handle all external messaging traffic using external email and SMS providers. 
