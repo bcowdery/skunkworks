@@ -155,7 +155,7 @@ services:
   rabbit:
     image: rabbitmq:3.8-management-alpine   
     ports:
-      - '${RABBIT_PORT}:15672'
+      - '${RABBIT_PORT}:5672'
     volumes:
       - './data/rabbitmq/:/var/lib/rabbitmq/mnesia/:cached'
     environment:
