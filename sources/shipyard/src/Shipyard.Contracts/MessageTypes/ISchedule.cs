@@ -1,7 +1,10 @@
-﻿namespace Shipyard.Contracts.MessageTypes
+﻿using System;
+using NodaTime;
+
+namespace Shipyard.Contracts.MessageTypes
 {
-    public class ISchedule
+    public interface ISchedule
     {
-        
+        public DateTimeZone TimeZone { get; }
     }
 }

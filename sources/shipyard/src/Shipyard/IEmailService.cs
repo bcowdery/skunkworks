@@ -6,5 +6,6 @@ namespace Shipyard
     public interface IEmailService
     {
         Task SendEmail(EmailModel message);
+        
     }
 }
