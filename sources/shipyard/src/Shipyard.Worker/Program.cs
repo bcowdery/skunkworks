@@ -55,6 +55,7 @@ namespace Shipyard.Worker
                         x.SetKebabCaseEndpointNameFormatter();
                         x.UsingRabbitMq((context, cfg) =>
                         {
+                            cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
                             cfg.ConfigureEndpoints(context);
                         });
                     });
