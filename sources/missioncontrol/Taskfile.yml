@@ -15,6 +15,13 @@ tasks:
   logs:
     deps: [log]
 
+  restart:
+    desc: "Restart this service"
+    cmds:
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.MC_WEBAPI_NAME}}_1
+        ignore_error: true
+      - task: :up
+        
   sh:
     desc: "Connect to the missioncontrol-web shell"
     cmds:

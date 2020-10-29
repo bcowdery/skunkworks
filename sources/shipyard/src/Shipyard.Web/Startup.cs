@@ -63,9 +63,10 @@ namespace Shipyard.Web
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
-                    ShipyardEndpointConventions.Map();
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
                 });
+                
+                ShipyardEndpointConventions.Map();
             });
             
             services.AddMassTransitHostedService();

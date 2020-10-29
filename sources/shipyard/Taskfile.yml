@@ -2,24 +2,34 @@ version: '3'
 
 vars:
   SOLUTION_NAME: skunkworks      
-  WEBAPI_NAME: shipyard_web
-  WORKER_NAME: shipyard_worker
+  SY_WEBAPI_NAME: shipyard_web
+  SY_WORKER_NAME: shipyard_worker
     
 tasks:    
 
   log:
     desc: "Show shipyard logs"
     cmds:
-      - docker logs {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 -f --tail 100
-      - docker logs {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 -f --tail 100
-
+      - docker logs {{.SOLUTION_NAME}}_{{.SY_WEBAPI_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.SY_WORKER_NAME}}_1 -f --tail 100
+      
   logs:
     deps: [log]      
 
-  migrate:
-    desc: "Run shipyard ef database migrations"
+  restart:
+    desc: "Restart this service"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 /tools/migration/Shipyard.Data.Migration
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.SY_WEBAPI_NAME}}_1
+        ignore_error: true
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.SY_WORKER_NAME}}_1
+        ignore_error: true        
+      - task: :up
+        
+  dbmigrate:
+    desc: "Run database migrations"
+    cmds:
+      - docker build -t shipyard-dbmigrate:latest -f src/Shipyard.Data.Migration/Dockerfile .
+      - docker run --rm -it --network={{.SOLUTION_NAME}}_default shipyard-dbmigrate:latest
 
   rmi:
     desc: "Remove shipyard images"
@@ -36,12 +46,12 @@ tasks:
   sh:worker:
     desc: "Connect to the shipyard-worker shell"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WORKER_NAME}}_1 bash
+      - docker exec -it {{.SOLUTION_NAME}}_{{.SY_WORKER_NAME}}_1 bash
 
   sh:web:
     desc: "Connect to the shipyard-web shell"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.WEBAPI_NAME}}_1 bash
+      - docker exec -it {{.SOLUTION_NAME}}_{{.SY_WEBAPI_NAME}}_1 bash
 
   default:
     cmds:

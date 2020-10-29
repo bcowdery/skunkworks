@@ -16,6 +16,15 @@ tasks:
   logs:
     deps: [log]
 
+  restart:
+    desc: "Restart this service"
+    cmds:
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1
+        ignore_error: true
+      - cmd: docker rm -f {{.SOLUTION_NAME}}_{{.PA_WORKER_NAME}}_1
+        ignore_error: true        
+      - task: :up
+
   sh:worker:
     desc: "Connect to the portauthority-worker shell"
     cmds:
