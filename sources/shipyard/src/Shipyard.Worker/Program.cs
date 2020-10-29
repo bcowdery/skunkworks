@@ -62,6 +62,11 @@ namespace Shipyard.Worker
                     
                     services.AddMassTransitHostedService();
 
+                    // Health Checks
+                    services.AddHealthChecks()
+                        .AddApplicationInsightsPublisher()
+                        .AddDatadogPublisher("shipyard.worker.healthchecks");
+                    
                     // Application Services
                     services.AddShipyardServices();
                     services.AddHostedService<WorkerBackgroundService>();

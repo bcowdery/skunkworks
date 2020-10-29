@@ -34,6 +34,21 @@ Available tasks for this project:
 
 &nbsp;
 
+# Environment Variables
+
+| Var                              | Description                                   |
+|----------------------------------|-----------------------------------------------|
+| `APPINSIGHTS_INSTRUMENTATIONKEY` | Application insights instrumentation key      | 
+| `DD_AGENT_HOST `                 | DataDog DogStatsD metrics host url            |
+| `DD_DOGSTATSD_PORT`              | Optional port for the DogStatsD host          |
+| `DD_ENTITY_ID `                  | Value to be injected as a global `dd.internal.entity_id tag`. |         
+
+**Resources:**
+* https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-core#enable-application-insights-server-side-telemetry-no-visual-studio
+* https://github.com/DataDog/dogstatsd-csharp-client          
+
+&nbsp;
+
 # Workflow
 
 1. POST /v1/api/email/send

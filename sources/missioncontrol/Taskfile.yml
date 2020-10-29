@@ -1,0 +1,34 @@
+version: '3'
+
+vars:
+  SOLUTION_NAME: skunkworks      
+  MC_WEBAPI_NAME: missioncontrol_web  
+    
+tasks:    
+
+  log:
+    desc: "Show missioncontrol logs"
+    cmds:
+      - docker logs {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.PA_WORKER_NAME}}_1 -f --tail 100
+
+  logs:
+    deps: [log]
+
+  sh:
+    desc: "Connect to the missioncontrol-web shell"
+    cmds:
+      - docker exec -it {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 bash
+      
+  rmi:
+    desc: "Remove missioncontrol images"
+    cmds:
+      - cmd: docker image rmi missioncontrol-web
+        ignore_error: true           
+      - cmd: docker image rmi missioncontrol-web:dev
+        ignore_error: true
+
+  default:
+    cmds:
+      - task -l
+    

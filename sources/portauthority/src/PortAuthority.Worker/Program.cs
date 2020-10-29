@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using PortAuthority.Bootstrap;
 using PortAuthority.Data;
 using PortAuthority.Consumers;
+using PortAuthority.Contracts;
 
 namespace PortAuthority.Worker
 {
@@ -60,9 +61,16 @@ namespace PortAuthority.Worker
                             cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
                             cfg.ConfigureEndpoints(context);
                         });
+                        
+                        PortAuthorityEndpointConventions.Map();
                     });
                     
                     services.AddMassTransitHostedService();
+                                        
+                    // Health Checks
+                    services.AddHealthChecks()
+                        .AddApplicationInsightsPublisher()
+                        .AddDatadogPublisher("portauthority.worker.healthchecks");
                     
                     // Application Services
                     services.AddPortAuthorityServices();

@@ -2,12 +2,18 @@ version: '3'
 
 dotenv: ['.env']
 
+silent: true
+
 includes:  
   nginx: ./services/nginx
   azstorage: ./services/azurestorage
   mssql: ./services/sqlserver
   rabbit: ./services/rabbitmq
   
+  missioncontrol:
+    taskfile: ./sources/missioncontrol/Taskfile.yml
+    dir: ./sources/missioncontrol    
+
   portauthority:
     taskfile: ./sources/portauthority/Taskfile.yml
     dir: ./sources/portauthority    
@@ -21,12 +27,9 @@ vars:
   SOLUTION_DIR:
     sh: pwd
 
-silent: true
-
-tasks:
-  
+tasks:  
   prepare:
-    desc: "Creates the .env & docker-compose.local.yml config files for local development"
+    desc: "Creates the docker-compose.local.yml config files for local development"
     cmds: 
       - cp docker-compose.local.yml.example docker-compose.local.yml    
     status:

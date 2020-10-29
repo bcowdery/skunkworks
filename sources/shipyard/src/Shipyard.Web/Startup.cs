@@ -4,8 +4,10 @@ using System.Data.Common;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using HealthChecks.UI.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +69,13 @@ namespace Shipyard.Web
             });
             
             services.AddMassTransitHostedService();
+
+            // Health Checks
+            services.AddHealthChecks()
+                .AddSqlServer(Configuration.GetConnectionString("SqlDatabase"))
+                .AddRabbitMQ(rabbitConnectionString: Configuration.GetConnectionString("Rabbit"))
+                .AddApplicationInsightsPublisher()
+                .AddDatadogPublisher("shipyard.web.healthchecks"); 
 
             // Application services 
             services.AddShipyardServices();
@@ -131,6 +140,13 @@ namespace Shipyard.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            
+            // Enable health check endpoint
+            app.UseHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
 
             // HTTP Request pipeline
             app.UseHttpsRedirection();

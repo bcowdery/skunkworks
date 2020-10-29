@@ -1,0 +1,22 @@
+# Docker
+.dockerignore
+Dockerfile*
+
+# dotnet
+[B|b]in/
+[O|o]bj/
+**/bin
+**/obj
+**/out
+**/publish
+**/.vscode
+**/.vs
+**/azds.yaml
+**/secrets.dev.yaml
+**/values.dev.yaml
+.dotnet
+.Microsoft.DotNet.ImageBuilder
+
+# Other
+LICENSE
+README.md

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using HealthChecks.UI.Client;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PortAuthority.Bootstrap;
+using PortAuthority.Consumers;
 using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
@@ -59,12 +62,20 @@ namespace PortAuthority.Web
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));                    
-                    PortAuthorityEndpointConventions.Map();
+                    cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
                 });
+                
+                PortAuthorityEndpointConventions.Map();
             });
             
             services.AddMassTransitHostedService();
+
+            // Health Checks
+            services.AddHealthChecks()
+                .AddSqlServer(Configuration.GetConnectionString("SqlDatabase"))
+                .AddRabbitMQ(rabbitConnectionString: Configuration.GetConnectionString("Rabbit"))
+                .AddApplicationInsightsPublisher()
+                .AddDatadogPublisher("portauthority.web.healthchecks"); 
 
             // Application services 
             services.AddPortAuthorityServices();
@@ -129,6 +140,13 @@ namespace PortAuthority.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            // Enable health check endpoint
+            app.UseHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
 
             // HTTP Request pipeline            
             app.UseHttpsRedirection();
