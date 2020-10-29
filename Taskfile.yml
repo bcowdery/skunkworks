@@ -81,10 +81,9 @@ tasks:
       - docker-compose pull
     
   prune:
-    desc: "Prune obsolete remote git branches and local container images"
+    desc: "Prune unused local container images networks and mounts"
     cmds:
-      - echo 'Pruning unused git and docker resources'
-      - git fetch origin --prune
+      - echo 'Pruning unsued docker resources'
       - docker system prune -af
   
   nuke:
