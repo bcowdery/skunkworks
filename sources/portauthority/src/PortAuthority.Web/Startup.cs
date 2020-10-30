@@ -18,6 +18,7 @@ using PortAuthority.Consumers;
 using PortAuthority.Contracts;
 using PortAuthority.Contracts.Commands;
 using PortAuthority.Data;
+using PortAuthority.HealthChecks;
 using PortAuthority.Web.Extensions;
 using PortAuthority.Web.Settings;
 
@@ -59,10 +60,12 @@ namespace PortAuthority.Web
             // MassTransit messaging endpoints
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<HeartbeatConsumer>();
                 x.SetKebabCaseEndpointNameFormatter();
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.AmqpHost(Configuration.GetConnectionString("Rabbit"));
+                    cfg.ConfigureEndpoints(context);
                 });
                 
                 PortAuthorityEndpointConventions.Map();
@@ -72,6 +75,7 @@ namespace PortAuthority.Web
 
             // Health Checks
             services.AddHealthChecks()
+                .AddWorkerHeartbeats()
                 .AddSqlServer(Configuration.GetConnectionString("SqlDatabase"))
                 .AddRabbitMQ(rabbitConnectionString: Configuration.GetConnectionString("Rabbit"))
                 .AddApplicationInsightsPublisher()

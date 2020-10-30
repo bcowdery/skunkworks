@@ -1,5 +1,5 @@
 {
-    "ConnectionStrings": {
-        "SqlDatabase": "Server=localhost,11433;Database=skunkworks;User=sa;Password=r00tp@ssw0rD"
-    }
+  "ConnectionStrings": {
+    "SqlDatabase": "Server=localhost,11433;Database=skunkworks;User=sa;Password=r00tp@ssw0rD"
+  }
 }

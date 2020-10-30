@@ -9,7 +9,9 @@
     <PackageReference Include="MassTransit" Version="7.0.4" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="7.0.4" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.0.4" />    
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />    
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.5" />    
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.8" />
     <PackageReference Include="NodaTime" Version="3.0.0" />
     <PackageReference Include="Scrutor" Version="3.2.2" />

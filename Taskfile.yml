@@ -41,8 +41,8 @@ tasks:
     vars:
       PROFILE: local
     cmds:
-      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
-    
+      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate  
+
   down: 
     desc: "Bring down the solution"
     cmds:

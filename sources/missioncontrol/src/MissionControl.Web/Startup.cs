@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +29,7 @@ namespace MissionControl.Web
             // Application Insights
             services.AddApplicationInsightsTelemetry();
             
-            // Healthchecks UI
+            // Health Checks
             services.AddHealthChecks();
             services.AddHealthChecksUI()
                 .AddSqlServerStorage(Configuration.GetConnectionString("SqlDatabase"));
@@ -64,7 +65,7 @@ namespace MissionControl.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            
             // HTTP Request pipeline
             app.UseHttpsRedirection();
             app.UseStaticFiles();

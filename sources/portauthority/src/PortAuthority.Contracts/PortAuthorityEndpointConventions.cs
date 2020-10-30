@@ -1,6 +1,7 @@
 ﻿using System;
 using MassTransit;
 using PortAuthority.Contracts.Commands;
+using PortAuthority.Contracts.Events;
 
 namespace PortAuthority.Contracts
 {
@@ -11,6 +12,8 @@ namespace PortAuthority.Contracts
     {
         public const string JobEndpoint = "port-authority-jobs";
         public const string SubtaskEndpoint = "port-authority-tasks";
+
+        public const string HeartbeatExchange = "port-authority-heartbeat";
         
         /// <summary>
         /// Maps all PortAuthority message types.
@@ -25,7 +28,10 @@ namespace PortAuthority.Contracts
             // task commands
             Map<CreateSubtask>(new Uri($"queue:{SubtaskEndpoint}"));
             Map<StartSubtask>(new Uri($"queue:{SubtaskEndpoint}"));
-            Map<EndSubtask>(new Uri($"queue:{SubtaskEndpoint}"));            
+            Map<EndSubtask>(new Uri($"queue:{SubtaskEndpoint}"));       
+            
+            // events
+            Map<Heartbeat>(new Uri($"exchange:{HeartbeatExchange}"));
         }
         
         /// <summary>

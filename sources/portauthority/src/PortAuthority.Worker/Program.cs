@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +10,7 @@ using PortAuthority.Bootstrap;
 using PortAuthority.Data;
 using PortAuthority.Consumers;
 using PortAuthority.Contracts;
+using PortAuthority.Worker.Bootstrap;
 
 namespace PortAuthority.Worker
 {
@@ -54,8 +53,15 @@ namespace PortAuthority.Worker
                     // Mass Transit
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumersFromNamespaceContaining<CreateJobConsumer>();
+                        x.AddConsumer<CreateJobConsumer>();
+                        x.AddConsumer<StartJobConsumer>();
+                        x.AddConsumer<EndJobConsumer>();
+                        x.AddConsumer<CreateSubtaskConsumer>();
+                        x.AddConsumer<StartSubtaskConsumer>();
+                        x.AddConsumer<EndSubtaskConsumer>();
+                        
                         x.SetKebabCaseEndpointNameFormatter();
+                        
                         x.UsingRabbitMq((context, cfg) =>
                         {
                             cfg.AmqpHost(configuration.GetConnectionString("Rabbit"));
@@ -74,7 +80,7 @@ namespace PortAuthority.Worker
                     
                     // Application Services
                     services.AddPortAuthorityServices();
-                    services.AddHostedService<WorkerBackgroundService>();
+                    services.AddHostedService<HeartbeatBackgroundService>();
                 })
                 .UseConsoleLifetime();                
     }

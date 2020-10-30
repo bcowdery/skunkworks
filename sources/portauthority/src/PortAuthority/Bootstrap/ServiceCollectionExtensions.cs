@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PortAuthority.Assemblers;
 using PortAuthority.Data;
 using PortAuthority.Data.Entities;
+using PortAuthority.HealthChecks;
 using PortAuthority.Models;
 using Scrutor;
 
@@ -38,6 +39,7 @@ namespace PortAuthority.Bootstrap
             // Declared services            
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<ISubtaskService, SubtaskService>();
+            services.AddSingleton<IHeartbeatMonitor, HeartbeatMonitor>();
         }
     }
 }

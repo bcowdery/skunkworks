@@ -9,8 +9,8 @@ tasks:
   log:
     desc: "Show missioncontrol logs"
     cmds:
-      - docker logs {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 -f --tail 100
-      - docker logs {{.SOLUTION_NAME}}_{{.PA_WORKER_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.MC_WEBAPI_NAME}}_1 -f --tail 100
+      - docker logs {{.SOLUTION_NAME}}_{{.MC_WEBAPI_NAME}}_1 -f --tail 100
 
   logs:
     deps: [log]
@@ -25,7 +25,7 @@ tasks:
   sh:
     desc: "Connect to the missioncontrol-web shell"
     cmds:
-      - docker exec -it {{.SOLUTION_NAME}}_{{.PA_WEBAPI_NAME}}_1 bash
+      - docker exec -it {{.SOLUTION_NAME}}_{{.MC_WEBAPI_NAME}}_1 bash
       
   rmi:
     desc: "Remove missioncontrol images"
