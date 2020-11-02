@@ -1,0 +1,9 @@
+FluentValidation
+MassTransit.RabbitMQ
+MassTransit.Extensions.DependencyInjection
+Microsoft.Extensions.DependencyInjection
+Microsoft.Extensions.Options
+NodaTime
+Scrutor
+SendGrid
+Twilio

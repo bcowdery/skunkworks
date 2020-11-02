@@ -1,0 +1,7 @@
+AspNetCore.HealthChecks.Rabbitmq
+AspNetCore.HealthChecks.SqlServer
+AspNetCore.HealthChecks.Publisher.ApplicationInsights
+AspNetCore.HealthChecks.Publisher.Datadog
+MassTransit.AspNetCore
+Microsoft.Extensions.Hosting
+Microsoft.Extensions.Logging.ApplicationInsights

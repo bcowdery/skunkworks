@@ -1,0 +1,11 @@
+Bogus
+FluentAssertions
+MassTransit.TestFramework
+Microsoft.EntityFrameworkCore.Sqlite
+Microsoft.EntityFrameworkCore.InMemory
+Microsoft.Extensions.Configuration.Json
+Microsoft.Extensions.Logging.Console
+Microsoft.NET.Test.Sdk
+Moq
+NUnit3TestAdapter
+coverlet.collector
