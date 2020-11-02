@@ -5,19 +5,20 @@ dotenv: ['.env']
 silent: true
 
 includes:  
+  # OS specific tasks
+  base: ./Taskfile_{{OS}}.yml  
+  # Dependency tasks
   nginx: ./services/nginx
   azstorage: ./services/azurestorage
   mssql: ./services/sqlserver
-  rabbit: ./services/rabbitmq
-  
+  rabbit: ./services/rabbitmq  
+  # Application tasks
   missioncontrol:
     taskfile: ./sources/missioncontrol/Taskfile.yml
     dir: ./sources/missioncontrol    
-
   portauthority:
     taskfile: ./sources/portauthority/Taskfile.yml
     dir: ./sources/portauthority    
-
   shipyard: 
     taskfile: ./sources/shipyard/Taskfile.yml
     dir: ./sources/shipyard
@@ -25,19 +26,17 @@ includes:
 vars:
   SOLUTION_NAME: skunkworks
   SOLUTION_DIR:
-    sh: pwd
+    sh: pwd  
+  VERSION:
+    sh: git rev-parse --short HEAD
 
 tasks:  
   prepare:
-    desc: "Creates the docker-compose.local.yml config files for local development"
-    cmds: 
-      - cp docker-compose.local.yml.example docker-compose.local.yml    
-    status:
-      - test -f docker-compose.local.yml
+    deps: [ base:prepare-docker-override, base:prepare-nuget-local ]
 
   up:
     desc: "Bring up the solution"
-    deps: [ prepare ]
+    deps: [ base:prepare ]
     vars:
       PROFILE: local
     cmds:
@@ -73,6 +72,19 @@ tasks:
     cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} build --force-rm
     
+  package:
+    desc: "Package nugets"
+    cmds:
+      - task: portauthority:package  
+      - task: shipyard:package
+
+  package-local:
+    desc: "Package nugets for local development"
+    deps: [ prepare ]
+    cmds:
+      - task: portauthority:package-local
+      - task: shipyard:package-local 
+
   push:
     desc: "Pushes container images to remote repositories"
     cmds:
@@ -91,9 +103,7 @@ tasks:
   
   nuke:
     desc: "Nuke all data files and reset the solution"
-    cmds:
-      - echo 'Deleting all local mount points from ./data/'
-      - rm -rf ./data/
+    deps: [ base:nuke ]
 
   default:
     cmds:

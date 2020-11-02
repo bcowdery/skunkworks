@@ -13,6 +13,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.2" />
     <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="3.1.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Publisher.Datadog" Version="3.1.1" />    
+    <PackageReference Include="MassTransit" Version="7.0.4" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
@@ -22,8 +23,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\portauthority\src\PortAuthority.Contracts\PortAuthority.Contracts.csproj" />
+  <ItemGroup>    
     <ProjectReference Include="..\Shipyard\Shipyard.csproj" />
   </ItemGroup>
 </Project>

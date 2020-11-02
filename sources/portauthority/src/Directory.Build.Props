@@ -6,7 +6,8 @@
     <NeutralLanguage>en</NeutralLanguage>
     <RepositoryUrl>https://github.com/bcowdery/skunkworks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>$(Version)</Version>
+    <Authors>Brian Cowdery</Authors>
+    <Version>1.0.1</Version>
   </PropertyGroup>
     
   <PropertyGroup>

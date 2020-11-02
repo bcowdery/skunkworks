@@ -5,6 +5,6 @@ namespace Shipyard.Contracts.MessageTypes
 {
     public interface ISchedule
     {
-        public DateTimeZone TimeZone { get; }
+        DateTimeZone TimeZone { get; }
     }
 }

@@ -1,12 +1,13 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup>    
     <Product>Shipyard</Product>
     <Copyright>Copyright © 2020</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <RepositoryUrl>https://github.com/bcowdery/skunkworks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>$(Version)</Version>
+    <Authors>Brian Cowdery</Authors>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>

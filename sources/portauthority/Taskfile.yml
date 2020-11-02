@@ -6,7 +6,23 @@ vars:
   PA_WORKER_NAME: portauthority_worker
     
 tasks:    
+  build:
+    cmds:      
+      - dotnet restore
+      - dotnet test
+      - dotnet build
 
+  package:
+    cmds:
+      - dotnet restore
+      - dotnet pack -c Release -o ./packages
+
+  package-local:
+    cmds:
+      - dotnet nuget locals all --clear      
+      - dotnet restore
+      - dotnet pack src/PortAuthority.Contracts -c Release -o ~/.nuget/packages-local/
+    
   log:
     desc: "Show portauthority logs"
     cmds:

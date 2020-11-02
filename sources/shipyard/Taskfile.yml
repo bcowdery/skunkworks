@@ -6,6 +6,22 @@ vars:
   SY_WORKER_NAME: shipyard_worker
     
 tasks:    
+  build:
+    cmds:      
+      - dotnet restore
+      - dotnet test
+      - dotnet build
+
+  package:
+    deps: [build]
+    cmds:
+      - dotnet pack -c Release -o ./packages
+
+  package-local:    
+    cmds:
+      - dotnet nuget locals all --clear
+      - dotnet restore
+      - dotnet pack src/Shipyard.Contracts -c Release -o ~/.nuget/packages-local/
 
   log:
     desc: "Show shipyard logs"
@@ -15,7 +31,7 @@ tasks:
       
   logs:
     deps: [log]      
-
+    
   restart:
     desc: "Restart this service"
     cmds:
