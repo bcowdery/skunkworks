@@ -273,8 +273,9 @@ typings/
 _Pvt_Extensions
 
 # Paket dependency manager
-.paket/paket.exe
+.paket/
 paket-files/
+paket.local
 
 # FAKE - F# Make
 .fake/

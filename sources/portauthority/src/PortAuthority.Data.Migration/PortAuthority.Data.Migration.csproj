@@ -1,17 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\PortAuthority.Data\PortAuthority.Data.csproj" />
   </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

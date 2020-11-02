@@ -1,0 +1,8 @@
+FluentValidation
+MassTransit.RabbitMQ
+MassTransit.Analyzers
+MassTransit.Extensions.DependencyInjection
+Microsoft.Extensions.DependencyInjection
+Microsoft.Extensions.Diagnostics.HealthChecks
+NodaTime
+Scrutor

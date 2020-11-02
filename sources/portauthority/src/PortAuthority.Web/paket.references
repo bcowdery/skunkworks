@@ -1,0 +1,9 @@
+AspNetCore.HealthChecks.Rabbitmq
+AspNetCore.HealthChecks.SqlServer
+AspNetCore.HealthChecks.UI.Client
+AspNetCore.HealthChecks.Publisher.ApplicationInsights
+AspNetCore.HealthChecks.Publisher.Datadog
+MassTransit.AspNetCore
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.ApplicationInsights.AspNetCore
+Swashbuckle.AspNetCore

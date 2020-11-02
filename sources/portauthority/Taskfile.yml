@@ -25,6 +25,13 @@ tasks:
         ignore_error: true        
       - task: :up
 
+  build:
+    cmds:
+      - dotnet tool restore
+      - dotnet paket restore
+      - dotnet test
+      - dotnet build
+
   sh:worker:
     desc: "Connect to the portauthority-worker shell"
     cmds:

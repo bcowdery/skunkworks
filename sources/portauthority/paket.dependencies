@@ -1,0 +1,44 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+framework: netcoreapp3.1, netstandard2.0, netstandard2.1
+nuget AspNetCore.HealthChecks.Publisher.ApplicationInsights 3.1.1
+nuget AspNetCore.HealthChecks.Publisher.Datadog 3.1.1
+nuget AspNetCore.HealthChecks.Rabbitmq 3.1.4
+nuget AspNetCore.HealthChecks.SqlServer 3.1.1
+nuget AspNetCore.HealthChecks.UI.Client 3.1.2
+nuget Bogus 31.0.2
+nuget coverlet.collector 1.2.0
+nuget FluentAssertions 5.10.3
+nuget FluentValidation 9.2.2
+nuget MassTransit 7.0.4
+nuget MassTransit.Analyzers 7.0.4
+nuget MassTransit.AspNetCore 7.0.4
+nuget MassTransit.Extensions.DependencyInjection 7.0.4
+nuget MassTransit.RabbitMQ 7.0.4
+nuget MassTransit.TestFramework 7.0.4
+nuget Microsoft.ApplicationInsights.AspNetCore 2.15.0
+nuget Microsoft.EntityFrameworkCore 3.1.8
+nuget Microsoft.EntityFrameworkCore.Design 3.1.8
+nuget Microsoft.EntityFrameworkCore.InMemory 3.1.8
+nuget Microsoft.EntityFrameworkCore.Relational 3.1.8
+nuget Microsoft.EntityFrameworkCore.Sqlite 3.1.8
+nuget Microsoft.EntityFrameworkCore.SqlServer 3.1.8
+nuget Microsoft.EntityFrameworkCore.Tools 3.1.8
+nuget Microsoft.Extensions.Configuration 3.1.8
+nuget Microsoft.Extensions.Configuration.Json 3.1.8
+nuget Microsoft.Extensions.DependencyInjection 3.1.8
+nuget Microsoft.Extensions.Diagnostics.HealthChecks 3.1.5
+nuget Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions 3.1.5
+nuget Microsoft.Extensions.Hosting 3.1.8
+nuget Microsoft.Extensions.Logging.ApplicationInsights 2.15.0
+nuget Microsoft.Extensions.Logging.Console 3.1.8
+nuget Microsoft.Extensions.Options 3.1.8
+nuget Microsoft.NET.Test.Sdk 16.7.1
+nuget Moq 4.14.5
+nuget Newtonsoft.Json 12.0.3
+nuget NodaTime 3.0.0
+nuget nunit 3.12.0
+nuget NUnit3TestAdapter 3.17.0
+nuget Scrutor 3.2.2
+nuget Swashbuckle.AspNetCore 5.5.1

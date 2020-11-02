@@ -13,4 +13,5 @@
     <Content Include="$(MSBuildThisFileDirectory)script.js" />
     <Content Include="$(MSBuildThisFileDirectory)uuid.js" />
   </ItemGroup>
+  <Import Project="..\..\.paket\paket.targets" />
 </Project>
