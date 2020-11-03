@@ -1,28 +1,28 @@
 version: '3'
 
-vars:
-  SOLUTION_NAME: skunkworks      
+vars:  
   SY_WEBAPI_NAME: shipyard_web
   SY_WORKER_NAME: shipyard_worker
     
-tasks:    
-  build:
+tasks:  
+  pack:
     cmds:      
-      - dotnet restore
-      - dotnet test
-      - dotnet build
+      - mkdir -p "{{.SOLUTION_DIR}}/packages"
+      - dotnet pack src/Shipyard.Contracts -c Release -o ./artifacts      
+      - dotnet nuget push ./artifacts/*.nupkg -s "{{.SOLUTION_DIR}}/packages"
 
-  package:
-    deps: [build]
-    cmds:
-      - dotnet pack -c Release -o ./packages
-
-  package-local:    
+  update-local-packages:
     cmds:
       - dotnet nuget locals all --clear
-      - dotnet restore
-      - dotnet pack src/Shipyard.Contracts -c Release -o ~/.nuget/packages-local/
-
+      - cp "{{.SOLUTION_DIR}}/packages/*.nupkg" packages/
+    
+  clear-local-packages:
+    cmds:
+      - dotnet nuget locals all --clear
+      - rm -rf "{{.SOLUTION_DIR}}/packages/Shipyard*.nupkg"      
+      - rm -rf packages/*.nupkg
+      - rm -rf artifacts/*.nupkg
+          
   log:
     desc: "Show shipyard logs"
     cmds:
@@ -57,6 +57,10 @@ tasks:
       - cmd: docker image rmi shipyard-web
         ignore_error: true           
       - cmd: docker image rmi shipyard-web:dev
+        ignore_error: true
+      - cmd: docker image rmi shipyard-dbmigrate
+        ignore_error: true
+      - cmd: docker image rmi shipyard-dbmigrate:dev
         ignore_error: true
 
   sh:worker:

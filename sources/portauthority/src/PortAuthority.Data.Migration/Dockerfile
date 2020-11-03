@@ -1,13 +1,13 @@
 # Restore nuget packages
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /src
-COPY ./src .
-RUN dotnet restore /src/PortAuthority.Data.Migration
+WORKDIR /sln
+COPY . .
+RUN dotnet restore /sln/src/PortAuthority.Data.Migration
 
 # Build and publish applications
 FROM build as publish
 WORKDIR /out
-RUN dotnet publish /src/PortAuthority.Data.Migration -c Release -o /out
+RUN dotnet publish /sln/src/PortAuthority.Data.Migration -c Release -o /out
 
 # Build runtime image
 FROM build as final

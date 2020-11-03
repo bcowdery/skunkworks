@@ -4,9 +4,9 @@ services:
 
   #################################
   ## Mission Control Dashboard
-  ## (it's a dashboard)
+  ## (surprise, it's a dashboard)
   #################################
-    
+     
   missioncontrol_web:    
     image: missioncontrol-web
     build: 
@@ -107,7 +107,7 @@ services:
 
   shipyard_dbmigrate:
     image: shipyard-dbmigrate
-    command: dockerize -wait tcp://mssql:1433 -timeout 30s dotnet PortAuthority.Data.Migration.dll
+    command: dockerize -wait tcp://mssql:1433 -timeout 30s dotnet Shipyard.Data.Migration.dll
     build:
       context: ./sources/shipyard
       dockerfile: src/Shipyard.Data.Migration/Dockerfile

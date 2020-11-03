@@ -3,14 +3,14 @@ WORKDIR /app
 
 # Restore nuget packages
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /src
-COPY ./src .
-RUN dotnet restore /src/PortAuthority.Worker
+WORKDIR /sln
+COPY . .
+RUN dotnet restore /sln/src/PortAuthority.Worker
 
 # Build and publish applications
 FROM build as publish
 WORKDIR /out
-RUN dotnet publish /src/PortAuthority.Worker -c Release -o /out
+RUN dotnet publish /sln/src/PortAuthority.Worker -c Release -o /out
 
 # Build runtime image
 FROM base as final

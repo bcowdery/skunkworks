@@ -16,7 +16,7 @@ ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 # Restore packages to prime the package cache for the dev image
 WORKDIR /app
 COPY . .
-RUN dotnet restore src/Shipyard.Worker
+RUN dotnet restore src/Shipyard.Worker -nowarn:msb3202,nul1503 --ignore-failed-sources
 
 # Build development image, this assumes that ./shipyard/src is mounted as /app/src
 RUN echo "dotnet build src/Shipyard.Worker -c ${BUILD_CONFIGURATION}" >> entrypoint.sh

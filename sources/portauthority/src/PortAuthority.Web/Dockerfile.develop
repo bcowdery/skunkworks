@@ -18,7 +18,7 @@ EXPOSE 80
 # Restore packages to prime the package cache for the dev image
 WORKDIR /app
 COPY . .
-RUN dotnet restore src/PortAuthority.Web
+RUN dotnet restore src/PortAuthority.Web -nowarn:msb3202,nul1503 --ignore-failed-sources
 
 # Build development image, this assumes that ./shipyard/src is mounted as /app/src
 RUN echo "dotnet build src/PortAuthority.Web -c ${BUILD_CONFIGURATION}" >> entrypoint.sh

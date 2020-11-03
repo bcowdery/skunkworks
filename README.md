@@ -32,6 +32,7 @@ The primary goal is to the ease the barier to entry and provide developers with 
 You can build, package and run the entire solution with `up`.
 
 ```shell
+$ task update-local-packages # if not using remote nuget repo
 $ task up
 ```
 

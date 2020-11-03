@@ -5,14 +5,10 @@ dotenv: ['.env']
 silent: true
 
 includes:  
-  # OS specific tasks
-  base: ./Taskfile_{{OS}}.yml  
-  # Dependency tasks
   nginx: ./services/nginx
   azstorage: ./services/azurestorage
   mssql: ./services/sqlserver
   rabbit: ./services/rabbitmq  
-  # Application tasks
   missioncontrol:
     taskfile: ./sources/missioncontrol/Taskfile.yml
     dir: ./sources/missioncontrol    
@@ -23,24 +19,27 @@ includes:
     taskfile: ./sources/shipyard/Taskfile.yml
     dir: ./sources/shipyard
   
+
 vars:
   SOLUTION_NAME: skunkworks
   SOLUTION_DIR:
     sh: pwd  
-  VERSION:
-    sh: git rev-parse --short HEAD
+  SOLUTION_VERSION:
+    sh: git rev-parse --short HEAD    
 
+    
 tasks:  
   prepare:
-    deps: [ base:prepare-docker-override, base:prepare-nuget-local ]
-
+    cmds:
+      - cp docker-compose.local.yml.example docker-compose.local.yml    
+    status:
+      - test -f docker-compose.local.yml
+  
   up:
     desc: "Bring up the solution"
-    deps: [ base:prepare ]
-    vars:
-      PROFILE: local
+    deps: [ prepare  ]    
     cmds:
-      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate  
+      - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
 
   down: 
     desc: "Bring down the solution"
@@ -71,19 +70,6 @@ tasks:
     desc: "Builds all container images"
     cmds: 
       - docker-compose -p {{.SOLUTION_NAME}} build --force-rm
-    
-  package:
-    desc: "Package nugets"
-    cmds:
-      - task: portauthority:package  
-      - task: shipyard:package
-
-  package-local:
-    desc: "Package nugets for local development"
-    deps: [ prepare ]
-    cmds:
-      - task: portauthority:package-local
-      - task: shipyard:package-local 
 
   push:
     desc: "Pushes container images to remote repositories"
@@ -95,16 +81,34 @@ tasks:
     cmds:
       - docker-compose pull
     
-  prune:
-    desc: "Prune unused local container images networks and mounts"
+  pack:
+    desc: "Package nugets"
     cmds:
-      - echo 'Pruning unsued docker resources'
-      - docker system prune -af
-  
-  nuke:
-    desc: "Nuke all data files and reset the solution"
-    deps: [ base:nuke ]
+      - task: portauthority:pack
+      - task: shipyard:pack
 
+  update-local-packages:
+    deps: [ pack ]
+    cmds:
+      - task: portauthority:update-local-packages
+      - task: shipyard:update-local-packages
+
+  clear-local-packages:
+    cmds:
+      - task: portauthority:clear-local-packages
+      - task: shipyard:clear-local-packages
+    
+  nuke:
+    desc: "Nuke all data files and reset the solution"  
+    deps: [ down ]
+    cmds:
+      - echo 'Pruning unused docker resources'
+      - docker system prune -af
+      - echo 'Deleting local service volume mounts ./data/'
+      - rm -rf ./data/
+      - echo 'Deleting local package feed ./packages/'
+      - rm -rf ./packages/
+    
   default:
     cmds:
       - task -l

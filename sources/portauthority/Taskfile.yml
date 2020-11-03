@@ -1,27 +1,27 @@
 version: '3'
 
 vars:
-  SOLUTION_NAME: skunkworks      
   PA_WEBAPI_NAME: portauthority_web
   PA_WORKER_NAME: portauthority_worker
     
 tasks:    
-  build:
+  pack:
     cmds:      
-      - dotnet restore
-      - dotnet test
-      - dotnet build
+      - mkdir -p "{{.SOLUTION_DIR}}/packages"
+      - dotnet pack src/PortAuthority.Contracts -c Release -o ./artifacts      
+      - dotnet nuget push ./artifacts/*.nupkg -s "{{.SOLUTION_DIR}}/packages"
 
-  package:
+  update-local-packages:
+    cmds:      
+      - dotnet nuget locals all --clear
+      - cp "{{.SOLUTION_DIR}}/packages/*.nupkg" packages/
+    
+  clear-local-packages:
     cmds:
-      - dotnet restore
-      - dotnet pack -c Release -o ./packages
-
-  package-local:
-    cmds:
-      - dotnet nuget locals all --clear      
-      - dotnet restore
-      - dotnet pack src/PortAuthority.Contracts -c Release -o ~/.nuget/packages-local/
+      - dotnet nuget locals all --clear
+      - rm -rf "{{.SOLUTION_DIR}}/packages/PortAuthority*.nupkg"      
+      - rm -rf packages/*.nupkg
+      - rm -rf artifacts/*.nupkg      
     
   log:
     desc: "Show portauthority logs"
