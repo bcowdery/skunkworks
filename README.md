@@ -11,6 +11,9 @@ The primary goal is to the ease the barier to entry and provide developers with 
 
 &nbsp;
 
+> 💡 Run `.\bootstrap` on windows to bootstrap the Docker & Taskfile installation.
+
+&nbsp;
 
 # Goals
 
@@ -25,7 +28,6 @@ The primary goal is to the ease the barier to entry and provide developers with 
 | **Health checks**<br/> All services should report health checks. API endpoints should expose a `/health` endpoint that can be called to inspect the status of the service and it's background workers. | Built on top of dotnet core healthchecks, can publish to application insights and datadog for reporting. | ✅ |
 
 &nbsp;
-
 
 # Getting Started
 

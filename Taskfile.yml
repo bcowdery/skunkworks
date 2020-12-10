@@ -36,8 +36,9 @@ tasks:
     ]
   
   init-az-credprovider:     
+    dir: init
     cmds:
-      - '{{if eq OS "windows"}}init.cmd{{else}}init.sh{{end}}'
+      - '{{if eq OS "windows"}}init-az-credprovider.cmd{{else}}init-az-credprovider.sh{{end}}'
     status:
       - test -d $HOME/.nuget/plugins/netcore/CredentialProvider.Microsoft/
 
