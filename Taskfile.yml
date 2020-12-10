@@ -29,7 +29,19 @@ vars:
 
     
 tasks:  
-  prepare:
+  init:
+    deps: [ 
+      init-az-credprovider, 
+      init-docker-compose-override 
+    ]
+  
+  init-az-credprovider:     
+    cmds:
+      - '{{if eq OS "windows"}}init.cmd{{else}}init.sh{{end}}'
+    status:
+      - test -d $HOME/.nuget/plugins/netcore/CredentialProvider.Microsoft/
+
+  init-docker-compose-override:
     cmds:
       - cp docker-compose.local.yml.example docker-compose.local.yml    
     status:
@@ -37,7 +49,7 @@ tasks:
   
   up:
     desc: "Bring up the solution"
-    deps: [ prepare  ]    
+    deps: [ init  ]    
     cmds:
       - docker-compose -p {{.SOLUTION_NAME}} -f docker-compose.yml -f docker-compose.local.yml up -d --no-recreate
 

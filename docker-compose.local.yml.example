@@ -7,7 +7,7 @@ version: '3'
 #       dockerfile: src/PortAuthority.Web/Dockerfile.develop
 #     volumes:
 #       - ./sources/portauthority/src/:/app/src/      
-#       - $HOME/.nuget/:/root/.nuget/
+#       - ./sources/portauthority/packages/:/app/packages/      
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 
@@ -17,7 +17,7 @@ version: '3'
 #       dockerfile: src/PortAuthority.Worker/Dockerfile.develop
 #     volumes:
 #       - ./sources/portauthority/src/:/app/src/        
-#       - $HOME/.nuget/:/root/.nuget/
+#       - ./sources/portauthority/packages/:/app/packages/      
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 
@@ -27,7 +27,7 @@ version: '3'
 #       dockerfile: src/Shipyard.Web/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/      
-#       - $HOME/.nuget/:/root/.nuget/
+#       - ./sources/shipyard/packages/:/app/packages/      
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
 
@@ -37,6 +37,6 @@ version: '3'
 #       dockerfile: src/Shipyard.Worker/Dockerfile.develop
 #     volumes:
 #       - ./sources/shipyard/src/:/app/src/        
-#       - $HOME/.nuget/:/root/.nuget/
+#       - ./sources/shipyard/packages/:/app/packages/      
 #       - $HOME/.microsoft/usersecrets/:/root/.microsoft/usersecrets/
 #       - $APPDATA/Microsoft/UserSecrets/:/root/.microsoft/usersecrets/
